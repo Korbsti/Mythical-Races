@@ -1,6 +1,7 @@
 package me.korbsti.mythicalraces;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.jar.Attributes;
@@ -63,6 +64,10 @@ public class MythicalRaces extends JavaPlugin {
 	
 	public HashMap<String, ArrayList<Integer>> nightRacePassivePotionEffectsAmplifier = new HashMap<String, ArrayList<Integer>>();
 	public HashMap<String, ArrayList<Double>> nightRacePassiveAttributesAmount = new HashMap<String, ArrayList<Double>>();
+	
+	// If the player is allowed to switch races
+	public HashMap<String, Boolean> canPlayerSwitch = new HashMap<String, Boolean>();
+	public String cooldown;
 	
 	@Override
 	public void onEnable() {
@@ -135,9 +140,8 @@ public class MythicalRaces extends JavaPlugin {
 			
 			for (Object obj : configYaml.getList("races." + str + ".nightPassiveGenericAttributesAmplifier")) {
 				String amount = obj.toString();
-				if (!amount.equals("null")) {
+				if (!amount.equals("null"))
 					nightRacePassiveAttributesAmount.get(str).add(Double.parseDouble(amount));
-				}
 			}
 			
 		}
@@ -146,11 +150,17 @@ public class MythicalRaces extends JavaPlugin {
 		pm.registerEvents(new Join(this), this);
 		pm.registerEvents(new InventoryClick(this), this);
 		
-		for (Player p : Bukkit.getOnlinePlayers()) {
-			dataManager.checkIfUnknown(p);
-			setter.setEffects(p);
+		for (Player ¢ : Bukkit.getOnlinePlayers()) {
+			dataManager.checkIfUnknown(¢);
+			setter.setEffects(¢);
+			dataManager.checkIfTimeNull(¢);
 		}
+		
+		
+		cooldown = configYaml.getString("other.cooldown");
+		
 		int timerCheckingPotionEffects = configYaml.getInt("other.timerCheckingPotionEffects");
+		
 		Bukkit.getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
 			
 			@Override
@@ -162,6 +172,14 @@ public class MythicalRaces extends JavaPlugin {
 			}
 			
 		}, 0, timerCheckingPotionEffects);
+		Bukkit.getScheduler().runTaskTimerAsynchronously(this, new Runnable() {
+
+			@Override
+			public void run() {
+				dataManager.reduceTime();
+				
+			}
+		}, 0, 20 * 60);
 	}
 	
 	@Override

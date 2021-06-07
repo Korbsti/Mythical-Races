@@ -23,6 +23,7 @@ public class Join implements Listener {
 		plugin.dataManager.checkIfUnknown(p);
 		plugin.setter.setEffects(p);
 		plugin.guiNumber.put(p.getName(), 1);
+		plugin.dataManager.checkIfTimeNull(p);
 	}
 }
 

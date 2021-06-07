@@ -43,8 +43,14 @@ public class Commands implements CommandExecutor {
 						if (noPerm(sender, "mythicalraces.race." + str)) {
 							return true;
 						}
-						plugin.dataManager.setPlayerRace((Player) sender, str);
-						plugin.setter.switchingRaces((Player) sender, str);
+						Player p = (Player) sender;
+						if(plugin.dataManager.hasCooldown((Player) sender) && !p.hasPermission("mythicalraces.cooldown.bypass")) {
+							sender.sendMessage(ChatColor.translateAlternateColorCodes('&', plugin.configYaml.getString("cooldownMessage").replace("{time}", plugin.dataManager.getCooldown(p))));
+							return false;
+						}
+						plugin.dataManager.setPlayerRace(p, str);
+						plugin.setter.switchingRaces(p, str);
+						plugin.dataManager.setCooldown(p, plugin.cooldown);
 						sender.sendMessage(ChatColor.translateAlternateColorCodes('&', plugin.configYaml.getString(
 						        "chosenRace").replace("{race}", str)));
 						return true;
