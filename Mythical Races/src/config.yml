@@ -1,7 +1,7 @@
 # ********************************************** #
 #                                                #
 #     -- Mythical Races Configuration File --    #
-#           -- Version 0.0.1 --                  #
+#           -- Version 0.0.5 --                  #
 #                                                #
 # ********************************************** #
 # Attributes are as follows
@@ -95,6 +95,10 @@ other:
    # Store data by UUID, if false store data by player names
    dataByUUID: true
 
+
+   # Cooldown timer, is in MINUTES, NEVER PUT THIS NUMBER INTO NEGATIVES AND DO NOT TURN THIS NUMBER INTO A DECIMAL AND DO NOT DELETE THE " " MARKS
+   cooldown: "60"
+   
    # default race upon joining
    defaultRace: Human
    
@@ -106,7 +110,6 @@ other:
    
    # Every X amount of ticks, loop through the server and see if the player has any potion effects that they should have
    # if they dont have it then add potion effects of race to the player
-   # This does run async so it does not affect the main thread
    timerCheckingPotionEffects: 100
    
    # Gui display name
@@ -257,7 +260,7 @@ races:
      guiPage: 1
      slot: 13
      lore:
-         - '&4- - - - - &cHuman Race &2- - - - -'
+         - '&4- - - - - &cVampire Race &2- - - - -'
          - '&cThe vampire, the bloodthirsty race'
          - '&cSome say, they only come out at night'
          - '&cbecause its when their strongest is at'
@@ -630,7 +633,528 @@ races:
          - 0.1
          - 40.0
          - 2.0
+   Orc:
+     displayName: '&2Orc'
+     material: 'BOOK'
+     guiPage: 1
+     slot: 23
+     lore:
+         - '&a- - - - - &2Orc Race &a- - - - -'
+         - '&2The orc, they are known to be slow but heavy hitting'
+         - '&2They are a little more active in the day because at night...'
+         - '&2Sloppy they are'
+         - ' '
+         - '&5- - - - - Day Time Passive Effects - - - - -'
+         - '&5Strength II'
+         - '&5Slowness I'
+         - '&5Knockback resistance I'
+         - '&5- - - - - Night Time Passive Effects - - - - -'
+         - '&5Strength II'
+         - '&5Slowness II'
+     dayPassivePotionEffects:
+         - 'INCREASE_DAMAGE'
+         - 'SLOW'
+     dayPassivePotionEffectsAmplifier:
+         - 1
+         - 0
+     dayPassiveGenericAttributes:
+         - 'GENERIC_MOVEMENT_SPEED'
+         - 'GENERIC_KNOCKBACK_RESISTANCE'
+     dayPassiveGenericAttributesAmplifier:
+         - 0.1
+         - 1.0
+     nightPassivePotionEffects:
+         - 'INCREASE_DAMAGE'
+         - 'SLOW'
+     nightPassivePotionEffectsAmplifier:
+         - 1
+         - 1
+     nightPassiveGenericAttributes:
+         - 'GENERIC_MOVEMENT_SPEED'
+         - 'GENERIC_KNOCKBACK_RESISTANCE'
+     nightPassiveGenericAttributesAmplifier:
+         - 0.1
+         - 0.0
+   Waspling:
+     displayName: '&6Waspling'
+     material: 'BOOK'
+     guiPage: 1
+     slot: 24
+     lore:
+         - '&6- - - - - &6Waspling Race &6- - - - -'
+         - '&6Bzz... Bzzz BZZZZZZ'
+         - '&6Now a species that is immune to falling fast'
+         - '&6These wasplings are mutated and a lot bigger than your'
+         - '&6Average wasp... might hurt to get stung..?'
+         - '&6They certainly do not like going outside at night'
+         - ' '
+         - '&5- - - - - Day Time Passive Effects - - - - -'
+         - '&5Slow falling I'
+         - '&5Saturation I'
+         - '&5Speed I'
+         - '&5Two less hearts'
+         - '&5- - - - - Night Time Passive Effects - - - - -'
+         - '&5Slow falling I'
+         - '&5Slowness I'
+         - '&5Two less hearts'
+     dayPassivePotionEffects:
+         - 'SLOW_FALLING'
+         - 'SATURATION'
+         - 'SPEED'
+     dayPassivePotionEffectsAmplifier:
+         - 0
+         - 0
+         - 0
+     dayPassiveGenericAttributes:
+         - 'GENERIC_MOVEMENT_SPEED'
+         - 'GENERIC_MAX_HEALTH'
+     dayPassiveGenericAttributesAmplifier:
+         - 0.1
+         - 16.0
+     nightPassivePotionEffects:
+         - 'SLOW_FALLING'
+         - 'SLOW'
+     nightPassivePotionEffectsAmplifier:
+         - 0
+         - 0
+     nightPassiveGenericAttributes:
+         - 'GENERIC_MOVEMENT_SPEED'
+         - 'GENERIC_MAX_HEALTH'
+     nightPassiveGenericAttributesAmplifier:
+         - 0.1
+         - 16.0
+   Dragonborn:
+     displayName: '&7Dragonborn'
+     material: 'BOOK'
+     guiPage: 1
+     slot: 25
+     lore:
+         - '&8- - - - - &7Dragonborn&8- - - - -'
+         - '&7Dovahkiin, Dovahkiin naal ok zin los vahriin'
+         - '&7Wahdein vokul mahfaeraak ast vaal'
+         - '&7Ahrk fin norok paal graan'
+         - '&7Fodnust vok zin dro zaan'
+         - '&7Dovahkiin fah hin kogaan mu draal!'
+         - ' '
+         - '&8&lFUS RO DA'
+         - ' '
+         - '&5- - - - - Day Time Passive Effects - - - - -'
+         - '&5Fire resistance I'
+         - '&5Strength II'
+         - '&5Attack speed I'
+         - '&5Speed I'
+         - '&5Gain 1 extra heart'
+         - '&5- - - - - Night Time Passive Effects - - - - -'
+         - '&5Weakness I'
+         - '&5Slowness I'
+         - '&5Gain 1 extra heart'
+     dayPassivePotionEffects:
+         - 'FIRE_RESISTANCE'
+         - 'INCREASE_DAMAGE'
+         - 'SPEED'
+     dayPassivePotionEffectsAmplifier:
+         - 0
+         - 1
+         - 0
+     dayPassiveGenericAttributes:
+         - 'GENERIC_MOVEMENT_SPEED'
+         - 'GENERIC_MAX_HEALTH'
+     dayPassiveGenericAttributesAmplifier:
+         - 0.1
+         - 22.0
+     nightPassivePotionEffects:
+         - 'WEAKNESS'
+         - 'SLOW'
+     nightPassivePotionEffectsAmplifier:
+         - 0
+         - 0
+     nightPassiveGenericAttributes:
+         - 'GENERIC_MOVEMENT_SPEED'
+         - 'GENERIC_MAX_HEALTH'
+     nightPassiveGenericAttributesAmplifier:
+         - 0.1
+         - 22.0
+   WoodElf:
+     displayName: '&aWoodElf'
+     material: 'BOOK'
+     guiPage: 1
+     slot: 28
+     lore:
+         - '&2- - - - - &aWood Elf&2- - - - -'
+         - '&aWood elves are seen as calm and level headed'
+         - '&aThey tend to be stronger than other elves'
+         - ' '
+         - '&5- - - - - Day Time Passive Effects - - - - -'
+         - '&5Speed I'
+         - '&5Absorption I'
+         - '&5Jump Boost I'
+         - '&5- - - - - Night Time Passive Effects - - - - -'
+         - '&5Speed I'
+         - '&5Absorption I'
+         - '&5Jump Boost I'
+     dayPassivePotionEffects:
+         - 'SPEED'
+         - 'JUMP'
+     dayPassivePotionEffectsAmplifier:
+         - 0
+         - 0
+     dayPassiveGenericAttributes:
+         - 'GENERIC_MOVEMENT_SPEED'
+     dayPassiveGenericAttributesAmplifier:
+         - 0.1
+     nightPassivePotionEffects:
+         - 'SPEED'
+         - 'JUMP'
+     nightPassivePotionEffectsAmplifier:
+         - 0
+         - 0
+     nightPassiveGenericAttributes:
+         - 'GENERIC_MOVEMENT_SPEED'
+     nightPassiveGenericAttributesAmplifier:
+         - 0.1
+   Druid:
+     displayName: '&aDruid'
+     material: 'BOOK'
+     guiPage: 1
+     slot: 29
+     lore:
+         - '&2- - - - - &aDruid &2- - - - -'
+         - '&aDruids are philosophers... a mage or not'
+         - '&aBut hey at least they have regeneration'
+         - ' '
+         - '&5- - - - - Day Time Passive Effects - - - - -'
+         - '&5Regeneration I'
+         - '&5Speed II'
+         - '&5Luck I'
+         - '&5- - - - - Night Time Passive Effects - - - - -'
+         - '&5Speed I'
+         - '&5Regeneration I'
+         - '&5Bad luck I'
+     dayPassivePotionEffects:
+         - 'SPEED'
+         - 'LUCK'
+         - 'REGENERATION'
+     dayPassivePotionEffectsAmplifier:
+         - 1
+         - 0
+         - 0
+     dayPassiveGenericAttributes:
+         - 'GENERIC_MOVEMENT_SPEED'
+     dayPassiveGenericAttributesAmplifier:
+         - 0.1
+     nightPassivePotionEffects:
+         - 'SPEED'
+         - 'UNLUCK'
+         - 'REGENERATION'
+     nightPassivePotionEffectsAmplifier:
+         - 0
+         - 0
+         - 0
+     nightPassiveGenericAttributes:
+         - 'GENERIC_MOVEMENT_SPEED'
+     nightPassiveGenericAttributesAmplifier:
+         - 0.1
+   Werewolf:
+     displayName: '&7Werewolf'
+     material: 'BOOK'
+     guiPage: 1
+     slot: 30
+     lore:
+         - '&8- - - - - &7Werewolf &8- - - - -'
+         - '&7Think you know what a werewolf is...'
+         - '&7If you do not know... shame :I'
+         - ' '
+         - '&5- - - - - Day Time Passive Effects - - - - -'
+         - '&5Strength I'
+         - '&5Speed I'
+         - '&5Back luck I'
+         - '&5- - - - - Night Time Passive Effects - - - - -'
+         - '&5Strength II'
+         - '&5Speed II'
+         - '&5Luck I'
+     dayPassivePotionEffects:
+         - 'INCREASE_DAMAGE'
+         - 'UNLUCK'
+         - 'SPEED'
+     dayPassivePotionEffectsAmplifier:
+         - 0
+         - 0
+         - 0
+     dayPassiveGenericAttributes:
+         - 'GENERIC_MOVEMENT_SPEED'
+     dayPassiveGenericAttributesAmplifier:
+         - 0.1
+     nightPassivePotionEffects:
+         - 'INCREASE_DAMAGE'
+         - 'LUCK'
+         - 'SPEED'
+     nightPassivePotionEffectsAmplifier:
+         - 1
+         - 0
+         - 1
+     nightPassiveGenericAttributes:
+         - 'GENERIC_MOVEMENT_SPEED'
+     nightPassiveGenericAttributesAmplifier:
+         - 0.1
+   Gremlin:
+     displayName: '&fGremlin'
+     material: 'BOOK'
+     guiPage: 1
+     slot: 31
+     lore:
+         - '&7- - - - - &fGremlin&7 - - - - -'
+         - '&fA mishievous creature that loves to'
+         - '&fcause malfunctions in aircraft and machinery...'
+         - '&fVery annoying creature'
+         - ' '
+         - '&5- - - - - Day Time Passive Effects - - - - -'
+         - '&5Speed II'
+         - '&5Luck IV'
+         - '&5- - - - - Night Time Passive Effects - - - - -'
+         - '&5Speed II'
+         - '&5Luck IV'
+     dayPassivePotionEffects:
+         - 'LUCK'
+         - 'SPEED'
+     dayPassivePotionEffectsAmplifier:
+         - 3
+         - 1
+     dayPassiveGenericAttributes:
+         - 'GENERIC_MOVEMENT_SPEED'
+     dayPassiveGenericAttributesAmplifier:
+         - 0.1
+     nightPassivePotionEffects:
+         - 'LUCK'
+         - 'SPEED'
+     nightPassivePotionEffectsAmplifier:
+         - 3
+         - 1
+     nightPassiveGenericAttributes:
+         - 'GENERIC_MOVEMENT_SPEED'
+     nightPassiveGenericAttributesAmplifier:
+         - 0.1
+   Goblin:
+     displayName: '&2Goblin'
+     material: 'BOOK'
+     guiPage: 1
+     slot: 32
+     lore:
+         - '&2- - - - - &aGoblin&2- - - - -'
+         - '&aA goblin already has terrible reputation...'
+         - '&aMainly due to anime... but rightfully so '
+         - '&aThey are extremely mischievous'
+         - '&aEven more so than the Gremlin'
+         - ' '
+         - '&5- - - - - Day Time Passive Effects - - - - -'
+         - '&5Speed II'
+         - '&5Reduced II hearts'
+         - '&5Attack Speed IV'
+         - '&5- - - - - Night Time Passive Effects - - - - -'
+         - '&5Speed II'
+         - '&5Reduced II hearts'
+         - '&5Attack Speed IV'
+     dayPassivePotionEffects:
+         - 'SPEED'
+     dayPassivePotionEffectsAmplifier:
+         - 1
+     dayPassiveGenericAttributes:
+         - 'GENERIC_MOVEMENT_SPEED'
+         - 'GENERIC_MAX_HEALTH'
+         - 'GENERIC_ATTACK_SPEED'
+     dayPassiveGenericAttributesAmplifier:
+         - 0.1
+         - 16.0
+         - 4.5
+     nightPassivePotionEffects:
+         - 'LUCK'
+         - 'SPEED'
+     nightPassivePotionEffectsAmplifier:
+         - 3
+         - 1
+     nightPassiveGenericAttributes:
+         - 'GENERIC_MOVEMENT_SPEED'
+         - 'GENERIC_MAX_HEALTH'
+         - 'GENERIC_ATTACK_SPEED'
+     nightPassiveGenericAttributesAmplifier:
+         - 0.1
+         - 16.0
+         - 4.5
+   Gnome:
+     displayName: '&bGnome'
+     material: 'BOOK'
+     guiPage: 1
+     slot: 33
+     lore:
+         - '&2- - - - - &bGnome&2 - - - - -'
+         - '&bYou have been...'
+         - '&b&lGNOMED'
+         - ' '
+         - '&5- - - - - Day Time Passive Effects - - - - -'
+         - '&5Haste II'
+         - '&5Reduced I hearts'
+         - '&5Slowness I'
+         - '&5- - - - - Night Time Passive Effects - - - - -'
+         - '&5Haste II'
+         - '&5Reduced I hearts'
+         - '&5Slowness I'
+     dayPassivePotionEffects:
+         - 'SLOW'
+         - 'FAST_DIGGING'
+     dayPassivePotionEffectsAmplifier:
+         - 0
+         - 1
+     dayPassiveGenericAttributes:
+         - 'GENERIC_MOVEMENT_SPEED'
+         - 'GENERIC_MAX_HEALTH'
+     dayPassiveGenericAttributesAmplifier:
+         - 0.1
+         - 18.0
+     nightPassivePotionEffects:
+         - 'SLOW'
+         - 'FAST_DIGGING'
+     nightPassivePotionEffectsAmplifier:
+         - 0
+         - 1
+     nightPassiveGenericAttributes:
+         - 'GENERIC_MOVEMENT_SPEED'
+         - 'GENERIC_MAX_HEALTH'
+     nightPassiveGenericAttributesAmplifier:
+         - 0.1
+         - 18.0
+   Giants:
+     displayName: '&7Giants'
+     material: 'BOOK'
+     guiPage: 1
+     slot: 34
+     lore:
+         - '&8- - - - - &7Giants&8 - - - - -'
+         - '&7A massive species... heavy hitting and slow'
+         - '&7Even sent the dragonborn flying...'
+         - ' '
+         - '&5- - - - - Day Time Passive Effects - - - - -'
+         - '&5Strength III'
+         - '&5Slowness II'
+         - '&5Unluck I'
+         - '&5- - - - - Night Time Passive Effects - - - - -'
+         - '&5Strength III'
+         - '&5Slowness II'
+         - '&5Unluck II'
+     dayPassivePotionEffects:
+         - 'SLOW'
+         - 'INCREASE_DAMAGE'
+         - 'UNLUCK'
+     dayPassivePotionEffectsAmplifier:
+         - 1
+         - 2
+         - 1
+     dayPassiveGenericAttributes:
+         - 'GENERIC_MOVEMENT_SPEED'
+         - 'GENERIC_MAX_HEALTH'
+     dayPassiveGenericAttributesAmplifier:
+         - 0.1
+         - 18.0
+     nightPassivePotionEffects:
+         - 'SLOW'
+         - 'INCREASE_DAMAGE'
+         - 'UNLUCK'
+     nightPassivePotionEffectsAmplifier:
+         - 1
+         - 2
+         - 1
+     nightPassiveGenericAttributes:
+         - 'GENERIC_MOVEMENT_SPEED'
+         - 'GENERIC_MAX_HEALTH'
+     nightPassiveGenericAttributesAmplifier:
+         - 0.1
+         - 18.0
+   Centaur:
+     displayName: '&6Centaur'
+     material: 'BOOK'
+     guiPage: 1
+     slot: 37
+     lore:
+         - '&6- - - - - &6Giants&6 - - - - -'
+         - '&6Half human... half horse'
+         - '&6Nothing could go wrong with that!'
+         - ' '
+         - '&5- - - - - Day Time Passive Effects - - - - -'
+         - '&5Speed III'
+         - '&5Jump I'
+         - '&5- - - - - Night Time Passive Effects - - - - -'
+         - '&5Speed III'
+         - '&5Jump I'
+     dayPassivePotionEffects:
+         - 'SPEED'
+         - 'JUMP'
+     dayPassivePotionEffectsAmplifier:
+         - 2
+         - 0
+     dayPassiveGenericAttributes:
+         - 'GENERIC_MOVEMENT_SPEED'
+     dayPassiveGenericAttributesAmplifier:
+         - 0.1
+     nightPassivePotionEffects:
+         - 'SPEED'
+         - 'JUMP'
+     nightPassivePotionEffectsAmplifier:
+         - 2
+         - 0
+     nightPassiveGenericAttributes:
+         - 'GENERIC_MOVEMENT_SPEED'
+     nightPassiveGenericAttributesAmplifier:
+         - 0.1
+   Fairy:
+     displayName: '&3Fairy'
+     material: 'BOOK'
+     guiPage: 1
+     slot: 38
+     lore:
+         - '&3- - - - - &3Fairy&3 - - - - -'
+         - '&3A magical creature... fast yet weak'
+         - '&3They have a human appearance.'
+         - '&3But are MAGICAL... somewhat!'
+         - ' '
+         - '&5- - - - - Day Time Passive Effects - - - - -'
+         - '&5Slow falling I'
+         - '&5Minus 4 hearts'
+         - '&5Luck III'
+         - '&5Speed IV'
+         - '&5- - - - - Night Time Passive Effects - - - - -'
+         - '&5Slow falling I'
+         - '&5Minus 4 hearts'
+         - '&5Unluck II'
+         - '&5Speed II'
+     dayPassivePotionEffects:
+         - 'SPEED'
+         - 'LUCK'
+         - 'SLOW_FALLING'
+     dayPassivePotionEffectsAmplifier:
+         - 3
+         - 2
+         - 0
+     dayPassiveGenericAttributes:
+         - 'GENERIC_MOVEMENT_SPEED'
+         - 'GENERIC_MAX_HEALTH'
+     dayPassiveGenericAttributesAmplifier:
+         - 0.1
+         - 12.0
+     nightPassivePotionEffects:
+         - 'SPEED'
+         - 'UNLUCK'
+         - 'SLOW_FALLING'
+     nightPassivePotionEffectsAmplifier:
+         - 1
+         - 1
+         - 0
+     nightPassiveGenericAttributes:
+         - 'GENERIC_MOVEMENT_SPEED'
+         - 'GENERIC_MAX_HEALTH'
+     nightPassiveGenericAttributesAmplifier:
+         - 0.1
+         - 12.0
 # Messages
+# To change the cooldown time, the time is in the data.yml file
+cooldownMessage: '&4You still have a cooldown! {time} minutes remaining until you may choose another race!'
 noPerm: '&4No Permission'
 invalidRace: '&4Invalid Race'
 listRaces: '&aKnown races are &2{races}'
