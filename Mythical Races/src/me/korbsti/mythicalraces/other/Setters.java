@@ -61,16 +61,21 @@ public class Setters {
 			}
 			if (plugin.nightRacePassiveAttributes.get(str) != null) {
 				int x = 0;
+				double addedAmount = 0;
 				for (Attribute att : plugin.nightRacePassiveAttributes.get(str)) {
-					p.getAttribute(att).setBaseValue(plugin.nightRacePassiveAttributesAmount.get(str).get(x));
+					if (plugin.nightRacePassiveAttributesLevel.get(str).get(x) != 0) {
+						addedAmount = plugin.dataManager.getPlayerLevel(p) * plugin.nightRacePassiveAttributesLevel.get(
+						        str).get(x);
+					}
+					p.getAttribute(att).setBaseValue(plugin.nightRacePassiveAttributesAmount.get(str).get(x)
+					        + addedAmount);
 					x++;
-					
+					addedAmount = 0;
 				}
 			}
 			return;
 			
 		}
-		
 		String str = plugin.dataManager.getRace(p);
 		if (plugin.dayRacePassivePotionEffects.get(str) != null) {
 			int x = 0;
@@ -98,10 +103,15 @@ public class Setters {
 		}
 		if (plugin.dayRacePassiveAttributes.get(str) != null) {
 			int x = 0;
+			double addedAmount = 0;
 			for (Attribute att : plugin.dayRacePassiveAttributes.get(str)) {
-				p.getAttribute(att).setBaseValue(plugin.dayRacePassiveAttributesAmount.get(str).get(x));
+				if (plugin.dayRacePassiveAttributesLevel.get(str).get(x) != 0) {
+					addedAmount = plugin.dataManager.getPlayerLevel(p) * plugin.dayRacePassiveAttributesLevel.get(str)
+					        .get(x);
+				}
+				p.getAttribute(att).setBaseValue(plugin.dayRacePassiveAttributesAmount.get(str).get(x) + addedAmount);
 				x++;
-				
+				addedAmount = 0;
 			}
 		}
 		

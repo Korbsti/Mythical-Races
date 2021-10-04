@@ -1,6 +1,7 @@
 package me.korbsti.mythicalraces.configmanager;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import org.bukkit.entity.Player;
 
@@ -28,11 +29,16 @@ public class PlayerDataManager {
 			plugin.dataYaml.set(p.getUniqueId().toString() + ".race", plugin.configYaml.getString("other.defaultRace"));
 		if (!dataByUUID && plugin.dataYaml.getString(p.getName()) == null)
 			plugin.dataYaml.set(p.getName() + ".race", plugin.configYaml.getString("other.defaultRace"));
+		
 		try {
 			plugin.dataYaml.save(plugin.dataFile);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public ArrayList<String> returnUserSubRace(Player p) {
+		return (plugin.subRaces.get(getRace(p)));
 	}
 	
 	public void setPlayerRace(Player p, String race) {
@@ -61,7 +67,30 @@ public class PlayerDataManager {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+	}
+	
+	public void checkIfLevelNull(Player p) {
+		if (dataByUUID && plugin.dataYaml.getString(p.getUniqueId().toString() + ".level") == null)
+			plugin.dataYaml.set(p.getUniqueId().toString() + ".level", 1);
+		if (!dataByUUID && plugin.dataYaml.getString(p.getName() + ".level") == null)
+			plugin.dataYaml.set(p.getName() + ".level", 1);
+		try {
+			plugin.dataYaml.save(plugin.dataFile);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void checkIfXpNull(Player p) {
+		if (dataByUUID && plugin.dataYaml.getString(p.getUniqueId().toString() + ".xp") == null)
+			plugin.dataYaml.set(p.getUniqueId().toString() + ".xp", 0);
+		if (!dataByUUID && plugin.dataYaml.getString(p.getName() + ".xp") == null)
+			plugin.dataYaml.set(p.getName() + ".xp", 0);
+		try {
+			plugin.dataYaml.save(plugin.dataFile);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public void checkIfTimeNull(Player p) {
@@ -71,7 +100,9 @@ public class PlayerDataManager {
 			
 		}
 		
-		if (!dataByUUID) if (plugin.dataYaml.getString(p.getName() + ".time") == null) plugin.dataYaml.set(p.getName() + ".time", "0");
+		if (!dataByUUID)
+			if (plugin.dataYaml.getString(p.getName() + ".time") == null)
+				plugin.dataYaml.set(p.getName() + ".time", "0");
 		try {
 			plugin.dataYaml.save(plugin.dataFile);
 		} catch (IOException e) {
@@ -81,11 +112,12 @@ public class PlayerDataManager {
 		
 	}
 	
-	public void setCooldown(Player p, String num) {
+	public void setPlayerXP(Player p, int x) {
 		
-		if (dataByUUID) plugin.dataYaml.set(p.getUniqueId().toString() + ".time", num);
+		if (dataByUUID)
+			plugin.dataYaml.set(p.getUniqueId().toString() + ".xp", x);
 		if (!dataByUUID)
-			plugin.dataYaml.set(p.getName() + ".time", num);
+			plugin.dataYaml.set(p.getName() + ".xp", x);
 		try {
 			plugin.dataYaml.save(plugin.dataFile);
 		} catch (IOException e) {
@@ -93,6 +125,40 @@ public class PlayerDataManager {
 			e.printStackTrace();
 		}
 		
+	}
+	
+	public int getPlayerXP(Player p) {
+		if (dataByUUID)
+			return plugin.dataYaml.getInt(p.getUniqueId().toString() + ".xp");
+		if (!dataByUUID)
+			return plugin.dataYaml.getInt(p.getName() + ".xp");
+		return 0;
+	}
+	
+	public void setCooldown(Player p, String num) {
+		
+		if (dataByUUID)
+			plugin.dataYaml.set(p.getUniqueId().toString() + ".time", num);
+		if (!dataByUUID)
+			plugin.dataYaml.set(p.getName() + ".time", num);
+		try {
+			plugin.dataYaml.save(plugin.dataFile);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+	}
+	
+	public void setPlayerLevel(Player p, int x) {
+		if (dataByUUID)
+			plugin.dataYaml.set(p.getUniqueId().toString() + ".level", x);
+		if (!dataByUUID)
+			plugin.dataYaml.set(p.getName() + ".level", x);
+		try {
+			plugin.dataYaml.save(plugin.dataFile);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public boolean hasCooldown(Player p) {
@@ -111,5 +177,13 @@ public class PlayerDataManager {
 		if (!dataByUUID)
 			return plugin.dataYaml.getString(p.getName() + ".time");
 		return "null";
+	}
+	
+	public int getPlayerLevel(Player p) {
+		if (dataByUUID)
+			return plugin.dataYaml.getInt(p.getUniqueId().toString() + ".level");
+		if (!dataByUUID)
+			return plugin.dataYaml.getInt(p.getName() + ".level");
+		return 0;
 	}
 }

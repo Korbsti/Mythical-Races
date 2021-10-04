@@ -1,5 +1,6 @@
 package me.korbsti.mythicalraces.events;
 
+import org.bukkit.Bukkit;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -19,11 +20,17 @@ public class Join implements Listener {
 	
 	@EventHandler
 	public void onJoin(PlayerJoinEvent e) {
-		Player p = e.getPlayer();
+		Player p = e.getPlayer();	
+	
 		plugin.dataManager.checkIfUnknown(p);
+		plugin.dataManager.checkIfTimeNull(p);
+		plugin.dataManager.checkIfLevelNull(p);
+		plugin.dataManager.checkIfXpNull(p);
 		plugin.setter.setEffects(p);
 		plugin.guiNumber.put(p.getName(), 1);
-		plugin.dataManager.checkIfTimeNull(p);
+		plugin.playerLocation.put(p.getName(), p.getLocation());
+
+		
 	}
 }
 

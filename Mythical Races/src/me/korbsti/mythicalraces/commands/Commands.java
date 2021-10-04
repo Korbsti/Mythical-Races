@@ -44,10 +44,13 @@ public class Commands implements CommandExecutor {
 							return true;
 						}
 						Player p = (Player) sender;
-						if(plugin.dataManager.hasCooldown((Player) sender) && !p.hasPermission("mythicalraces.cooldown.bypass")) {
-							sender.sendMessage(ChatColor.translateAlternateColorCodes('&', plugin.configYaml.getString("cooldownMessage").replace("{time}", plugin.dataManager.getCooldown(p))));
+						if (plugin.dataManager.hasCooldown((Player) sender) && !p.hasPermission(
+						        "mythicalraces.cooldown.bypass")) {
+							sender.sendMessage(ChatColor.translateAlternateColorCodes('&', plugin.configYaml.getString(
+							        "cooldownMessage").replace("{time}", plugin.dataManager.getCooldown(p))));
 							return false;
 						}
+						plugin.dataManager.setPlayerLevel(p, 1);
 						plugin.dataManager.setPlayerRace(p, str);
 						plugin.setter.switchingRaces(p, str);
 						plugin.dataManager.setCooldown(p, plugin.cooldown);
@@ -60,7 +63,28 @@ public class Commands implements CommandExecutor {
 				        "invalidRace")));
 				return true;
 			}
-			
+			if ("tree".equalsIgnoreCase(args[0])) {
+				if (noPerm(sender, "mythicalraces.tree")) {
+					return true;
+				}
+				plugin.treeGUI.openTree((Player) sender);
+				return true;
+			}
+			if ("profile".equalsIgnoreCase(args[0])) {
+				Player p = (Player) sender;
+				
+				if (noPerm(sender, "mythicalraces.profile")) {
+					return true;
+				}
+				
+				for (Object obj : plugin.configYaml.getList("profile")) {
+					
+					sender.sendMessage(ChatColor.translateAlternateColorCodes('&', String.valueOf(obj).replace("{race}",
+					        plugin.dataManager.getRace(p)).replace("{xp}", "" + plugin.dataManager.getPlayerXP(p))
+					        .replace("{level}", "" + plugin.dataManager.getPlayerLevel(p)).replace("{xp-max}", "" + (plugin.xpPerLevel * plugin.dataManager.getPlayerLevel(p)))));
+				}
+				return true;
+			}
 			if ("list".equalsIgnoreCase(args[0])) {
 				if (noPerm(sender, "mythicalraces.list.races")) {
 					return true;

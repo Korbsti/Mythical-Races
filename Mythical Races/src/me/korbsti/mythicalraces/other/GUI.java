@@ -38,7 +38,6 @@ public class GUI {
 		playerHeadMeta.setDisplayName(ChatColor.translateAlternateColorCodes('&', plugin.configYaml.getString(
 		        "other.guiPlayerDisplay")));
 		playerHead.setItemMeta(playerHeadMeta);
-		
 		/////////////////////////////////////////
 		ArrayList<ItemStack> listStack = new ArrayList<ItemStack>();
 		ArrayList<Integer> numberStack = new ArrayList<Integer>();
