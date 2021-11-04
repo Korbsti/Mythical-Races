@@ -37,6 +37,30 @@ public class Commands implements CommandExecutor {
 				        "invalidArgs")));
 				return true;
 			}
+			if ("set".equalsIgnoreCase(args[0]) && args.length == 3) {
+				if (noPerm(sender, "mythicalraces.race.setrace")) {
+					return true;
+				}
+				for (String str : plugin.races) {
+					if (str.equalsIgnoreCase(args[1])) {
+						Player p = Bukkit.getServer().getPlayer(args[2]);
+						if(p == null) {
+							sender.sendMessage(ChatColor.translateAlternateColorCodes('&', plugin.configYaml.getString("invalidPlayer")));
+
+							return true;
+						}
+						plugin.dataManager.setPlayerLevel(p, 1);
+						plugin.dataManager.setPlayerRace(p, str);
+						plugin.setter.switchingRaces(p, str);
+						plugin.dataManager.setCooldown(p, plugin.cooldown);
+						sender.sendMessage(ChatColor.translateAlternateColorCodes('&', plugin.configYaml.getString("switchUserRace").replace("{race}", str)));
+						return true;
+					}
+				}
+				sender.sendMessage(ChatColor.translateAlternateColorCodes('&', plugin.configYaml.getString("invalidRace")));
+				return true;
+			}
+			
 			if ("choose".equalsIgnoreCase(args[0]) && args.length == 2) {
 				for (String str : plugin.races) {
 					if (str.equalsIgnoreCase(args[1])) {

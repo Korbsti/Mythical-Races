@@ -1,7 +1,7 @@
 # ********************************************** #
 #                                                #
 #     -- Mythical Races Configuration File --    #
-#           -- Version 0.0.5 --                  #
+#           -- Version 1.0.3 --                  #
 #                                                #
 # ********************************************** #
 # Attributes are as follows
@@ -57,12 +57,12 @@
 #     guiPage: 1 # the page number of the GUI which it should be displayed at
 #     slot: 11 # the slot the material should be
 #     lore:
-#         - '&4- - - - - &cRace Name Race &4- - - - -'
+#         - '&4----- &cRace Name Race &4-----'
 #         - '&cDesciptiond and stuff'
 #         - ' '
-#         - '&5- - - - - Day Time Passive Effects - - - - -'
+#         - '&5----- Day Time Passive Effects -----'
 #         - 'Day time effects and stuff'
-#         - '&5- - - - - Night Time Passive Effects - - - - -'
+#         - '&5----- Night Time Passive Effects -----'
 #         - 'Night time effects and stuff'
 #     dayPassivePotionEffects: # Only put 'null' if the area is not going to be used
 #         - 'null'
@@ -72,6 +72,8 @@
 #         - 'GENERIC_MOVEMENT_SPEED'
 #     dayPassiveGenericAttributesAmplifier:
 #         - 0.1
+#     dayRacePassiveAttributesLevel: what this means is gain X amount of ATTRIBUTE PER LEVEL added onto the BASE amplifier, if 0.0 then ignore any sort of increasing X per level, max level is at the bottom of the config
+#         - 0.0
 #     nightPassivePotionEffects:
 #         - 'null'
 #     nightPassivePotionEffectsAmplifier:
@@ -80,6 +82,10 @@
 #         - 'GENERIC_MOVEMENT_SPEED'
 #     nightPassiveGenericAttributesAmplifier:
 #         - 0.1
+#     nightRacePassiveAttributesLevel:
+#         - 0.0
+#     executeCommandUponSwitching: # execute a CONSOLE command upon switching to another race, to use a playername it is {player} 
+#         - 'null'
 
 # Remember that amplifiers are -1 than what you want, for example if you want LUCK 1, then you would have to put 0 and not 1 under the amplifier
 # So to add a attribute, just add one of the attributes to "day" or "night" that has attributes in it
@@ -108,12 +114,16 @@ other:
    # When day time starts in ticks
    nightEnd: 23041
    
+   # If you are looking for "day" its just the numbers thats not inbetween night and nightTwo
+   
+   
    # Every X amount of ticks, loop through the server and see if the player has any potion effects that they should have
    # if they dont have it then add potion effects of race to the player
    timerCheckingPotionEffects: 100
    
    # Gui display name
    guiName: 'Choosing Race'
+   
    # Gui head player display name
    guiPlayerDisplay: 'You'
    
@@ -135,26 +145,32 @@ other:
    # Lore hovering over the player head
    guiPlayerLore:
       - 'Race: {race}'
-   # If you are looking for "day" its just the numbers thats not inbetween night and nightTwo
    
+   treeNonSlots: 'BLACK_STAINED_GLASS_PANE'
+   
+   treeName: 'Your race tree'
    
 races:
    Elf:
      displayName: '&2Elf'
      material: 'BOOK'
      guiPage: 1
+     isSubRace: false
+     subRaceType: ''
+     treeSlot: 4
+     levelRequire: 0
      slot: 10
      lore:
-         - '&2- - - - - &aElf Race &2- - - - -'
+         - '&2----- &aElf Race &2-----'
          - '&aElves have the reputation of divine beauty and magical powers.'
          - '&aThey generally like to travel in small groups.'
          - '&aElfs are quick on their feet but fragile'
          - ' '
-         - '&5- - - - - Day Time Passive Effects - - - - -'
+         - '&5----- Day Time Passive Effects -----'
          - '&5Speed II'
          - '&5Jump III'
          - '&5Max health is reduced by two hearts'
-         - '&5- - - - - Night Time Passive Effects - - - - -'
+         - '&5----- Night Time Passive Effects -----'
          - '&5Speed II'
          - '&5Jump III'
          - '&5Max health is reduced by two hearts'
@@ -170,6 +186,9 @@ races:
      dayPassiveGenericAttributesAmplifier:
          - 0.1
          - 16.0
+     dayRacePassiveAttributesLevel:
+         - 0.0
+         - 0.0
      nightPassivePotionEffects:
          - 'SPEED'
          - 'JUMP'
@@ -182,18 +201,82 @@ races:
      nightPassiveGenericAttributesAmplifier:
          - 0.1
          - 16.0
+     nightRacePassiveAttributesLevel:
+         - 0.0
+         - 0.0
+     executeCommandUponSwitching:
+         - 'null'
+   SuperiorElf:
+     displayName: '&aSuperior Elf'
+     material: 'BOOK'
+     guiPage: 1
+     isSubRace: true
+     subRaceType: 'Elf'
+     treeSlot: 13
+     levelRequire: 4
+     slot: 10
+     lore:
+         - '&2----- &aElf Race &2-----'
+         - '&aElves have the reputation of divine beauty and magical powers.'
+         - '&aThey generally like to travel in small groups.'
+         - '&aElfs are quick on their feet but fragile'
+         - ' '
+         - '&5-----Day Time Passive Effects-----'
+         - '&5Speed II'
+         - '&5Jump III'
+         - '&5Max health is reduced by two hearts'
+         - '&5-----Night Time Passive Effects-----'
+         - '&5Speed II'
+         - '&5Jump III'
+         - '&5Max health is reduced by two hearts'
+     dayPassivePotionEffects:
+         - 'SPEED'
+         - 'JUMP'
+     dayPassivePotionEffectsAmplifier:
+         - 1
+         - 2
+     dayPassiveGenericAttributes:
+         - 'GENERIC_MOVEMENT_SPEED'
+         - 'GENERIC_MAX_HEALTH'
+     dayPassiveGenericAttributesAmplifier:
+         - 0.1
+         - 20.0
+     dayRacePassiveAttributesLevel:
+         - 0.0
+         - 0.0
+     nightPassivePotionEffects:
+         - 'SPEED'
+         - 'JUMP'
+     nightPassivePotionEffectsAmplifier:
+         - 1
+         - 2
+     nightPassiveGenericAttributes:
+         - 'GENERIC_MOVEMENT_SPEED'
+         - 'GENERIC_MAX_HEALTH'
+     nightPassiveGenericAttributesAmplifier:
+         - 0.1
+         - 20.0
+     nightRacePassiveAttributesLevel:
+         - 0.0
+         - 0.0
+     executeCommandUponSwitching:
+         - 'null'
    Human:
      displayName: '&cHuman'
      material: 'BOOK'
+     isSubRace: false
+     subRaceType: ''
+     treeSlot: 4
+     levelRequire: 0
      guiPage: 1
      slot: 11
      lore:
-         - '&4- - - - - &cHuman Race &4- - - - -'
+         - '&4----- &cHuman Race &4-----'
          - '&cWell I think you know what a human is'
          - ' '
-         - '&5- - - - - Day Time Passive Effects - - - - -'
+         - '&5----- Day Time Passive Effects -----'
          - 'None'
-         - '&5- - - - - Night Time Passive Effects - - - - -'
+         - '&5----- Night Time Passive Effects -----'
          - 'None'
      dayPassivePotionEffects:
          - 'null'
@@ -203,6 +286,8 @@ races:
          - 'GENERIC_MOVEMENT_SPEED'
      dayPassiveGenericAttributesAmplifier:
          - 0.1
+     dayRacePassiveAttributesLevel:
+         - 0.0
      nightPassivePotionEffects:
          - 'null'
      nightPassivePotionEffectsAmplifier:
@@ -211,22 +296,30 @@ races:
          - 'GENERIC_MOVEMENT_SPEED'
      nightPassiveGenericAttributesAmplifier:
          - 0.1
+     nightRacePassiveAttributesLevel:
+         - 0.0
+     executeCommandUponSwitching:
+         - 'null'
    Dwarf:
      displayName: '&7Dwarf'
      material: 'BOOK'
      guiPage: 1
+     isSubRace: false
+     subRaceType: ''
+     treeSlot: 4
+     levelRequire: 0
      slot: 12
      lore:
-         - '&8- - - - - &7Dwarf Race &8- - - - -'
+         - '&8----- &7Dwarf Race &8-----'
          - '&7The toughest underground miners around,'
          - '&7Dwarfs are known to be small but they can build like no other.'
          - '&7They can also eat quite a bit... and empty a barrel of beer!'
          - ' '
-         - '&5- - - - - Day Time Passive Effects - - - - -'
+         - '&5----- Day Time Passive Effects -----'
          - '&5Haste III'
          - '&5Gain four extra hearts'
          - '&5Slowness I'
-         - '&5- - - - - Night Time Passive Effects - - - - -'
+         - '&5----- Night Time Passive Effects -----'
          - '&5Haste III'
          - '&5Gain four extra hearts'
          - '&5Slowness I'
@@ -242,6 +335,9 @@ races:
      dayPassiveGenericAttributesAmplifier:
          - 0.1
          - 28.0
+     dayRacePassiveAttributesLevel:
+         - 0.0
+         - 0.0
      nightPassivePotionEffects:
          - 'FAST_DIGGING'
          - 'SLOW'
@@ -254,24 +350,33 @@ races:
      nightPassiveGenericAttributesAmplifier:
          - 0.1
          - 28.0
+     nightRacePassiveAttributesLevel:
+         - 0.0
+         - 0.0
+     executeCommandUponSwitching:
+         - 'null'
    Vampire:
      displayName: '&4Vampire'
      material: 'BOOK'
+     isSubRace: false
+     subRaceType: ''
+     treeSlot: 4
+     levelRequire: 0
      guiPage: 1
      slot: 13
      lore:
-         - '&4- - - - - &cVampire Race &2- - - - -'
+         - '&4----- &cVampire Race &2-----'
          - '&cThe vampire, the bloodthirsty race'
          - '&cSome say, they only come out at night'
          - '&cbecause its when their strongest is at'
          - '&cPray that you do not meet one at night...'
          - ' '
-         - '&5- - - - - Day Time Passive Effects - - - - -'
+         - '&5----- Day Time Passive Effects -----'
          - '&5Speed 1'
          - '&5Jump 1'
          - '&5Weakness 2'
          - '&5Reduce by 2 heart'
-         - '&5- - - - - Night Time Passive Effects - - - - -'
+         - '&5----- Night Time Passive Effects -----'
          - '&5Speed 2'
          - '&5Jump boost 2'
          - '&5Regeneration 1'
@@ -292,6 +397,9 @@ races:
      dayPassiveGenericAttributesAmplifier:
          - 0.1
          - 16.0
+     dayRacePassiveAttributesLevel:
+         - 0.0
+         - 0.0
      nightPassivePotionEffects:
          - 'SPEED'
          - 'JUMP'
@@ -310,23 +418,32 @@ races:
      nightPassiveGenericAttributesAmplifier:
          - 0.1
          - 24.0
+     nightRacePassiveAttributesLevel:
+         - 0.0
+         - 0.0
+     executeCommandUponSwitching:
+         - 'null'
    Demon:
      displayName: '&cDemon'
      material: 'BOOK'
+     isSubRace: false
+     subRaceType: ''
+     treeSlot: 4
+     levelRequire: 0
      guiPage: 1
      slot: 14
      lore:
-         - '&4- - - - - &cDemon Race &4- - - - -'
+         - '&4----- &cDemon Race &4-----'
          - '&cDemons... born in the depths of hell'
          - '&cFearless, violent and widely hated'
          - '&cThey are resistant to fire and strong'
          - ' '
-         - '&5- - - - - Day Time Passive Effects - - - - -'
+         - '&5----- Day Time Passive Effects -----'
          - '&5Fire resistance I'
          - '&5Knockback resistance I'
          - '&5Armour I'
          - '&5Weakness I'
-         - '&5- - - - - Night Time Passive Effects - - - - -'
+         - '&5----- Night Time Passive Effects -----'
          - '&5Fire resistance I'
          - '&5Knockback resistance II'
          - '&5Strength III'
@@ -343,6 +460,9 @@ races:
      dayPassiveGenericAttributesAmplifier:
          - 0.1
          - 1.0
+     dayRacePassiveAttributesLevel:
+         - 0.0
+         - 0.0
      nightPassivePotionEffects:
          - 'FIRE_RESISTANCE'
          - 'INCREASE_DAMAGE'
@@ -357,22 +477,32 @@ races:
          - 0.1
          - 2.0
          - 2.0
+     nightRacePassiveAttributesLevel:
+         - 0.0
+         - 0.0
+         - 0.0
+     executeCommandUponSwitching:
+         - 'null'
    DarkElf:
      displayName: '&7DarkElf'
      material: 'BOOK'
+     isSubRace: false
+     subRaceType: ''
+     treeSlot: 4
+     levelRequire: 0
      guiPage: 1
      slot: 15
      lore:
-         - '&8- - - - - &7Dark Elf Race &8- - - - -'
+         - '&8----- &7Dark Elf Race &8-----'
          - '&7A race who takes pride in magic and sorcery'
          - '&7But they are a mysterious race which no one'
          - '&7really knows what they are doing'
          - ' '
-         - '&5- - - - - Day Time Passive Effects - - - - -'
+         - '&5----- Day Time Passive Effects -----'
          - '&5Speed II'
          - '&5Luck 4'
          - '&5Hero of the village I'
-         - '&5- - - - - Night Time Passive Effects - - - - -'
+         - '&5----- Night Time Passive Effects -----'
          - '&5Speed II'
          - '&5Luck 4'
          - '&5Hero of the village I'
@@ -388,6 +518,8 @@ races:
          - 'GENERIC_MOVEMENT_SPEED'
      dayPassiveGenericAttributesAmplifier:
          - 0.1
+     dayRacePassiveAttributesLevel:
+         - 0.0
      nightPassivePotionEffects:
          - 'SPEED'
          - 'LUCK'
@@ -400,21 +532,29 @@ races:
          - 'GENERIC_MOVEMENT_SPEED'
      nightPassiveGenericAttributesAmplifier:
          - 0.1
+     nightRacePassiveAttributesLevel:
+         - 0.0
+     executeCommandUponSwitching:
+         - 'null'
    MagmaCube:
      displayName: '&cMagmaCube'
      material: 'BOOK'
+     isSubRace: false
+     subRaceType: ''
+     treeSlot: 4
+     levelRequire: 0
      guiPage: 1
      slot: 16
      lore:
-         - '&4- - - - - &cMagmaCube Race &4- - - - -'
+         - '&4----- &cMagmaCube Race &4-----'
          - '&cA bouncy and hot bouncing cube...'
          - '&cThey love hot environments'
          - '&cand dislike cold climates'
          - ' '
-         - '&5- - - - - Day Time Passive Effects - - - - -'
+         - '&5----- Day Time Passive Effects -----'
          - '&5Fire resistance I'
          - '&5Jump III'
-         - '&5- - - - - Night Time Passive Effects - - - - -'
+         - '&5----- Night Time Passive Effects -----'
          - '&5Fire resistance I'
          - '&5Jump III'
      dayPassivePotionEffects:
@@ -427,6 +567,8 @@ races:
          - 'GENERIC_MOVEMENT_SPEED'
      dayPassiveGenericAttributesAmplifier:
          - 0.1
+     dayRacePassiveAttributesLevel:
+         - 0.0
      nightPassivePotionEffects:
          - 'FIRE_RESISTANCE'
          - 'JUMP'
@@ -437,23 +579,31 @@ races:
          - 'GENERIC_MOVEMENT_SPEED'
      nightPassiveGenericAttributesAmplifier:
          - 0.1
+     nightRacePassiveAttributesLevel:
+         - 0.0
+     executeCommandUponSwitching:
+         - 'null'
    Slime:
      displayName: '&aSlime'
      material: 'BOOK'
+     isSubRace: false
+     subRaceType: ''
+     treeSlot: 4
+     levelRequire: 0
      guiPage: 1
      slot: 19
      lore:
-         - '&2- - - - - &aSlime Race &2- - - - -'
+         - '&2----- &aSlime Race &2-----'
          - '&aA bouncy and cute cube that stays in swamp areas'
          - '&aThey are known for their regeneration ability'
          - '&aPlus bonus... they are SQUISHY'
          - ' '
-         - '&5- - - - - Day Time Passive Effects - - - - -'
+         - '&5----- Day Time Passive Effects -----'
          - '&5Regeneration II'
          - '&5Saturation I'
          - '&5Jump boost I'
          - '&5Hearts reduced by 5'
-         - '&5&5- - - - - Night Time Passive Effects - - - - -'
+         - '&5&5----- Night Time Passive Effects -----'
          - '&5Regeneration II'
          - '&5Saturation I'
          - '&5Jump boost I'
@@ -472,6 +622,9 @@ races:
      dayPassiveGenericAttributesAmplifier:
          - 0.1
          - 10.0
+     dayRacePassiveAttributesLevel:
+         - 0.0
+         - 0.0
      nightPassivePotionEffects:
          - 'REGENERATION'
          - 'JUMP'
@@ -486,22 +639,31 @@ races:
      nightPassiveGenericAttributesAmplifier:
          - 0.1
          - 10.0
+     nightRacePassiveAttributesLevel:
+         - 0.0
+         - 0.0
+     executeCommandUponSwitching:
+         - 'null'
    Merfolk:
      displayName: '&aMerfolk'
      material: 'BOOK'
+     isSubRace: false
+     subRaceType: ''
+     treeSlot: 4
+     levelRequire: 0
      guiPage: 1
      slot: 20 
      lore:
-         - '&3- - - - - &bMerfolk Race &3- - - - -'
+         - '&3----- &bMerfolk Race &3-----'
          - '&bMerfolk love the ocean, its where they live'
          - '&bThey also have unpredictable behaviour'
          - '&bYou may spot one if you go fishing...'
          - ' '
-         - '&5- - - - - Day Time Passive Effects - - - - -'
+         - '&5----- Day Time Passive Effects -----'
          - '&5Hero of the village I'
          - '&5Conduit power I'
          - '&5Water breating 5'
-         - '&5- - - - - Night Time Passive Effects - - - - -'
+         - '&5----- Night Time Passive Effects -----'
          - '&5Dolphins grace II'
          - '&5Conduit power I'
          - '&5Water breating 5'
@@ -517,6 +679,8 @@ races:
          - 'GENERIC_MOVEMENT_SPEED'
      dayPassiveGenericAttributesAmplifier:
          - 0.1
+     dayRacePassiveAttributesLevel:
+         - 0.0
      nightPassivePotionEffects:
          - 'DOLPHINS_GRACE'
          - 'CONDUIT_POWER'
@@ -529,22 +693,30 @@ races:
          - 'GENERIC_MOVEMENT_SPEED'
      nightPassiveGenericAttributesAmplifier:
          - 0.1
+     nightRacePassiveAttributesLevel:
+         - 0.0
+     executeCommandUponSwitching:
+         - 'null'
    Angel:
      displayName: '&6Angel'
      material: 'BOOK'
+     isSubRace: false
+     subRaceType: ''
+     treeSlot: 4
+     levelRequire: 0
      guiPage: 1
      slot: 21 
      lore:
-         - '&e- - - - - &6Angel Race &e- - - - -'
+         - '&e----- &6Angel Race &e-----'
          - '&6A heavenly divine race'
          - '&6They are usually known as guides and'
          - '&6Protectors of the human race'
          - ' '
-         - '&5- - - - - Day Time Passive Effects - - - - -'
+         - '&5----- Day Time Passive Effects -----'
          - '&5Hero of the village'
          - '&5Strength II'
          - '&5Speed II'
-         - '&5- - - - - Night Time Passive Effects - - - - -'
+         - '&5----- Night Time Passive Effects -----'
          - '&5Unluck I'
          - '&5Strength I'
          - '&5Speed I'
@@ -560,6 +732,8 @@ races:
          - 'GENERIC_MOVEMENT_SPEED'
      dayPassiveGenericAttributesAmplifier:
          - 0.1
+     dayRacePassiveAttributesLevel:
+         - 0.0
      nightPassivePotionEffects:
          - 'UNLUCK'
          - 'INCREASE_DAMAGE'
@@ -572,25 +746,33 @@ races:
          - 'GENERIC_MOVEMENT_SPEED'
      nightPassiveGenericAttributesAmplifier:
          - 0.1
+     nightRacePassiveAttributesLevel:
+         - 0.0
+     executeCommandUponSwitching:
+         - 'null'
    Sentinel:
      displayName: '&7Sentinel'
      material: 'BOOK'
+     isSubRace: false
+     subRaceType: ''
+     treeSlot: 4
+     levelRequire: 0
      guiPage: 1
      slot: 22
      lore:
-         - '&8- - - - - &7Sentinel Race &8- - - - -'
+         - '&8----- &7Sentinel Race &8-----'
          - '&7A true guardian, no one dares to mess with'
          - '&7They are protectors of what they choose to protect'
          - '&7Anyone facing them are... unfortunate'
          - ' '
-         - '&5- - - - - Day Time Passive Effects - - - - -'
+         - '&5----- Day Time Passive Effects -----'
          - '&5Strength III'
          - '&5Slowness III'
          - '&5Extra 10 hearts'
          - '&5Bad omen I'
          - '&5Unluck I'
          - '&5Knockback resistance II'
-         - '&5- - - - - Night Time Passive Effects - - - - -'
+         - '&5----- Night Time Passive Effects -----'
          - '&5Strength III'
          - '&5Slowness III'
          - '&5Bad omen I'
@@ -615,6 +797,10 @@ races:
          - 0.1
          - 40.0
          - 2.0
+     dayRacePassiveAttributesLevel:
+         - 0.0
+         - 0.0
+         - 0.0
      nightPassivePotionEffects:
          - 'INCREASE_DAMAGE'
          - 'SLOW'
@@ -633,22 +819,32 @@ races:
          - 0.1
          - 40.0
          - 2.0
+     nightRacePassiveAttributesLevel:
+         - 0.0
+         - 0.0
+         - 0.0
+     executeCommandUponSwitching:
+         - 'null'
    Orc:
      displayName: '&2Orc'
      material: 'BOOK'
+     isSubRace: false
+     subRaceType: ''
+     treeSlot: 4
+     levelRequire: 0
      guiPage: 1
      slot: 23
      lore:
-         - '&a- - - - - &2Orc Race &a- - - - -'
+         - '&a----- &2Orc Race &a-----'
          - '&2The orc, they are known to be slow but heavy hitting'
          - '&2They are a little more active in the day because at night...'
          - '&2Sloppy they are'
          - ' '
-         - '&5- - - - - Day Time Passive Effects - - - - -'
+         - '&5----- Day Time Passive Effects -----'
          - '&5Strength II'
          - '&5Slowness I'
          - '&5Knockback resistance I'
-         - '&5- - - - - Night Time Passive Effects - - - - -'
+         - '&5----- Night Time Passive Effects -----'
          - '&5Strength II'
          - '&5Slowness II'
      dayPassivePotionEffects:
@@ -663,6 +859,9 @@ races:
      dayPassiveGenericAttributesAmplifier:
          - 0.1
          - 1.0
+     dayRacePassiveAttributesLevel:
+         - 0.0
+         - 0.0
      nightPassivePotionEffects:
          - 'INCREASE_DAMAGE'
          - 'SLOW'
@@ -675,25 +874,34 @@ races:
      nightPassiveGenericAttributesAmplifier:
          - 0.1
          - 0.0
+     nightRacePassiveAttributesLevel:
+         - 0.0
+         - 0.0
+     executeCommandUponSwitching:
+         - 'null'
    Waspling:
      displayName: '&6Waspling'
      material: 'BOOK'
+     isSubRace: false
+     subRaceType: ''
+     treeSlot: 4
+     levelRequire: 0
      guiPage: 1
      slot: 24
      lore:
-         - '&6- - - - - &6Waspling Race &6- - - - -'
+         - '&6----- &6Waspling Race &6-----'
          - '&6Bzz... Bzzz BZZZZZZ'
          - '&6Now a species that is immune to falling fast'
          - '&6These wasplings are mutated and a lot bigger than your'
          - '&6Average wasp... might hurt to get stung..?'
          - '&6They certainly do not like going outside at night'
          - ' '
-         - '&5- - - - - Day Time Passive Effects - - - - -'
+         - '&5----- Day Time Passive Effects -----'
          - '&5Slow falling I'
          - '&5Saturation I'
          - '&5Speed I'
          - '&5Two less hearts'
-         - '&5- - - - - Night Time Passive Effects - - - - -'
+         - '&5----- Night Time Passive Effects -----'
          - '&5Slow falling I'
          - '&5Slowness I'
          - '&5Two less hearts'
@@ -711,6 +919,9 @@ races:
      dayPassiveGenericAttributesAmplifier:
          - 0.1
          - 16.0
+     dayRacePassiveAttributesLevel:
+         - 0.0
+         - 0.0
      nightPassivePotionEffects:
          - 'SLOW_FALLING'
          - 'SLOW'
@@ -723,13 +934,22 @@ races:
      nightPassiveGenericAttributesAmplifier:
          - 0.1
          - 16.0
+     nightRacePassiveAttributesLevel:
+         - 0.0
+         - 0.0
+     executeCommandUponSwitching:
+         - 'null'
    Dragonborn:
      displayName: '&7Dragonborn'
      material: 'BOOK'
+     isSubRace: false
+     subRaceType: ''
+     treeSlot: 4
+     levelRequire: 0
      guiPage: 1
      slot: 25
      lore:
-         - '&8- - - - - &7Dragonborn&8- - - - -'
+         - '&8----- &7Dragonborn&8-----'
          - '&7Dovahkiin, Dovahkiin naal ok zin los vahriin'
          - '&7Wahdein vokul mahfaeraak ast vaal'
          - '&7Ahrk fin norok paal graan'
@@ -738,13 +958,13 @@ races:
          - ' '
          - '&8&lFUS RO DA'
          - ' '
-         - '&5- - - - - Day Time Passive Effects - - - - -'
+         - '&5----- Day Time Passive Effects -----'
          - '&5Fire resistance I'
          - '&5Strength II'
          - '&5Attack speed I'
          - '&5Speed I'
          - '&5Gain 1 extra heart'
-         - '&5- - - - - Night Time Passive Effects - - - - -'
+         - '&5----- Night Time Passive Effects -----'
          - '&5Weakness I'
          - '&5Slowness I'
          - '&5Gain 1 extra heart'
@@ -762,6 +982,9 @@ races:
      dayPassiveGenericAttributesAmplifier:
          - 0.1
          - 22.0
+     dayRacePassiveAttributesLevel:
+         - 0.0
+         - 0.0
      nightPassivePotionEffects:
          - 'WEAKNESS'
          - 'SLOW'
@@ -774,21 +997,30 @@ races:
      nightPassiveGenericAttributesAmplifier:
          - 0.1
          - 22.0
+     nightRacePassiveAttributesLevel:
+         - 0.0
+         - 0.0
+     executeCommandUponSwitching:
+         - 'null'
    WoodElf:
      displayName: '&aWoodElf'
      material: 'BOOK'
+     isSubRace: false
+     subRaceType: ''
+     treeSlot: 4
+     levelRequire: 0
      guiPage: 1
      slot: 28
      lore:
-         - '&2- - - - - &aWood Elf&2- - - - -'
+         - '&2----- &aWood Elf&2-----'
          - '&aWood elves are seen as calm and level headed'
          - '&aThey tend to be stronger than other elves'
          - ' '
-         - '&5- - - - - Day Time Passive Effects - - - - -'
+         - '&5----- Day Time Passive Effects -----'
          - '&5Speed I'
          - '&5Absorption I'
          - '&5Jump Boost I'
-         - '&5- - - - - Night Time Passive Effects - - - - -'
+         - '&5----- Night Time Passive Effects -----'
          - '&5Speed I'
          - '&5Absorption I'
          - '&5Jump Boost I'
@@ -802,6 +1034,8 @@ races:
          - 'GENERIC_MOVEMENT_SPEED'
      dayPassiveGenericAttributesAmplifier:
          - 0.1
+     dayRacePassiveAttributesLevel:
+         - 0.0
      nightPassivePotionEffects:
          - 'SPEED'
          - 'JUMP'
@@ -812,21 +1046,29 @@ races:
          - 'GENERIC_MOVEMENT_SPEED'
      nightPassiveGenericAttributesAmplifier:
          - 0.1
+     nightRacePassiveAttributesLevel:
+         - 0.0
+     executeCommandUponSwitching:
+         - 'null'
    Druid:
      displayName: '&aDruid'
      material: 'BOOK'
+     isSubRace: false
+     subRaceType: ''
+     treeSlot: 4
+     levelRequire: 0
      guiPage: 1
      slot: 29
      lore:
-         - '&2- - - - - &aDruid &2- - - - -'
+         - '&2----- &aDruid &2-----'
          - '&aDruids are philosophers... a mage or not'
          - '&aBut hey at least they have regeneration'
          - ' '
-         - '&5- - - - - Day Time Passive Effects - - - - -'
+         - '&5----- Day Time Passive Effects -----'
          - '&5Regeneration I'
          - '&5Speed II'
          - '&5Luck I'
-         - '&5- - - - - Night Time Passive Effects - - - - -'
+         - '&5----- Night Time Passive Effects -----'
          - '&5Speed I'
          - '&5Regeneration I'
          - '&5Bad luck I'
@@ -842,6 +1084,8 @@ races:
          - 'GENERIC_MOVEMENT_SPEED'
      dayPassiveGenericAttributesAmplifier:
          - 0.1
+     dayRacePassiveAttributesLevel:
+         - 0.0
      nightPassivePotionEffects:
          - 'SPEED'
          - 'UNLUCK'
@@ -854,21 +1098,29 @@ races:
          - 'GENERIC_MOVEMENT_SPEED'
      nightPassiveGenericAttributesAmplifier:
          - 0.1
+     nightRacePassiveAttributesLevel:
+         - 0.0
+     executeCommandUponSwitching:
+         - 'null'
    Werewolf:
      displayName: '&7Werewolf'
      material: 'BOOK'
+     isSubRace: false
+     subRaceType: ''
+     treeSlot: 4
+     levelRequire: 0
      guiPage: 1
      slot: 30
      lore:
-         - '&8- - - - - &7Werewolf &8- - - - -'
+         - '&8----- &7Werewolf &8-----'
          - '&7Think you know what a werewolf is...'
          - '&7If you do not know... shame :I'
          - ' '
-         - '&5- - - - - Day Time Passive Effects - - - - -'
+         - '&5----- Day Time Passive Effects -----'
          - '&5Strength I'
          - '&5Speed I'
          - '&5Back luck I'
-         - '&5- - - - - Night Time Passive Effects - - - - -'
+         - '&5----- Night Time Passive Effects -----'
          - '&5Strength II'
          - '&5Speed II'
          - '&5Luck I'
@@ -884,6 +1136,8 @@ races:
          - 'GENERIC_MOVEMENT_SPEED'
      dayPassiveGenericAttributesAmplifier:
          - 0.1
+     dayRacePassiveAttributesLevel:
+         - 0.0
      nightPassivePotionEffects:
          - 'INCREASE_DAMAGE'
          - 'LUCK'
@@ -896,21 +1150,29 @@ races:
          - 'GENERIC_MOVEMENT_SPEED'
      nightPassiveGenericAttributesAmplifier:
          - 0.1
+     nightRacePassiveAttributesLevel:
+         - 0.0
+     executeCommandUponSwitching:
+         - 'null'
    Gremlin:
      displayName: '&fGremlin'
      material: 'BOOK'
+     isSubRace: false
+     subRaceType: ''
+     treeSlot: 4
+     levelRequire: 0
      guiPage: 1
      slot: 31
      lore:
-         - '&7- - - - - &fGremlin&7 - - - - -'
+         - '&7----- &fGremlin&7 -----'
          - '&fA mishievous creature that loves to'
          - '&fcause malfunctions in aircraft and machinery...'
          - '&fVery annoying creature'
          - ' '
-         - '&5- - - - - Day Time Passive Effects - - - - -'
+         - '&5----- Day Time Passive Effects -----'
          - '&5Speed II'
          - '&5Luck IV'
-         - '&5- - - - - Night Time Passive Effects - - - - -'
+         - '&5----- Night Time Passive Effects -----'
          - '&5Speed II'
          - '&5Luck IV'
      dayPassivePotionEffects:
@@ -923,6 +1185,8 @@ races:
          - 'GENERIC_MOVEMENT_SPEED'
      dayPassiveGenericAttributesAmplifier:
          - 0.1
+     dayRacePassiveAttributesLevel:
+         - 0.0
      nightPassivePotionEffects:
          - 'LUCK'
          - 'SPEED'
@@ -933,23 +1197,31 @@ races:
          - 'GENERIC_MOVEMENT_SPEED'
      nightPassiveGenericAttributesAmplifier:
          - 0.1
+     nightRacePassiveAttributesLevel:
+         - 0.0
+     executeCommandUponSwitching:
+         - 'null'
    Goblin:
      displayName: '&2Goblin'
      material: 'BOOK'
+     isSubRace: false
+     subRaceType: ''
+     treeSlot: 4
+     levelRequire: 0
      guiPage: 1
      slot: 32
      lore:
-         - '&2- - - - - &aGoblin&2- - - - -'
+         - '&2----- &aGoblin&2-----'
          - '&aA goblin already has terrible reputation...'
          - '&aMainly due to anime... but rightfully so '
          - '&aThey are extremely mischievous'
          - '&aEven more so than the Gremlin'
          - ' '
-         - '&5- - - - - Day Time Passive Effects - - - - -'
+         - '&5----- Day Time Passive Effects -----'
          - '&5Speed II'
          - '&5Reduced II hearts'
          - '&5Attack Speed IV'
-         - '&5- - - - - Night Time Passive Effects - - - - -'
+         - '&5----- Night Time Passive Effects -----'
          - '&5Speed II'
          - '&5Reduced II hearts'
          - '&5Attack Speed IV'
@@ -965,6 +1237,10 @@ races:
          - 0.1
          - 16.0
          - 4.5
+     dayRacePassiveAttributesLevel:
+         - 0.0
+         - 0.0
+         - 0.0
      nightPassivePotionEffects:
          - 'LUCK'
          - 'SPEED'
@@ -979,21 +1255,31 @@ races:
          - 0.1
          - 16.0
          - 4.5
+     nightRacePassiveAttributesLevel:
+         - 0.0
+         - 0.0
+         - 0.0
+     executeCommandUponSwitching:
+         - 'null'
    Gnome:
      displayName: '&bGnome'
      material: 'BOOK'
+     isSubRace: false
+     subRaceType: ''
+     treeSlot: 4
+     levelRequire: 0
      guiPage: 1
      slot: 33
      lore:
-         - '&2- - - - - &bGnome&2 - - - - -'
+         - '&2----- &bGnome&2 -----'
          - '&bYou have been...'
          - '&b&lGNOMED'
          - ' '
-         - '&5- - - - - Day Time Passive Effects - - - - -'
+         - '&5----- Day Time Passive Effects -----'
          - '&5Haste II'
          - '&5Reduced I hearts'
          - '&5Slowness I'
-         - '&5- - - - - Night Time Passive Effects - - - - -'
+         - '&5----- Night Time Passive Effects -----'
          - '&5Haste II'
          - '&5Reduced I hearts'
          - '&5Slowness I'
@@ -1009,6 +1295,9 @@ races:
      dayPassiveGenericAttributesAmplifier:
          - 0.1
          - 18.0
+     dayRacePassiveAttributesLevel:
+         - 0.0
+         - 0.0
      nightPassivePotionEffects:
          - 'SLOW'
          - 'FAST_DIGGING'
@@ -1021,21 +1310,30 @@ races:
      nightPassiveGenericAttributesAmplifier:
          - 0.1
          - 18.0
+     nightRacePassiveAttributesLevel:
+         - 0.0
+         - 0.0
+     executeCommandUponSwitching:
+         - 'null'
    Giants:
      displayName: '&7Giants'
      material: 'BOOK'
+     isSubRace: false
+     subRaceType: ''
+     treeSlot: 4
+     levelRequire: 0
      guiPage: 1
      slot: 34
      lore:
-         - '&8- - - - - &7Giants&8 - - - - -'
+         - '&8----- &7Giants&8 -----'
          - '&7A massive species... heavy hitting and slow'
          - '&7Even sent the dragonborn flying...'
          - ' '
-         - '&5- - - - - Day Time Passive Effects - - - - -'
+         - '&5----- Day Time Passive Effects -----'
          - '&5Strength III'
          - '&5Slowness II'
          - '&5Unluck I'
-         - '&5- - - - - Night Time Passive Effects - - - - -'
+         - '&5----- Night Time Passive Effects -----'
          - '&5Strength III'
          - '&5Slowness II'
          - '&5Unluck II'
@@ -1053,6 +1351,9 @@ races:
      dayPassiveGenericAttributesAmplifier:
          - 0.1
          - 18.0
+     dayRacePassiveAttributesLevel:
+         - 0.0
+         - 0.0
      nightPassivePotionEffects:
          - 'SLOW'
          - 'INCREASE_DAMAGE'
@@ -1067,20 +1368,29 @@ races:
      nightPassiveGenericAttributesAmplifier:
          - 0.1
          - 18.0
+     nightRacePassiveAttributesLevel:
+         - 0.0
+         - 0.0
+     executeCommandUponSwitching:
+         - 'null'
    Centaur:
      displayName: '&6Centaur'
      material: 'BOOK'
+     isSubRace: false
+     subRaceType: ''
+     treeSlot: 4
+     levelRequire: 0
      guiPage: 1
      slot: 37
      lore:
-         - '&6- - - - - &6Giants&6 - - - - -'
+         - '&6----- &6Giants&6 -----'
          - '&6Half human... half horse'
          - '&6Nothing could go wrong with that!'
          - ' '
-         - '&5- - - - - Day Time Passive Effects - - - - -'
+         - '&5----- Day Time Passive Effects -----'
          - '&5Speed III'
          - '&5Jump I'
-         - '&5- - - - - Night Time Passive Effects - - - - -'
+         - '&5----- Night Time Passive Effects -----'
          - '&5Speed III'
          - '&5Jump I'
      dayPassivePotionEffects:
@@ -1093,6 +1403,8 @@ races:
          - 'GENERIC_MOVEMENT_SPEED'
      dayPassiveGenericAttributesAmplifier:
          - 0.1
+     dayRacePassiveAttributesLevel:
+         - 0.0
      nightPassivePotionEffects:
          - 'SPEED'
          - 'JUMP'
@@ -1103,23 +1415,31 @@ races:
          - 'GENERIC_MOVEMENT_SPEED'
      nightPassiveGenericAttributesAmplifier:
          - 0.1
+     nightRacePassiveAttributesLevel:
+         - 0.0
+     executeCommandUponSwitching:
+         - 'null'
    Fairy:
      displayName: '&3Fairy'
      material: 'BOOK'
+     isSubRace: false
+     subRaceType: ''
+     treeSlot: 4
+     levelRequire: 0
      guiPage: 1
      slot: 38
      lore:
-         - '&3- - - - - &3Fairy&3 - - - - -'
+         - '&3----- &3Fairy&3 -----'
          - '&3A magical creature... fast yet weak'
          - '&3They have a human appearance.'
          - '&3But are MAGICAL... somewhat!'
          - ' '
-         - '&5- - - - - Day Time Passive Effects - - - - -'
+         - '&5----- Day Time Passive Effects -----'
          - '&5Slow falling I'
          - '&5Minus 4 hearts'
          - '&5Luck III'
          - '&5Speed IV'
-         - '&5- - - - - Night Time Passive Effects - - - - -'
+         - '&5----- Night Time Passive Effects -----'
          - '&5Slow falling I'
          - '&5Minus 4 hearts'
          - '&5Unluck II'
@@ -1138,6 +1458,9 @@ races:
      dayPassiveGenericAttributesAmplifier:
          - 0.1
          - 12.0
+     dayRacePassiveAttributesLevel:
+         - 0.0
+         - 0.0
      nightPassivePotionEffects:
          - 'SPEED'
          - 'UNLUCK'
@@ -1152,6 +1475,31 @@ races:
      nightPassiveGenericAttributesAmplifier:
          - 0.1
          - 12.0
+     nightRacePassiveAttributesLevel:
+         - 0.0
+         - 0.0
+     executeCommandUponSwitching:
+         - 'null'
+         
+         
+leveling:
+   
+   # max player level
+   maxLevel: 100
+   
+   # gain 1 xp if the previous location of the player was greater than the distance 
+   xpGain: 1
+   
+   # this is the distance number
+   distance: 10
+   
+   # every X amount of ticks, 20 ticks = 1 second, calculate distance
+   time: 1200
+   
+   # amount of xp needed times the level needed to go to the next level
+   xpPerLevel: 6
+   
+   
 # Messages
 # To change the cooldown time, the time is in the data.yml file
 cooldownMessage: '&4You still have a cooldown! {time} minutes remaining until you may choose another race!'
@@ -1159,10 +1507,22 @@ noPerm: '&4No Permission'
 invalidRace: '&4Invalid Race'
 listRaces: '&aKnown races are &2{races}'
 chosenRace: '&aYou have chosen the race &2{race}'
+switchUserRace: '&aSpecified players race is now {race}'
+invalidPlayer: '&aInvalid player'
 invalidArgs: '&4Invalid arguments, type /races help'
+levelup: '&aYou leveled up! Your new level is {level}'
+notRequiredLevel: '&4Your level is not high enough to select this race!'
+profile:
+   - '&a - - - &2Your user profile&a - - -'
+   - '&aRace: {race}'
+   - '&aLevel: {level}'
+   - '&aXP: {xp}/{xp-max}'
 help:
    - '&a - - - &2Mythical Races Help Menu&a - - -'
    - '&a/races choose [race]'
    - '&a/races list'
    - '&a/races info [race]'
    - '&a/races gui'
+   - '&a/races tree'
+   - '&a/races profile'
+   - '&a/races set {race} {player}'

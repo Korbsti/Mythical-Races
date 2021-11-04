@@ -1,8 +1,9 @@
 name: MythicalRaces
-version: 0.0.5
+version: 1.0.3
 description: A mythical races plugin
 author: Korbsti
 main: me.korbsti.mythicalraces.MythicalRaces
-api-version: 1.16
+softdepend: [PlaceholderAPI]
+api-version: 1.17
 commands:
    races:

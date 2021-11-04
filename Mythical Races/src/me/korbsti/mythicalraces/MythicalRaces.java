@@ -18,6 +18,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
+import me.korbsti.mythicalraces.bstats.Metrics;
 import me.korbsti.mythicalraces.commands.Commands;
 import me.korbsti.mythicalraces.configmanager.ConfigCreator;
 import me.korbsti.mythicalraces.configmanager.PlayerDataManager;
@@ -74,6 +75,10 @@ public class MythicalRaces extends JavaPlugin {
 	public HashMap<String, ArrayList<Double>> nightRacePassiveAttributesAmount = new HashMap<String, ArrayList<Double>>();
 	public HashMap<String, ArrayList<Double>> nightRacePassiveAttributesLevel = new HashMap<String, ArrayList<Double>>();
 	
+	//command executables
+	public HashMap<String, ArrayList<String>> raceCommandExecution = new HashMap<String, ArrayList<String>>();
+
+	
 	// Leveling
 	public int maxLevel;
 	public int xpGain;
@@ -111,6 +116,7 @@ public class MythicalRaces extends JavaPlugin {
 			nightRacePassivePotionEffectsAmplifier.put(str, new ArrayList<Integer>());
 			nightRacePassiveAttributesAmount.put(str, new ArrayList<Double>());
 			nightRacePassiveAttributesLevel.put(str, new ArrayList<Double>());
+			raceCommandExecution.put(str, new ArrayList<String>());
 			
 			for (Object obj : configYaml.getList("races." + str + ".dayPassivePotionEffects")) {
 				String potionEffect = obj.toString();
@@ -159,7 +165,6 @@ public class MythicalRaces extends JavaPlugin {
 					nightRacePassiveAttributes.get(str).add(Attribute.valueOf(obj.toString()));
 				}
 			}
-
 			
 			for (Object obj : configYaml.getList("races." + str + ".nightPassivePotionEffectsAmplifier")) {
 				String amplifier = obj.toString();
@@ -180,6 +185,9 @@ public class MythicalRaces extends JavaPlugin {
 					nightRacePassiveAttributesLevel.get(str).add(Double.parseDouble(amount));
 				}
 			}
+			for(Object obj : configYaml.getList("races." + str + ".executeCommandUponSwitching")) {
+				raceCommandExecution.get(str).add(obj.toString());
+			}
 			
 		}
 		for (int i = 0; i != races.size(); i++) {
@@ -198,6 +206,7 @@ public class MythicalRaces extends JavaPlugin {
 		distance = configYaml.getInt("leveling.distance");
 		time = configYaml.getInt("leveling.time");
 		xpPerLevel = configYaml.getInt("leveling.xpPerLevel");
+		cooldown = configYaml.getString("other.cooldown");
 		
 		PluginManager pm = Bukkit.getServer().getPluginManager();
 		pm.registerEvents(new Join(this), this);
@@ -216,7 +225,7 @@ public class MythicalRaces extends JavaPlugin {
 			new PAPI(this).register();
 		}
 		
-		cooldown = configYaml.getString("other.cooldown");
+		Metrics metrics = new Metrics(this, 12954);
 		
 		int timerCheckingPotionEffects = configYaml.getInt("other.timerCheckingPotionEffects");
 		
@@ -231,7 +240,7 @@ public class MythicalRaces extends JavaPlugin {
 			}
 			
 		}, 0, timerCheckingPotionEffects);
-		Bukkit.getScheduler().runTaskTimerAsynchronously(this, new Runnable() {
+		Bukkit.getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
 			
 			@Override
 			public void run() {
@@ -245,9 +254,11 @@ public class MythicalRaces extends JavaPlugin {
 			public void run() {
 				for (Player p : Bukkit.getOnlinePlayers()) {
 					if (playerLocation.get(p.getName()) != null) {
-						if (p.getLocation().distance(playerLocation.get(p.getName())) > distance) {
-							dataManager.setPlayerXP(p, dataManager.getPlayerXP(p) + xpGain);
-							
+						if (p.getLocation().getWorld() == playerLocation.get(p.getName()).getWorld()) {
+							if (p.getLocation().distance(playerLocation.get(p.getName())) > distance) {
+								dataManager.setPlayerXP(p, dataManager.getPlayerXP(p) + xpGain);
+								
+							}
 						}
 					}
 					playerLocation.put(p.getName(), p.getLocation());

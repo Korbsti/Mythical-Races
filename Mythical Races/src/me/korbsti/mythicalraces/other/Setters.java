@@ -28,6 +28,13 @@ public class Setters {
 			}
 		}
 		setEffects(p);
+		
+		for (String str : plugin.raceCommandExecution.get(race)) {
+			if (!str.equals("null")) {
+				Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(), str.replace("{player}", p.getName()));
+			}
+		}
+		
 	}
 	
 	public void setEffects(Player p) {
