@@ -5,6 +5,7 @@ import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
 import me.korbsti.mythicalraces.MythicalRaces;
@@ -28,13 +29,24 @@ public class Commands implements CommandExecutor {
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 		if ("races".equals(label)) {
-			if (!(sender instanceof Player)) {
-				sender.sendMessage("Player command only");
-				return false;
-			}
 			if (args.length == 0) {
 				sender.sendMessage(ChatColor.translateAlternateColorCodes('&', plugin.configYaml.getString(
 				        "invalidArgs")));
+				return true;
+			}
+			if ("reload".equalsIgnoreCase(args[0])) {
+				if (noPerm(sender, "mythicalraces.reload")) {
+					return true;
+				}
+				plugin.reloadConfig();
+				plugin.race.clear();
+				plugin.races.clear();
+				plugin.subRaces.clear();
+				plugin.subRaceNames.clear();
+				plugin.configYaml = YamlConfiguration.loadConfiguration(plugin.configFile);
+				plugin.dataYaml = YamlConfiguration.loadConfiguration(plugin.dataFile);
+				plugin.onStartup();
+				sender.sendMessage(ChatColor.translateAlternateColorCodes('&', plugin.configYaml.getString("reload")));
 				return true;
 			}
 			if ("set".equalsIgnoreCase(args[0]) && args.length == 3) {
@@ -46,7 +58,6 @@ public class Commands implements CommandExecutor {
 						Player p = Bukkit.getServer().getPlayer(args[2]);
 						if(p == null) {
 							sender.sendMessage(ChatColor.translateAlternateColorCodes('&', plugin.configYaml.getString("invalidPlayer")));
-
 							return true;
 						}
 						plugin.dataManager.setPlayerLevel(p, 1);
@@ -60,7 +71,10 @@ public class Commands implements CommandExecutor {
 				sender.sendMessage(ChatColor.translateAlternateColorCodes('&', plugin.configYaml.getString("invalidRace")));
 				return true;
 			}
-			
+			if (!(sender instanceof Player)) {
+				sender.sendMessage("Player command only");
+				return false;
+			}
 			if ("choose".equalsIgnoreCase(args[0]) && args.length == 2) {
 				for (String str : plugin.races) {
 					if (str.equalsIgnoreCase(args[1])) {
@@ -109,6 +123,7 @@ public class Commands implements CommandExecutor {
 				}
 				return true;
 			}
+			
 			if ("list".equalsIgnoreCase(args[0])) {
 				if (noPerm(sender, "mythicalraces.list.races")) {
 					return true;
@@ -152,11 +167,19 @@ public class Commands implements CommandExecutor {
 				}
 				return true;
 			}
+			if ("biome".equalsIgnoreCase(args[0])) {
+				if (noPerm(sender, "mythicalraces.biome")) {
+					return true;
+				}
+				sender.sendMessage(ChatColor.translateAlternateColorCodes('&', plugin.configYaml.getString("currentBiome").replace("{biome}", ((Player) sender).getLocation().getBlock().getBiome().toString())));
+				return true;
+			}
 			sender.sendMessage(ChatColor.translateAlternateColorCodes('&', plugin.configYaml.getString("invalidArgs")));
 			return false;
 		}
 		
 		return false;
-	}
 	
+	}
+
 }

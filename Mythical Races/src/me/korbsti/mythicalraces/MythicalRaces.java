@@ -10,6 +10,7 @@ import java.util.jar.Attributes;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -28,6 +29,7 @@ import me.korbsti.mythicalraces.other.GUI;
 import me.korbsti.mythicalraces.other.Setters;
 import me.korbsti.mythicalraces.other.TreeGUI;
 import me.korbsti.mythicalraces.papi.PAPI;
+import me.korbsti.mythicalraces.race.Race;
 import net.md_5.bungee.api.ChatColor;
 
 public class MythicalRaces extends JavaPlugin {
@@ -61,22 +63,8 @@ public class MythicalRaces extends JavaPlugin {
 	// GUI Number
 	public HashMap<String, Integer> guiNumber = new HashMap<String, Integer>();
 	
-	// races passive potion effects and attributes day time
-	public HashMap<String, ArrayList<PotionEffectType>> dayRacePassivePotionEffects = new HashMap<String, ArrayList<PotionEffectType>>();
-	public HashMap<String, ArrayList<Attribute>> dayRacePassiveAttributes = new HashMap<String, ArrayList<Attribute>>();
-	public HashMap<String, ArrayList<Integer>> dayRacePassivePotionEffectsAmplifier = new HashMap<String, ArrayList<Integer>>();
-	public HashMap<String, ArrayList<Double>> dayRacePassiveAttributesAmount = new HashMap<String, ArrayList<Double>>();
-	public HashMap<String, ArrayList<Double>> dayRacePassiveAttributesLevel = new HashMap<String, ArrayList<Double>>();
 	
-	// races passive potion effects and attributes night time
-	public HashMap<String, ArrayList<PotionEffectType>> nightRacePassivePotionEffects = new HashMap<String, ArrayList<PotionEffectType>>();
-	public HashMap<String, ArrayList<Attribute>> nightRacePassiveAttributes = new HashMap<String, ArrayList<Attribute>>();
-	public HashMap<String, ArrayList<Integer>> nightRacePassivePotionEffectsAmplifier = new HashMap<String, ArrayList<Integer>>();
-	public HashMap<String, ArrayList<Double>> nightRacePassiveAttributesAmount = new HashMap<String, ArrayList<Double>>();
-	public HashMap<String, ArrayList<Double>> nightRacePassiveAttributesLevel = new HashMap<String, ArrayList<Double>>();
-	
-	//command executables
-	public HashMap<String, ArrayList<String>> raceCommandExecution = new HashMap<String, ArrayList<String>>();
+	public HashMap<String, Race> race = new HashMap<String, Race>();
 
 	
 	// Leveling
@@ -93,6 +81,95 @@ public class MythicalRaces extends JavaPlugin {
 	
 	@Override
 	public void onEnable() {
+		onStartup();
+		if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
+			new PAPI(this).register();
+		}
+		Metrics metrics = new Metrics(this, 12954);
+		
+		int timerCheckingPotionEffects = configYaml.getInt("other.timerCheckingPotionEffects");
+		
+		Bukkit.getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
+			
+			@Override
+			public void run() {
+				for (Player p : Bukkit.getOnlinePlayers()) {
+					setter.setEffects(p);
+				}
+				
+			}
+			
+		}, 0, timerCheckingPotionEffects);
+		Bukkit.getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
+			
+			@Override
+			public void run() {
+				dataManager.reduceTime();
+				
+			}
+		}, 0, 20 * 60);
+		Bukkit.getScheduler().runTaskTimerAsynchronously(this, new Runnable() {
+			
+			@Override
+			public void run() {
+				for (Player p : Bukkit.getOnlinePlayers()) {
+					if (playerLocation.get(p.getName()) != null) {
+						if (p.getLocation().getWorld() == playerLocation.get(p.getName()).getWorld()) {
+							if (p.getLocation().distance(playerLocation.get(p.getName())) > distance) {
+								changeXP(p);
+								
+							}
+						}
+					}
+					playerLocation.put(p.getName(), p.getLocation());
+					
+					if (dataManager.getPlayerXP(p) >= xpPerLevel * dataManager.getPlayerLevel(p) && dataManager
+					        .getPlayerLevel(p) != maxLevel) {
+						changeLevel(p);
+					}
+					
+				}
+				
+			}
+			
+		}, 0, time);
+	}
+	
+	public void changeLevel(Player p) {
+		
+		Bukkit.getScheduler().runTask(this, new Runnable() {
+
+			@Override
+			public void run() {
+				dataManager.setPlayerLevel(p, dataManager.getPlayerLevel(p) + 1);
+				dataManager.setPlayerXP(p, 0);
+				p.sendMessage(ChatColor.translateAlternateColorCodes('&', configYaml.getString("levelup")
+				        .replace("{level}", "" + dataManager.getPlayerLevel(p))));
+				
+			}
+			
+		});
+	}
+	
+	public void changeXP(Player p) {
+		Bukkit.getScheduler().runTask(this, new Runnable() {
+
+			@Override
+			public void run() {
+				dataManager.setPlayerXP(p, dataManager.getPlayerXP(p) + xpGain);
+			}
+			
+		});
+	}
+	
+	
+	
+	@Override
+	public void onDisable() {
+		
+	}
+	
+	public void onStartup() {
 		configCreator.configCreator("config.yml", "data.yml");
 		dataManager.dataByUUID = configYaml.getBoolean("other.dataByUUID");
 		nightStart = configYaml.getInt("other.nightStart");
@@ -100,94 +177,150 @@ public class MythicalRaces extends JavaPlugin {
 		getCommand("races").setExecutor(new Commands(this));
 		for (String str : getConfig().getKeys(true)) {
 			String[] list = str.split("\\.");
-			if (list.length == 2 && str.startsWith("races"))
+			if (list.length == 2 && str.startsWith("races")) {
 				races.add(list[1]);
+			}
 		}
+		
 		// subRaces.forEach((key, value) -> );
 		
 		for (String str : races) {
-			dayRacePassivePotionEffects.put(str, new ArrayList<PotionEffectType>());
-			dayRacePassiveAttributes.put(str, new ArrayList<Attribute>());
-			dayRacePassivePotionEffectsAmplifier.put(str, new ArrayList<Integer>());
-			dayRacePassiveAttributesAmount.put(str, new ArrayList<Double>());
-			dayRacePassiveAttributesLevel.put(str, new ArrayList<Double>());
-			nightRacePassivePotionEffects.put(str, new ArrayList<PotionEffectType>());
-			nightRacePassiveAttributes.put(str, new ArrayList<Attribute>());
-			nightRacePassivePotionEffectsAmplifier.put(str, new ArrayList<Integer>());
-			nightRacePassiveAttributesAmount.put(str, new ArrayList<Double>());
-			nightRacePassiveAttributesLevel.put(str, new ArrayList<Double>());
-			raceCommandExecution.put(str, new ArrayList<String>());
+			String raceName = str;
+			ArrayList<PotionEffectType> dayRacePassivePotionEffects = new ArrayList<PotionEffectType>();
+	        ArrayList<Attribute> dayRacePassiveAttributes = new ArrayList<Attribute>();
+	        ArrayList<Integer> dayRacePassivePotionEffectsBase = new  ArrayList<Integer>();
+	        ArrayList<Double> dayRacePassiveAttributesAmount = new  ArrayList<Double>();
+	        ArrayList<Double> dayRacePassiveAttributesLevel = new  ArrayList<Double>();
+	        ArrayList<String> dayRaceDataPotion = new ArrayList<String>();
+	        ArrayList<String> dayRaceDataAttribute = new ArrayList<String>();
+
+			ArrayList<PotionEffectType> nightRacePassivePotionEffects = new ArrayList<PotionEffectType>();
+			ArrayList<Attribute> nightRacePassiveAttributes = new ArrayList<Attribute>();
+	        ArrayList<Integer> nightRacePassivePotionEffectsBase = new ArrayList<Integer>();
+	        ArrayList<Double> nightRacePassiveAttributesAmount = new  ArrayList<Double>();
+	        ArrayList<Double> nightRacePassiveAttributesLevel = new ArrayList<Double>();
+	        ArrayList<String> nightRaceDataPotion = new ArrayList<String>();
+	        ArrayList<String> nightRaceDataAttribute = new ArrayList<String>();
+
+	        ArrayList<String> raceCommandExecution = new  ArrayList<String>();
+			
 			
 			for (Object obj : configYaml.getList("races." + str + ".dayPassivePotionEffects")) {
 				String potionEffect = obj.toString();
 				if (!"null".equals(potionEffect)) {
-					dayRacePassivePotionEffects.get(str).add(PotionEffectType.getByName(potionEffect));
+					dayRacePassivePotionEffects.add(PotionEffectType.getByName(potionEffect));
 				}
 			}
 			
 			for (Object obj : configYaml.getList("races." + str + ".dayPassiveGenericAttributes")) {
 				String attribute = obj.toString();
 				if (!"null".equals(attribute)) {
-					dayRacePassiveAttributes.get(str).add(Attribute.valueOf(obj.toString()));
+					dayRacePassiveAttributes.add(Attribute.valueOf(obj.toString()));
 				}
 			}
 			
-			for (Object obj : configYaml.getList("races." + str + ".dayPassivePotionEffectsAmplifier")) {
-				String amplifier = obj.toString();
-				if (!"null".equals(amplifier)) {
-					dayRacePassivePotionEffectsAmplifier.get(str).add(Integer.valueOf(amplifier));
+			for (Object obj : configYaml.getList("races." + str + ".dayPassivePotionEffectsBase")) {
+				String Base = obj.toString();
+				if (!"null".equals(Base)) {
+					dayRacePassivePotionEffectsBase.add(Integer.valueOf(Base));
 				}
 			}
 			
-			for (Object obj : configYaml.getList("races." + str + ".dayPassiveGenericAttributesAmplifier")) {
+			for (Object obj : configYaml.getList("races." + str + ".dayPassiveGenericAttributesBase")) {
 				String amount = obj.toString();
 				if (!"null".equals(amount)) {
-					dayRacePassiveAttributesAmount.get(str).add(Double.parseDouble(amount));
+					dayRacePassiveAttributesAmount.add(Double.parseDouble(amount));
 				}
 			}
 			
 			for (Object obj : configYaml.getList("races." + str + ".dayRacePassiveAttributesLevel")) {
 				String amount = obj.toString();
 				if (!"null".equals(amount)) {
-					dayRacePassiveAttributesLevel.get(str).add(Double.parseDouble(amount));
+					dayRacePassiveAttributesLevel.add(Double.parseDouble(amount));
 				}
 			}
 			
+			
+			
+			for (Object obj : configYaml.getList("races." + str + ".dayRaceDataPotion")) {
+				String data = obj.toString();
+				if (!"null".equals(data)) {
+					dayRaceDataPotion.add(data);
+				}
+			}
+			
+			for (Object obj : configYaml.getList("races." + str + ".dayRaceDataAttribute")) {
+				String data = obj.toString();
+				if (!"null".equals(data)) {
+					dayRaceDataAttribute.add(data);
+				}
+			}
 			for (Object obj : configYaml.getList("races." + str + ".nightPassivePotionEffects")) {
 				String potionEffect = obj.toString();
 				if (!"null".equals(potionEffect)) {
-					nightRacePassivePotionEffects.get(str).add(PotionEffectType.getByName(potionEffect));
+					nightRacePassivePotionEffects.add(PotionEffectType.getByName(potionEffect));
 				}
 			}
 			for (Object obj : configYaml.getList("races." + str + ".nightPassiveGenericAttributes")) {
 				String attribute = obj.toString();
 				if (!"null".equals(attribute)) {
-					nightRacePassiveAttributes.get(str).add(Attribute.valueOf(obj.toString()));
+					nightRacePassiveAttributes.add(Attribute.valueOf(obj.toString()));
 				}
 			}
 			
-			for (Object obj : configYaml.getList("races." + str + ".nightPassivePotionEffectsAmplifier")) {
-				String amplifier = obj.toString();
-				if (!"null".equals(amplifier)) {
-					nightRacePassivePotionEffectsAmplifier.get(str).add(Integer.valueOf(amplifier));
+			for (Object obj : configYaml.getList("races." + str + ".nightPassivePotionEffectsBase")) {
+				String base = obj.toString();
+				if (!"null".equals(base)) {
+					nightRacePassivePotionEffectsBase.add(Integer.valueOf(base));
 				}
 			}
 			
-			for (Object obj : configYaml.getList("races." + str + ".nightPassiveGenericAttributesAmplifier")) {
+			for (Object obj : configYaml.getList("races." + str + ".nightPassiveGenericAttributesBase")) {
 				String amount = obj.toString();
 				if (!"null".equals(amount))
-					nightRacePassiveAttributesAmount.get(str).add(Double.parseDouble(amount));
+					nightRacePassiveAttributesAmount.add(Double.parseDouble(amount));
 			}
 			
 			for (Object obj : configYaml.getList("races." + str + ".nightRacePassiveAttributesLevel")) {
 				String amount = obj.toString();
 				if (!"null".equals(amount)) {
-					nightRacePassiveAttributesLevel.get(str).add(Double.parseDouble(amount));
+					nightRacePassiveAttributesLevel.add(Double.parseDouble(amount));
 				}
 			}
-			for(Object obj : configYaml.getList("races." + str + ".executeCommandUponSwitching")) {
-				raceCommandExecution.get(str).add(obj.toString());
+			
+			for (Object obj : configYaml.getList("races." + str + ".nightRaceDataPotion")) {
+				String data = obj.toString();
+				if (!"null".equals(data)) {
+					nightRaceDataPotion.add(data);
+				}
 			}
+			
+			for (Object obj : configYaml.getList("races." + str + ".nightRaceDataAttribute")) {
+				String data = obj.toString();
+				if (!"null".equals(data)) {
+					nightRaceDataAttribute.add(data);
+				}
+			}
+			
+			for(Object obj : configYaml.getList("races." + str + ".executeCommandUponSwitching")) {
+				raceCommandExecution.add(obj.toString());
+			}
+			race.put(raceName, new Race(raceName, dayRacePassivePotionEffects,
+			        dayRacePassiveAttributes,
+			        dayRacePassivePotionEffectsBase,
+			         dayRacePassiveAttributesAmount,
+			        dayRacePassiveAttributesLevel,
+			        dayRaceDataPotion,
+			        dayRaceDataAttribute,
+			       nightRacePassivePotionEffects,
+			         nightRacePassiveAttributes,
+			        nightRacePassivePotionEffectsBase,
+			         nightRacePassiveAttributesAmount,
+			        nightRacePassiveAttributesLevel,
+			        nightRaceDataPotion,
+			        nightRaceDataAttribute,
+			        raceCommandExecution));
+			
 			
 		}
 		for (int i = 0; i != races.size(); i++) {
@@ -221,64 +354,7 @@ public class MythicalRaces extends JavaPlugin {
 			guiNumber.put(¢.getName(), 1);
 			playerLocation.put(¢.getName(), ¢.getLocation());
 		}
-		if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
-			new PAPI(this).register();
-		}
-		
-		Metrics metrics = new Metrics(this, 12954);
-		
-		int timerCheckingPotionEffects = configYaml.getInt("other.timerCheckingPotionEffects");
-		
-		Bukkit.getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
-			
-			@Override
-			public void run() {
-				for (Player p : Bukkit.getOnlinePlayers()) {
-					setter.setEffects(p);
-				}
-				
-			}
-			
-		}, 0, timerCheckingPotionEffects);
-		Bukkit.getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
-			
-			@Override
-			public void run() {
-				dataManager.reduceTime();
-				
-			}
-		}, 0, 20 * 60);
-		Bukkit.getScheduler().runTaskTimerAsynchronously(this, new Runnable() {
-			
-			@Override
-			public void run() {
-				for (Player p : Bukkit.getOnlinePlayers()) {
-					if (playerLocation.get(p.getName()) != null) {
-						if (p.getLocation().getWorld() == playerLocation.get(p.getName()).getWorld()) {
-							if (p.getLocation().distance(playerLocation.get(p.getName())) > distance) {
-								dataManager.setPlayerXP(p, dataManager.getPlayerXP(p) + xpGain);
-								
-							}
-						}
-					}
-					playerLocation.put(p.getName(), p.getLocation());
-					if (dataManager.getPlayerXP(p) >= xpPerLevel * dataManager.getPlayerLevel(p) && dataManager
-					        .getPlayerLevel(p) != maxLevel) {
-						dataManager.setPlayerLevel(p, dataManager.getPlayerLevel(p) + 1);
-						dataManager.setPlayerXP(p, 0);
-						p.sendMessage(ChatColor.translateAlternateColorCodes('&', configYaml.getString("levelup")
-						        .replace("{level}", "" + dataManager.getPlayerLevel(p))));
-					}
-					
-				}
-				
-			}
-			
-		}, 0, time);
 	}
 	
-	@Override
-	public void onDisable() {
-		
-	}
+	
 }

@@ -64,8 +64,6 @@ public class PlayerDataManager {
 		try {
 			plugin.dataYaml.save(plugin.dataFile);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}
 	}
 	
@@ -121,8 +119,6 @@ public class PlayerDataManager {
 		try {
 			plugin.dataYaml.save(plugin.dataFile);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}
 		
 	}
@@ -157,7 +153,6 @@ public class PlayerDataManager {
 		try {
 			plugin.dataYaml.save(plugin.dataFile);
 		} catch (IOException e) {
-			e.printStackTrace();
 		}
 	}
 	
