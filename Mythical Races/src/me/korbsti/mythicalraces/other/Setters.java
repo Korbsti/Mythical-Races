@@ -63,27 +63,37 @@ public class Setters {
 					boolean greaterThan = y > Double.parseDouble(data[3]) && "<".equals(data[2]);
 					boolean greaterThanY = y > Double.parseDouble(data[3]) && ">".equals(data[2]);
 					boolean lowerThanY = y < Double.parseDouble(data[3]) && "<".equals(data[2]);
-					boolean inBiome = data[0].contains(p.getLocation().getBlock().getBiome().toString());
+					boolean inBiome = false;
+					String pInsideBiome = p.getLocation().getBlock().getBiome().toString();
+					for (String biome : data[0].split(",")) {
+						if (biome.equals(pInsideBiome)) {
+							inBiome = true;
+							break;
+						}
+					}
 					int elseAmp = Integer.parseInt(data[4]);
 					if (effe != null) {
 						if (p.hasPotionEffect(effe)) {
 							if (p.getPotionEffect(effe).getDuration() > 99999) {
-								int potionAmp =  p.getPotionEffect(effe).getAmplifier();
-								if (data[0].contains("ALL") && ((lowerThan || greaterThan) || (greaterThanY || lowerThanY && potionAmp != elseAmp))) {
+								int potionAmp = p.getPotionEffect(effe).getAmplifier();
+								if (data[0].equals("ALL") && ((lowerThan || greaterThan) || (greaterThanY
+								        || lowerThanY && potionAmp != elseAmp))) {
 									p.removePotionEffect(effe);
-								} else if (inBiome && ((lowerThan || greaterThan) || (greaterThanY || lowerThanY && potionAmp != elseAmp))) {
+								} else if (inBiome && ((lowerThan || greaterThan) || (greaterThanY || lowerThanY
+								        && potionAmp != elseAmp))) {
 									p.removePotionEffect(effe);
-								} else if (!inBiome && !data[0].contains("ALL")) {
+								} else if (!inBiome && !data[0].equals("ALL")) {
 									p.removePotionEffect(effe);
 								}
 								
 							}
 						}
 						if (!p.hasPotionEffect(effe)) {
-							if (data[0].contains("ALL") && (lowerThanY && !signR || greaterThanY && signR)) {
+							if (data[0].equals("ALL") && (lowerThanY && !signR || greaterThanY && signR)) {
 								p.addPotionEffect(new PotionEffect(effe, 9999999, plugin.race.get(str).nightRacePassivePotionEffectsBase.get(x)));
 							} else if (inBiome && (lowerThanY && !signR || greaterThanY && signR)) {
-								p.addPotionEffect(new PotionEffect(effe, 9999999, plugin.race.get(str).nightRacePassivePotionEffectsBase.get(x)));
+								p.addPotionEffect(new PotionEffect(effe, 9999999, plugin.race.get(
+								        str).nightRacePassivePotionEffectsBase.get(x)));
 							} else {
 								if (!"-1".equals(data[4])) {
 									p.addPotionEffect(new PotionEffect(effe, 9999999, elseAmp));
@@ -109,18 +119,28 @@ public class Setters {
 					boolean signR = ">".equals(data[2]);
 					boolean greaterThanY = y > Double.parseDouble(data[3]) && ">".equals(data[2]);
 					boolean lowerThanY = y < Double.parseDouble(data[3]) && "<".equals(data[2]);
-					boolean inBiome = data[0].contains(p.getLocation().getBlock().getBiome().toString());
+					boolean inBiome = false;
+					String pInsideBiome = p.getLocation().getBlock().getBiome().toString();
+					for (String biome : data[0].split(",")) {
+						if (biome.equals(pInsideBiome)) {
+							inBiome = true;
+							break;
+						}
+					}
 					if (att != null) {
-						    addedAmount = plugin.dataManager.getPlayerLevel(p) * plugin.race.get(str).nightRacePassiveAttributesLevel.get(x);
-							if (data[0].contains("ALL") && (lowerThanY && !signR || greaterThanY && signR)) {
-								p.getAttribute(att).setBaseValue(plugin.race.get(str).nightRacePassiveAttributesAmount.get(x) + addedAmount);
-							} else if (inBiome && (lowerThanY && !signR || greaterThanY && signR)) {
-								p.getAttribute(att).setBaseValue(plugin.race.get(str).nightRacePassiveAttributesAmount.get(x) + addedAmount);
-							} else {
-								if (!"-1".equals(data[4])) {
-									p.getAttribute(att).setBaseValue(Double.parseDouble(data[4]) + addedAmount);
-								}
+						addedAmount = plugin.dataManager.getPlayerLevel(p) * plugin.race.get(
+						        str).nightRacePassiveAttributesLevel.get(x);
+						if (data[0].equals("ALL") && (lowerThanY && !signR || greaterThanY && signR)) {
+							p.getAttribute(att).setBaseValue(plugin.race.get(str).nightRacePassiveAttributesAmount.get(
+							        x) + addedAmount);
+						} else if (inBiome && (lowerThanY && !signR || greaterThanY && signR)) {
+							p.getAttribute(att).setBaseValue(plugin.race.get(str).nightRacePassiveAttributesAmount.get(
+							        x) + addedAmount);
+						} else {
+							if (!"-1".equals(data[4])) {
+								p.getAttribute(att).setBaseValue(Double.parseDouble(data[4]) + addedAmount);
 							}
+						}
 						// 99999999
 					}
 					addedAmount = 0;
@@ -145,7 +165,7 @@ public class Setters {
 				}
 			}
 		}
-			
+		
 		if (plugin.race.get(str).dayRacePassivePotionEffects != null) {
 			int x = 0;
 			for (PotionEffectType effe : plugin.race.get(str).dayRacePassivePotionEffects) {
@@ -156,30 +176,43 @@ public class Setters {
 				boolean greaterThan = y > Double.parseDouble(data[3]) && "<".equals(data[2]);
 				boolean greaterThanY = y > Double.parseDouble(data[3]) && ">".equals(data[2]);
 				boolean lowerThanY = y < Double.parseDouble(data[3]) && "<".equals(data[2]);
-				boolean inBiome = data[0].contains(p.getLocation().getBlock().getBiome().toString());
+				boolean inBiome = false;
+				String pInsideBiome = p.getLocation().getBlock().getBiome().toString();
+				for (String biome : data[0].split(",")) {
+					if (biome.equals(pInsideBiome)) {
+						inBiome = true;
+						break;
+					}
+				}
 				int elseAmp = Integer.parseInt(data[4]);
 				if (effe != null) {
 					if (p.hasPotionEffect(effe)) {
 						if (p.getPotionEffect(effe).getDuration() < 99999) {
-							int potionAmp =  p.getPotionEffect(effe).getAmplifier();
-							if (data[0].contains("ALL") && ((lowerThan || greaterThan) || (greaterThanY || lowerThanY && potionAmp != elseAmp))) {
+							int potionAmp = p.getPotionEffect(effe).getAmplifier();
+							if (data[0].equals("ALL") && ((lowerThan || greaterThan) || (greaterThanY || lowerThanY
+							        && potionAmp != elseAmp))) {
 								p.removePotionEffect(effe);
-							} else if (inBiome && ((lowerThan || greaterThan) || (greaterThanY || lowerThanY && potionAmp != elseAmp))) {
+
+							} else if (inBiome && ((lowerThan || greaterThan) || (greaterThanY || lowerThanY
+							        && potionAmp != elseAmp))) {
 								p.removePotionEffect(effe);
-							} else if (!inBiome && !data[0].contains("ALL")) {
+
+							} else if (!inBiome && !data[0].equals("ALL")) {
 								p.removePotionEffect(effe);
 							}
 							
 						}
 					}
 					if (!p.hasPotionEffect(effe)) {
-						if (data[0].contains("ALL") && (lowerThanY && !signR || greaterThanY && signR)) {
+						if (data[0].equals("ALL") && (lowerThanY && !signR || greaterThanY && signR)) {
 							p.addPotionEffect(new PotionEffect(effe, 99999, plugin.race.get(str).dayRacePassivePotionEffectsBase.get(x)));
 						} else if (inBiome && (lowerThanY && !signR || greaterThanY && signR)) {
 							p.addPotionEffect(new PotionEffect(effe, 99999, plugin.race.get(str).dayRacePassivePotionEffectsBase.get(x)));
+
 						} else {
 							if (!"-1".equals(data[4])) {
 								p.addPotionEffect(new PotionEffect(effe, 99999, elseAmp));
+
 							}
 						}
 						
@@ -193,7 +226,6 @@ public class Setters {
 			
 		}
 		
-		
 		if (plugin.race.get(str).dayRacePassiveAttributes != null) {
 			double addedAmount = 0;
 			int x = 0;
@@ -203,17 +235,27 @@ public class Setters {
 				boolean signR = ">".equals(data[2]);
 				boolean greaterThanY = y > Double.parseDouble(data[3]) && ">".equals(data[2]);
 				boolean lowerThanY = y < Double.parseDouble(data[3]) && "<".equals(data[2]);
-				boolean inBiome = data[0].contains(p.getLocation().getBlock().getBiome().toString());
+				boolean inBiome = false;
+				String pInsideBiome = p.getLocation().getBlock().getBiome().toString();
+				for (String biome : data[0].split(",")) {
+					if (biome.equals(pInsideBiome)) {
+						inBiome = true;
+						break;
+					}
+				}
 				if (att != null) {
-					    addedAmount = plugin.dataManager.getPlayerLevel(p) * plugin.race.get(str).dayRacePassiveAttributesLevel.get(x);
-						if (data[0].contains("ALL") && (lowerThanY && !signR || greaterThanY && signR)) {
-							p.getAttribute(att).setBaseValue(plugin.race.get(str).dayRacePassiveAttributesAmount.get(x) + addedAmount);
-						} else if (inBiome && (lowerThanY && !signR || greaterThanY && signR)) {
-							p.getAttribute(att).setBaseValue(plugin.race.get(str).dayRacePassiveAttributesAmount.get(x) + addedAmount);
-						} else {
-								p.getAttribute(att).setBaseValue(Double.parseDouble(data[4]) + addedAmount);
-							
-						}
+					addedAmount = plugin.dataManager.getPlayerLevel(p) * plugin.race.get(
+					        str).dayRacePassiveAttributesLevel.get(x);
+					if (data[0].equals("ALL") && (lowerThanY && !signR || greaterThanY && signR)) {
+						p.getAttribute(att).setBaseValue(plugin.race.get(str).dayRacePassiveAttributesAmount.get(x)
+						        + addedAmount);
+					} else if (inBiome && (lowerThanY && !signR || greaterThanY && signR)) {
+						p.getAttribute(att).setBaseValue(plugin.race.get(str).dayRacePassiveAttributesAmount.get(x)
+						        + addedAmount);
+					} else {
+						p.getAttribute(att).setBaseValue(Double.parseDouble(data[4]) + addedAmount);
+						
+					}
 					// 99999999
 				}
 				addedAmount = 0;
