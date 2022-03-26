@@ -22,9 +22,8 @@ public class GUI {
 	}
 	
 	public void selectRaceGUI(Player p) {
-		p.closeInventory();
-		Inventory playerList = Bukkit.getServer().createInventory(p, plugin.configYaml.getInt("other.guiSlots"),
-		        plugin.configYaml.getString("other.guiName"));
+		if(p == null || p.getOpenInventory().getTitle().equals(plugin.configYaml.getString("other.guiName"))) return;
+		Inventory playerList = Bukkit.getServer().createInventory(p, plugin.configYaml.getInt("other.guiSlots"), plugin.configYaml.getString("other.guiName"));
 		//////////////////////////////////////////////
 		ItemStack playerHead = new ItemStack(Material.PLAYER_HEAD, 1);
 		SkullMeta playerHeadMeta = (SkullMeta) playerHead.getItemMeta();
@@ -74,8 +73,8 @@ public class GUI {
 		forward.setItemMeta(me);
 		playerList.setItem(plugin.configYaml.getInt("other.forwardClick"), forward);
 		playerList.setItem(plugin.configYaml.getInt("other.guiPlayerDisplayNumber"), playerHead);
-		
 		p.openInventory(playerList);
+	
 	}
 	
 }

@@ -1,7 +1,9 @@
 package me.korbsti.mythicalraces.other;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -27,6 +29,7 @@ public class Setters {
 				p.removePotionEffect(effect);
 			}
 		}
+		plugin.playersRace.put(p.getName(), plugin.race.get(race));
 		setEffects(p);
 		
 		for (String str : plugin.race.get(race).raceCommandExecution) {
@@ -37,7 +40,7 @@ public class Setters {
 		
 	}
 	
-	// - 'ALL Y > -100 -1'
+	
 	public void setEffects(Player p) {
 		long worldTime = p.getWorld().getTime();
 		if (worldTime < plugin.nightEnd && worldTime > plugin.nightStart) {
@@ -64,11 +67,110 @@ public class Setters {
 					boolean greaterThanY = y > Double.parseDouble(data[3]) && ">".equals(data[2]);
 					boolean lowerThanY = y < Double.parseDouble(data[3]) && "<".equals(data[2]);
 					boolean inBiome = false;
+					boolean nearProperBlock = false;
 					String pInsideBiome = p.getLocation().getBlock().getBiome().toString();
+					// ALL Y > -1000 -1 ALL GRASS
 					for (String biome : data[0].split(",")) {
 						if (biome.equals(pInsideBiome)) {
 							inBiome = true;
+							if("ALL".equals(data[6])) {
+								nearProperBlock = true;
+								break;
+							} 
+							
+							if ("ABOVE".equals(data[5])) {
+								Material above = p.getLocation().add(0, 2.1, 0).getBlock().getType();
+								for (String block : data[6].split(","))
+									if (above == Material.getMaterial(block)) {
+										nearProperBlock = true;
+										break;
+									}
+								
+							} else if ("MID".equals(data[5])) {
+								Material mid1 = p.getLocation().add(0, 0.1, 0).getBlock().getType();
+								Material mid2 = p.getLocation().add(0, 1.2, 0).getBlock().getType();
+								for (String block : data[6].split(","))
+									if (mid1 == Material.getMaterial(block) || mid2 == Material.getMaterial(block)) {
+										nearProperBlock = true;
+										break;
+									}
+								
+							} else if ("BELOW".equals(data[5])) {
+								Material below = p.getLocation().add(0, -0.5, 0).getBlock().getType();
+								Material below2 = p.getLocation().add(0, -1.5, 0).getBlock().getType();
+
+								for (String block : data[6].split(","))
+									if (below == Material.getMaterial(block) || below2 == Material.getMaterial(block)) {
+										nearProperBlock = true;
+										break;
+									}
+							} else if ("ALL".equals(data[5])) {
+								Material below = p.getLocation().add(0, -0.5, 0).getBlock().getType();
+								Material mid1 = p.getLocation().add(0, 0.1, 0).getBlock().getType();
+								Material mid2 = p.getLocation().add(0, 1.2, 0).getBlock().getType();
+								Material above = p.getLocation().add(0, 2.1, 0).getBlock().getType();
+								Material below2 = p.getLocation().add(0, -1.5, 0).getBlock().getType();
+
+								for (String block : data[6].split(",")) {
+									Material mat = Material.getMaterial(block);
+									if (below == mat || mid1 == mat || mid2 == mat || above == mat || below2 == mat) {
+										nearProperBlock = true;
+										break;
+									}
+								}
+								
+							}
 							break;
+						}
+					}
+					if ("ALL".equals(data[0])) {
+						
+						if (!"ALL".equals(data[6])) {
+							if ("ABOVE".equals(data[5])) {
+								Material above = p.getLocation().add(0, 2.1, 0).getBlock().getType();
+								for (String block : data[6].split(","))
+									if (above == Material.getMaterial(block)) {
+										nearProperBlock = true;
+										break;
+									}
+								
+							} else if ("MID".equals(data[5])) {
+								Material mid1 = p.getLocation().add(0, 0.1, 0).getBlock().getType();
+								Material mid2 = p.getLocation().add(0, 1.2, 0).getBlock().getType();
+								for (String block : data[6].split(","))
+									if (mid1 == Material.getMaterial(block) || mid2 == Material.getMaterial(block)) {
+										nearProperBlock = true;
+										break;
+									}
+								
+							} else if ("BELOW".equals(data[5])) {
+								Material below = p.getLocation().add(0, -0.5, 0).getBlock().getType();
+								Material below2 = p.getLocation().add(0, -1.5, 0).getBlock().getType();
+
+								for (String block : data[6].split(","))
+									if (below == Material.getMaterial(block) || below2 == Material.getMaterial(block)) {
+										nearProperBlock = true;
+										break;
+									}
+							} else if ("ALL".equals(data[5])) {
+								Material below = p.getLocation().add(0, -0.5, 0).getBlock().getType();
+								Material mid1 = p.getLocation().add(0, 0.1, 0).getBlock().getType();
+								Material mid2 = p.getLocation().add(0, 1.2, 0).getBlock().getType();
+								Material above = p.getLocation().add(0, 2.1, 0).getBlock().getType();
+								Material below2 = p.getLocation().add(0, -1.5, 0).getBlock().getType();
+
+								for (String block : data[6].split(",")) {
+									Material mat = Material.getMaterial(block);
+									if (below == mat || mid1 == mat || mid2 == mat || above == mat || below2 == mat) {
+										nearProperBlock = true;
+										break;
+									}
+								}
+								
+							}
+						} else {
+							nearProperBlock = true;
+							
 						}
 					}
 					int elseAmp = Integer.parseInt(data[4]);
@@ -76,25 +178,26 @@ public class Setters {
 						if (p.hasPotionEffect(effe)) {
 							if (p.getPotionEffect(effe).getDuration() > 99999) {
 								int potionAmp = p.getPotionEffect(effe).getAmplifier();
-								if (data[0].equals("ALL") && ((lowerThan || greaterThan) || (greaterThanY
+								if (data[0].equals("ALL") && !nearProperBlock && ((lowerThan || greaterThan) || (greaterThanY || lowerThanY && potionAmp != elseAmp))) {
+									p.removePotionEffect(effe);
+								} else if (inBiome && nearProperBlock && ((lowerThan || greaterThan) || (greaterThanY
 								        || lowerThanY && potionAmp != elseAmp))) {
 									p.removePotionEffect(effe);
-								} else if (inBiome && ((lowerThan || greaterThan) || (greaterThanY || lowerThanY
-								        && potionAmp != elseAmp))) {
-									p.removePotionEffect(effe);
-								} else if (!inBiome && !data[0].equals("ALL")) {
+								} else if (!inBiome && !data[0].equals("ALL") || (inBiome && !nearProperBlock)) {
 									p.removePotionEffect(effe);
 								}
 								
 							}
 						}
 						if (!p.hasPotionEffect(effe)) {
-							if (data[0].equals("ALL") && (lowerThanY && !signR || greaterThanY && signR)) {
-								p.addPotionEffect(new PotionEffect(effe, 9999999, plugin.race.get(str).nightRacePassivePotionEffectsBase.get(x)));
-							} else if (inBiome && (lowerThanY && !signR || greaterThanY && signR)) {
+							if (data[0].equals("ALL") && nearProperBlock && (lowerThanY && !signR || greaterThanY
+							        && signR)) {
 								p.addPotionEffect(new PotionEffect(effe, 9999999, plugin.race.get(
 								        str).nightRacePassivePotionEffectsBase.get(x)));
-							} else {
+							} else if (inBiome && nearProperBlock && (lowerThanY && !signR || greaterThanY && signR)) {
+								p.addPotionEffect(new PotionEffect(effe, 9999999, plugin.race.get(
+								        str).nightRacePassivePotionEffectsBase.get(x)));
+							} else { 
 								if (!"-1".equals(data[4])) {
 									p.addPotionEffect(new PotionEffect(effe, 9999999, elseAmp));
 								}
@@ -120,22 +223,116 @@ public class Setters {
 					boolean greaterThanY = y > Double.parseDouble(data[3]) && ">".equals(data[2]);
 					boolean lowerThanY = y < Double.parseDouble(data[3]) && "<".equals(data[2]);
 					boolean inBiome = false;
+					boolean nearProperBlock = false;
 					String pInsideBiome = p.getLocation().getBlock().getBiome().toString();
+					// ALL Y > -1000 -1 ALL GRASS
 					for (String biome : data[0].split(",")) {
 						if (biome.equals(pInsideBiome)) {
 							inBiome = true;
+							if("ALL".equals(data[6])) {
+								nearProperBlock = true;
+								break;
+							} 
+							
+							if ("ABOVE".equals(data[5])) {
+								Material above = p.getLocation().add(0, 2.1, 0).getBlock().getType();
+								for (String block : data[6].split(","))
+									if (above == Material.getMaterial(block)) {
+										nearProperBlock = true;
+										break;
+									}
+								
+							} else if ("MID".equals(data[5])) {
+								Material mid1 = p.getLocation().add(0, 0.1, 0).getBlock().getType();
+								Material mid2 = p.getLocation().add(0, 1.2, 0).getBlock().getType();
+								for (String block : data[6].split(","))
+									if (mid1 == Material.getMaterial(block) || mid2 == Material.getMaterial(block)) {
+										nearProperBlock = true;
+										break;
+									}
+								
+							} else if ("BELOW".equals(data[5])) {
+								Material below = p.getLocation().add(0, -0.5, 0).getBlock().getType();
+								Material below2 = p.getLocation().add(0, -1.5, 0).getBlock().getType();
+
+								for (String block : data[6].split(","))
+									if (below == Material.getMaterial(block) || below2 == Material.getMaterial(block)) {
+										nearProperBlock = true;
+										break;
+									}
+							} else if ("ALL".equals(data[5])) {
+								Material below = p.getLocation().add(0, -0.5, 0).getBlock().getType();
+								Material mid1 = p.getLocation().add(0, 0.1, 0).getBlock().getType();
+								Material mid2 = p.getLocation().add(0, 1.2, 0).getBlock().getType();
+								Material above = p.getLocation().add(0, 2.1, 0).getBlock().getType();
+								for (String block : data[6].split(",")) {
+									Material mat = Material.getMaterial(block);
+									if (below == mat || mid1 == mat || mid2 == mat || above == mat) {
+										nearProperBlock = true;
+										break;
+									}
+								}
+								
+							}
 							break;
 						}
 					}
+					if ("ALL".equals(data[0])) {
+						
+						if (!"ALL".equals(data[6])) {
+							if ("ABOVE".equals(data[5])) {
+								Material above = p.getLocation().add(0, 2.1, 0).getBlock().getType();
+								for (String block : data[6].split(","))
+									if (above == Material.getMaterial(block)) {
+										nearProperBlock = true;
+										break;
+									}
+								
+							} else if ("MID".equals(data[5])) {
+								Material mid1 = p.getLocation().add(0, 0.1, 0).getBlock().getType();
+								Material mid2 = p.getLocation().add(0, 1.2, 0).getBlock().getType();
+								for (String block : data[6].split(","))
+									if (mid1 == Material.getMaterial(block) || mid2 == Material.getMaterial(block)) {
+										nearProperBlock = true;
+										break;
+									}
+								
+							} else if ("BELOW".equals(data[5])) {
+								Material below = p.getLocation().add(0, -0.5, 0).getBlock().getType();
+								Material below2 = p.getLocation().add(0, -1.5, 0).getBlock().getType();
+
+								for (String block : data[6].split(","))
+									if (below == Material.getMaterial(block) || below2 == Material.getMaterial(block)) {
+										nearProperBlock = true;
+										break;
+									}
+							} else if ("ALL".equals(data[5])) {
+								Material below = p.getLocation().add(0, -0.5, 0).getBlock().getType();
+								Material mid1 = p.getLocation().add(0, 0.1, 0).getBlock().getType();
+								Material mid2 = p.getLocation().add(0, 1.2, 0).getBlock().getType();
+								Material above = p.getLocation().add(0, 2.1, 0).getBlock().getType();
+								Material below2 = p.getLocation().add(0, -1.5, 0).getBlock().getType();
+
+								for (String block : data[6].split(",")) {
+									Material mat = Material.getMaterial(block);
+									if (below == mat || mid1 == mat || mid2 == mat || above == mat || below2 == mat) {
+										nearProperBlock = true;
+										break;
+									}
+								}
+								
+							}
+						} else {
+							nearProperBlock = true;
+							
+						}
+					}
 					if (att != null) {
-						addedAmount = plugin.dataManager.getPlayerLevel(p) * plugin.race.get(
-						        str).nightRacePassiveAttributesLevel.get(x);
-						if (data[0].equals("ALL") && (lowerThanY && !signR || greaterThanY && signR)) {
-							p.getAttribute(att).setBaseValue(plugin.race.get(str).nightRacePassiveAttributesAmount.get(
-							        x) + addedAmount);
-						} else if (inBiome && (lowerThanY && !signR || greaterThanY && signR)) {
-							p.getAttribute(att).setBaseValue(plugin.race.get(str).nightRacePassiveAttributesAmount.get(
-							        x) + addedAmount);
+						addedAmount = plugin.dataManager.getPlayerLevel(p) * plugin.race.get(str).nightRacePassiveAttributesLevel.get(x);
+						if (data[0].equals("ALL") && nearProperBlock && (lowerThanY && !signR || greaterThanY && signR)) {
+							p.getAttribute(att).setBaseValue(plugin.race.get(str).nightRacePassiveAttributesAmount.get(x) + addedAmount);
+						} else if (inBiome && nearProperBlock &&(lowerThanY && !signR || greaterThanY && signR)) {
+							p.getAttribute(att).setBaseValue(plugin.race.get(str).nightRacePassiveAttributesAmount.get(x) + addedAmount);
 						} else {
 							if (!"-1".equals(data[4])) {
 								p.getAttribute(att).setBaseValue(Double.parseDouble(data[4]) + addedAmount);
@@ -177,11 +374,109 @@ public class Setters {
 				boolean greaterThanY = y > Double.parseDouble(data[3]) && ">".equals(data[2]);
 				boolean lowerThanY = y < Double.parseDouble(data[3]) && "<".equals(data[2]);
 				boolean inBiome = false;
+				boolean nearProperBlock = false;
 				String pInsideBiome = p.getLocation().getBlock().getBiome().toString();
+				// ALL Y > -1000 -1 ALL GRASS
 				for (String biome : data[0].split(",")) {
 					if (biome.equals(pInsideBiome)) {
 						inBiome = true;
+						if("ALL".equals(data[6])) {
+							nearProperBlock = true;
+							break;
+						} 
+						
+						if ("ABOVE".equals(data[5])) {
+							Material above = p.getLocation().add(0, 2.1, 0).getBlock().getType();
+							for (String block : data[6].split(","))
+								if (above == Material.getMaterial(block)) {
+									nearProperBlock = true;
+									break;
+								}
+							
+						} else if ("MID".equals(data[5])) {
+							Material mid1 = p.getLocation().add(0, 0.1, 0).getBlock().getType();
+							Material mid2 = p.getLocation().add(0, 1.2, 0).getBlock().getType();
+							for (String block : data[6].split(","))
+								if (mid1 == Material.getMaterial(block) || mid2 == Material.getMaterial(block)) {
+									nearProperBlock = true;
+									break;
+								}
+							
+						} else if ("BELOW".equals(data[5])) {
+							Material below = p.getLocation().add(0, -0.5, 0).getBlock().getType();
+							
+							for (String block : data[6].split(","))
+								if (below == Material.getMaterial(block)) {
+									nearProperBlock = true;
+									break;
+								}
+						} else if ("ALL".equals(data[5])) {
+							Material below = p.getLocation().add(0, -0.5, 0).getBlock().getType();
+							Material mid1 = p.getLocation().add(0, 0.1, 0).getBlock().getType();
+							Material mid2 = p.getLocation().add(0, 1.2, 0).getBlock().getType();
+							Material above = p.getLocation().add(0, 2.1, 0).getBlock().getType();
+							Material below2 = p.getLocation().add(0, -1.5, 0).getBlock().getType();
+
+							for (String block : data[6].split(",")) {
+								Material mat = Material.getMaterial(block);
+								if (below == mat || mid1 == mat || mid2 == mat || above == mat || below2 == mat) {
+									nearProperBlock = true;
+									break;
+								}
+							}
+							
+						}
 						break;
+					}
+				}
+				if ("ALL".equals(data[0])) {
+					
+					if (!"ALL".equals(data[6])) {
+						if ("ABOVE".equals(data[5])) {
+							Material above = p.getLocation().add(0, 2.1, 0).getBlock().getType();
+							for (String block : data[6].split(","))
+								if (above == Material.getMaterial(block)) {
+									nearProperBlock = true;
+									break;
+								}
+							
+						} else if ("MID".equals(data[5])) {
+							Material mid1 = p.getLocation().add(0, 0.1, 0).getBlock().getType();
+							Material mid2 = p.getLocation().add(0, 1.2, 0).getBlock().getType();
+							for (String block : data[6].split(","))
+								if (mid1 == Material.getMaterial(block) || mid2 == Material.getMaterial(block)) {
+									nearProperBlock = true;
+									break;
+								}
+							
+						} else if ("BELOW".equals(data[5])) {
+							Material below = p.getLocation().add(0, -0.5, 0).getBlock().getType();
+							Material below2 = p.getLocation().add(0, -1.5, 0).getBlock().getType();
+
+							for (String block : data[6].split(","))
+								if (below == Material.getMaterial(block) || below2 == Material.getMaterial(block)) {
+									nearProperBlock = true;
+									break;
+								}
+						} else if ("ALL".equals(data[5])) {
+							Material below = p.getLocation().add(0, -0.5, 0).getBlock().getType();
+							Material mid1 = p.getLocation().add(0, 0.1, 0).getBlock().getType();
+							Material mid2 = p.getLocation().add(0, 1.2, 0).getBlock().getType();
+							Material above = p.getLocation().add(0, 2.1, 0).getBlock().getType();
+							Material below2 = p.getLocation().add(0, -1.5, 0).getBlock().getType();
+
+							for (String block : data[6].split(",")) {
+								Material mat = Material.getMaterial(block);
+								if (below == mat || mid1 == mat || mid2 == mat || above == mat || below2 == mat) {
+									nearProperBlock = true;
+									break;
+								}
+							}
+							
+						}
+					} else {
+						nearProperBlock = true;
+						
 					}
 				}
 				int elseAmp = Integer.parseInt(data[4]);
@@ -189,30 +484,32 @@ public class Setters {
 					if (p.hasPotionEffect(effe)) {
 						if (p.getPotionEffect(effe).getDuration() < 99999) {
 							int potionAmp = p.getPotionEffect(effe).getAmplifier();
-							if (data[0].equals("ALL") && ((lowerThan || greaterThan) || (greaterThanY || lowerThanY
+							if (data[0].equals("ALL")&& !nearProperBlock && ((lowerThan || greaterThan) || (greaterThanY || lowerThanY
 							        && potionAmp != elseAmp))) {
 								p.removePotionEffect(effe);
-
-							} else if (inBiome && ((lowerThan || greaterThan) || (greaterThanY || lowerThanY
+								
+							} else if (inBiome && nearProperBlock && ((lowerThan || greaterThan) || (greaterThanY || lowerThanY
 							        && potionAmp != elseAmp))) {
 								p.removePotionEffect(effe);
-
-							} else if (!inBiome && !data[0].equals("ALL")) {
+								
+							} else if (!inBiome && !data[0].equals("ALL") || (inBiome && !nearProperBlock)) {
 								p.removePotionEffect(effe);
 							}
 							
 						}
 					}
 					if (!p.hasPotionEffect(effe)) {
-						if (data[0].equals("ALL") && (lowerThanY && !signR || greaterThanY && signR)) {
-							p.addPotionEffect(new PotionEffect(effe, 99999, plugin.race.get(str).dayRacePassivePotionEffectsBase.get(x)));
-						} else if (inBiome && (lowerThanY && !signR || greaterThanY && signR)) {
-							p.addPotionEffect(new PotionEffect(effe, 99999, plugin.race.get(str).dayRacePassivePotionEffectsBase.get(x)));
-
+						if (data[0].equals("ALL") && nearProperBlock && (lowerThanY && !signR || greaterThanY && signR)) {
+							p.addPotionEffect(new PotionEffect(effe, 99999, plugin.race.get(
+							        str).dayRacePassivePotionEffectsBase.get(x)));
+						} else if (inBiome && nearProperBlock && (lowerThanY && !signR || greaterThanY && signR)) {
+							p.addPotionEffect(new PotionEffect(effe, 99999, plugin.race.get(
+							        str).dayRacePassivePotionEffectsBase.get(x)));
+							
 						} else {
 							if (!"-1".equals(data[4])) {
 								p.addPotionEffect(new PotionEffect(effe, 99999, elseAmp));
-
+								
 							}
 						}
 						
@@ -236,20 +533,118 @@ public class Setters {
 				boolean greaterThanY = y > Double.parseDouble(data[3]) && ">".equals(data[2]);
 				boolean lowerThanY = y < Double.parseDouble(data[3]) && "<".equals(data[2]);
 				boolean inBiome = false;
+				boolean nearProperBlock = false;
 				String pInsideBiome = p.getLocation().getBlock().getBiome().toString();
+				// ALL Y > -1000 -1 ALL GRASS
 				for (String biome : data[0].split(",")) {
 					if (biome.equals(pInsideBiome)) {
 						inBiome = true;
+						if("ALL".equals(data[6])) {
+							nearProperBlock = true;
+							break;
+						} 
+						
+						if ("ABOVE".equals(data[5])) {
+							Material above = p.getLocation().add(0, 2.1, 0).getBlock().getType();
+							for (String block : data[6].split(","))
+								if (above == Material.getMaterial(block)) {
+									nearProperBlock = true;
+									break;
+								}
+							
+						} else if ("MID".equals(data[5])) {
+							Material mid1 = p.getLocation().add(0, 0.1, 0).getBlock().getType();
+							Material mid2 = p.getLocation().add(0, 1.2, 0).getBlock().getType();
+							for (String block : data[6].split(","))
+								if (mid1 == Material.getMaterial(block) || mid2 == Material.getMaterial(block)) {
+									nearProperBlock = true;
+									break;
+								}
+							
+						} else if ("BELOW".equals(data[5])) {
+							Material below = p.getLocation().add(0, -0.5, 0).getBlock().getType();
+							
+							for (String block : data[6].split(","))
+								if (below == Material.getMaterial(block)) {
+									nearProperBlock = true;
+									break;
+								}
+						} else if ("ALL".equals(data[5])) {
+							Material below = p.getLocation().add(0, -0.5, 0).getBlock().getType();
+							Material mid1 = p.getLocation().add(0, 0.1, 0).getBlock().getType();
+							Material mid2 = p.getLocation().add(0, 1.2, 0).getBlock().getType();
+							Material above = p.getLocation().add(0, 2.1, 0).getBlock().getType();
+							Material below2 = p.getLocation().add(0, -1.5, 0).getBlock().getType();
+
+							for (String block : data[6].split(",")) {
+								Material mat = Material.getMaterial(block);
+								if (below == mat || mid1 == mat || mid2 == mat || above == mat || below2 == mat) {
+									nearProperBlock = true;
+									break;
+								}
+							}
+							
+						}
 						break;
+					}
+				}
+				if ("ALL".equals(data[0])) {
+					
+					if (!"ALL".equals(data[6])) {
+						if ("ABOVE".equals(data[5])) {
+							Material above = p.getLocation().add(0, 2.1, 0).getBlock().getType();
+							for (String block : data[6].split(","))
+								if (above == Material.getMaterial(block)) {
+									nearProperBlock = true;
+									break;
+								}
+							
+						} else if ("MID".equals(data[5])) {
+							Material mid1 = p.getLocation().add(0, 0.1, 0).getBlock().getType();
+							Material mid2 = p.getLocation().add(0, 1.2, 0).getBlock().getType();
+							for (String block : data[6].split(","))
+								if (mid1 == Material.getMaterial(block) || mid2 == Material.getMaterial(block)) {
+									nearProperBlock = true;
+									break;
+								}
+							
+						} else if ("BELOW".equals(data[5])) {
+							Material below = p.getLocation().add(0, -0.5, 0).getBlock().getType();
+							Material below2 = p.getLocation().add(0, -1.5, 0).getBlock().getType();
+
+							for (String block : data[6].split(","))
+								if (below == Material.getMaterial(block) || below2 == Material.getMaterial(block)) {
+									nearProperBlock = true;
+									break;
+								}
+						} else if ("ALL".equals(data[5])) {
+							Material below = p.getLocation().add(0, -0.5, 0).getBlock().getType();
+							Material mid1 = p.getLocation().add(0, 0.1, 0).getBlock().getType();
+							Material mid2 = p.getLocation().add(0, 1.2, 0).getBlock().getType();
+							Material above = p.getLocation().add(0, 2.1, 0).getBlock().getType();
+							Material below2 = p.getLocation().add(0, -1.5, 0).getBlock().getType();
+
+							for (String block : data[6].split(",")) {
+								Material mat = Material.getMaterial(block);
+								if (below == mat || mid1 == mat || mid2 == mat || above == mat || below2 == mat) {
+									nearProperBlock = true;
+									break;
+								}
+							}
+							
+						}
+					} else {
+						nearProperBlock = true;
+						
 					}
 				}
 				if (att != null) {
 					addedAmount = plugin.dataManager.getPlayerLevel(p) * plugin.race.get(
 					        str).dayRacePassiveAttributesLevel.get(x);
-					if (data[0].equals("ALL") && (lowerThanY && !signR || greaterThanY && signR)) {
+					if (data[0].equals("ALL")&& nearProperBlock && (lowerThanY && !signR || greaterThanY && signR)) {
 						p.getAttribute(att).setBaseValue(plugin.race.get(str).dayRacePassiveAttributesAmount.get(x)
 						        + addedAmount);
-					} else if (inBiome && (lowerThanY && !signR || greaterThanY && signR)) {
+					} else if (inBiome && nearProperBlock && (lowerThanY && !signR || greaterThanY && signR)) {
 						p.getAttribute(att).setBaseValue(plugin.race.get(str).dayRacePassiveAttributesAmount.get(x)
 						        + addedAmount);
 					} else {

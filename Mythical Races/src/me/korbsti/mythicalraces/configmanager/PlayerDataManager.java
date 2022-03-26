@@ -25,16 +25,57 @@ public class PlayerDataManager {
 	}
 	
 	public void checkIfUnknown(Player p) {
-		if (dataByUUID && plugin.dataYaml.getString(p.getUniqueId().toString()) == null)
+		if (dataByUUID && plugin.dataYaml.getString(p.getUniqueId().toString()) == null) {
 			plugin.dataYaml.set(p.getUniqueId().toString() + ".race", plugin.configYaml.getString("other.defaultRace"));
-		if (!dataByUUID && plugin.dataYaml.getString(p.getName()) == null)
-			plugin.dataYaml.set(p.getName() + ".race", plugin.configYaml.getString("other.defaultRace"));
-		
+		}
+		if (dataByUUID || plugin.dataYaml.getString(p.getName()) != null)
+			return;
+		plugin.dataYaml.set(p.getName() + ".race", plugin.configYaml.getString("other.defaultRace"));
 		try {
 			plugin.dataYaml.save(plugin.dataFile);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public void checkIfChosenRace(Player p) {
+		if (dataByUUID && plugin.dataYaml.getString(p.getUniqueId().toString() + ".forceRace") == null) {
+			plugin.dataYaml.set(p.getUniqueId().toString() + ".forceRace", true);
+			plugin.forceGUI.put(p.getName(), true);
+
+		}
+		if (!dataByUUID && plugin.dataYaml.getString(p.getName() + ".forceRace") == null) {
+			plugin.dataYaml.set(p.getName() + ".forceRace", true);
+			plugin.forceGUI.put(p.getName(), true);
+
+		}
+		try {
+			plugin.dataYaml.save(plugin.dataFile);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+	}
+	
+	public void setChosenRace(Player p, boolean chosenRace) {
+		if (dataByUUID)
+			plugin.dataYaml.set(p.getUniqueId().toString() + ".forceRace", chosenRace);
+		if (!dataByUUID)
+			plugin.dataYaml.set(p.getName() + ".forceRace", chosenRace);
+		plugin.forceGUI.put(p.getName(), chosenRace);
+		try {
+			plugin.dataYaml.save(plugin.dataFile);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public boolean getChosenRace(Player p) {
+		if (dataByUUID)
+			return plugin.dataYaml.getBoolean(p.getUniqueId().toString() + ".forceRace");
+		if (!dataByUUID)
+			return plugin.dataYaml.getBoolean(p.getName() + ".forceRace");
+		return false;
 	}
 	
 	public ArrayList<String> returnUserSubRace(Player p) {
@@ -46,6 +87,8 @@ public class PlayerDataManager {
 			plugin.dataYaml.set(p.getUniqueId().toString() + ".race", race);
 		if (!dataByUUID)
 			plugin.dataYaml.set(p.getName() + ".race", race);
+		plugin.playersRace.put(p.getName(), plugin.race.get(race));
+		plugin.dataManager.setChosenRace(p, false);
 		try {
 			plugin.dataYaml.save(plugin.dataFile);
 		} catch (Exception e) {

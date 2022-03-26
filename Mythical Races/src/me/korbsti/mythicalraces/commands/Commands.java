@@ -9,6 +9,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
 import me.korbsti.mythicalraces.MythicalRaces;
+import me.korbsti.mythicalraces.race.Race;
 import net.md_5.bungee.api.ChatColor;
 
 public class Commands implements CommandExecutor {
@@ -114,12 +115,12 @@ public class Commands implements CommandExecutor {
 				if (noPerm(sender, "mythicalraces.profile")) {
 					return true;
 				}
-				
+				Race ras = plugin.race.get(p.getName());
 				for (Object obj : plugin.configYaml.getList("profile")) {
 					
 					sender.sendMessage(ChatColor.translateAlternateColorCodes('&', String.valueOf(obj).replace("{race}",
 					        plugin.dataManager.getRace(p)).replace("{xp}", "" + plugin.dataManager.getPlayerXP(p))
-					        .replace("{level}", "" + plugin.dataManager.getPlayerLevel(p)).replace("{xp-max}", "" + (plugin.xpPerLevel * plugin.dataManager.getPlayerLevel(p)))));
+.replace("{level}", "" + plugin.dataManager.getPlayerLevel(p)).replace("{xp-max}", "" + (ras.xpPerLevel * plugin.dataManager.getPlayerLevel(p)))));
 				}
 				return true;
 			}

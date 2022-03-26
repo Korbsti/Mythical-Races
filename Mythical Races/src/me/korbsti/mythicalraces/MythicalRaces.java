@@ -24,7 +24,14 @@ import me.korbsti.mythicalraces.commands.Commands;
 import me.korbsti.mythicalraces.configmanager.ConfigCreator;
 import me.korbsti.mythicalraces.configmanager.PlayerDataManager;
 import me.korbsti.mythicalraces.events.InventoryClick;
+import me.korbsti.mythicalraces.events.InventoryClose;
 import me.korbsti.mythicalraces.events.Join;
+import me.korbsti.mythicalraces.events.Leave;
+import me.korbsti.mythicalraces.events.lvl.BlockBreak;
+import me.korbsti.mythicalraces.events.lvl.BlockPlace;
+import me.korbsti.mythicalraces.events.lvl.Fishing;
+import me.korbsti.mythicalraces.events.lvl.Harvest;
+import me.korbsti.mythicalraces.events.lvl.Hunting;
 import me.korbsti.mythicalraces.other.GUI;
 import me.korbsti.mythicalraces.other.Setters;
 import me.korbsti.mythicalraces.other.TreeGUI;
@@ -45,6 +52,9 @@ public class MythicalRaces extends JavaPlugin {
 	public int nightStart;
 	public int nightEnd;
 	
+	// force race
+	public boolean forceRace;
+	
 	// Races
 	public ArrayList<String> races = new ArrayList<>();
 	public ArrayList<String> subRaceNames = new ArrayList<>();
@@ -63,20 +73,21 @@ public class MythicalRaces extends JavaPlugin {
 	// GUI Number
 	public HashMap<String, Integer> guiNumber = new HashMap<String, Integer>();
 	
-	
+	// the actual RACE
 	public HashMap<String, Race> race = new HashMap<String, Race>();
-
+	public HashMap<String, Boolean> forceGUI = new HashMap<String, Boolean>();
 	
 	// Leveling
-	public int maxLevel;
-	public int xpGain;
 	public int distance;
 	public int time;
-	public int xpPerLevel;
 	public HashMap<String, Location> playerLocation = new HashMap<String, Location>();
 	
 	// If the player is allowed to switch races
 	public HashMap<String, Boolean> canPlayerSwitch = new HashMap<String, Boolean>();
+	
+	// players race thing
+	public HashMap<String, Race> playersRace = new HashMap<>();
+	
 	public String cooldown;
 	
 	@Override
@@ -89,7 +100,7 @@ public class MythicalRaces extends JavaPlugin {
 		
 		int timerCheckingPotionEffects = configYaml.getInt("other.timerCheckingPotionEffects");
 		
-		Bukkit.getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
+		Bukkit.getScheduler().runTaskTimer(this, new Runnable() {
 			
 			@Override
 			public void run() {
@@ -113,19 +124,19 @@ public class MythicalRaces extends JavaPlugin {
 			@Override
 			public void run() {
 				for (Player p : Bukkit.getOnlinePlayers()) {
+					Race userRace = playersRace.get(p.getName());
+					if(userRace.lvlType.equals("RUNNING")) {
 					if (playerLocation.get(p.getName()) != null) {
 						if (p.getLocation().getWorld() == playerLocation.get(p.getName()).getWorld()) {
 							if (p.getLocation().distance(playerLocation.get(p.getName())) > distance) {
-								changeXP(p);
+								changeXP(p, userRace.xpGain);
 								
 							}
 						}
 					}
 					playerLocation.put(p.getName(), p.getLocation());
 					
-					if (dataManager.getPlayerXP(p) >= xpPerLevel * dataManager.getPlayerLevel(p) && dataManager
-					        .getPlayerLevel(p) != maxLevel) {
-						changeLevel(p);
+					checkLevelUp(userRace, p);
 					}
 					
 				}
@@ -151,7 +162,7 @@ public class MythicalRaces extends JavaPlugin {
 		});
 	}
 	
-	public void changeXP(Player p) {
+	public void changeXP(Player p, int xpGain ) {
 		Bukkit.getScheduler().runTask(this, new Runnable() {
 
 			@Override
@@ -161,6 +172,24 @@ public class MythicalRaces extends JavaPlugin {
 			
 		});
 	}
+	
+	public void checkLevelUp(Race userRace, Player p) {
+		Bukkit.getScheduler().runTaskAsynchronously(this, new Runnable() {
+
+			@Override
+			public void run() {
+				if (dataManager.getPlayerXP(p) >= userRace.xpPerLevel * dataManager.getPlayerLevel(p) && dataManager.getPlayerLevel(p) != userRace.maxLevel) {
+					changeLevel(p);
+				}
+				
+			}
+			
+			
+		});
+	}
+	
+	
+	
 	
 	
 	
@@ -174,6 +203,8 @@ public class MythicalRaces extends JavaPlugin {
 		dataManager.dataByUUID = configYaml.getBoolean("other.dataByUUID");
 		nightStart = configYaml.getInt("other.nightStart");
 		nightEnd = configYaml.getInt("other.nightEnd");
+		forceRace = configYaml.getBoolean("other.forceRace");
+		
 		getCommand("races").setExecutor(new Commands(this));
 		for (String str : getConfig().getKeys(true)) {
 			String[] list = str.split("\\.");
@@ -305,6 +336,13 @@ public class MythicalRaces extends JavaPlugin {
 			for(Object obj : configYaml.getList("races." + str + ".executeCommandUponSwitching")) {
 				raceCommandExecution.add(obj.toString());
 			}
+			String lvlType = configYaml.getString("races." + str + ".lvlType");
+			int maxLevel = configYaml.getInt("races." + str + ".maxLevel");
+			int gainXP = configYaml.getInt("races." + str + ".gainXP");
+			int xpPerLevel = configYaml.getInt("races." + str + ".xpPerLevel");
+
+			
+			
 			race.put(raceName, new Race(raceName, dayRacePassivePotionEffects,
 			        dayRacePassiveAttributes,
 			        dayRacePassivePotionEffectsBase,
@@ -319,7 +357,11 @@ public class MythicalRaces extends JavaPlugin {
 			        nightRacePassiveAttributesLevel,
 			        nightRaceDataPotion,
 			        nightRaceDataAttribute,
-			        raceCommandExecution));
+			        raceCommandExecution,
+			        lvlType,
+			        maxLevel,
+			        gainXP,
+			        xpPerLevel));
 			
 			
 		}
@@ -334,25 +376,43 @@ public class MythicalRaces extends JavaPlugin {
 		for (String str : subRaceNames) {
 			subRaces.get(configYaml.getString("races." + str + ".subRaceType")).add(str);
 		}
-		maxLevel = configYaml.getInt("leveling.maxLevel");
-		xpGain = configYaml.getInt("leveling.xpGain");
 		distance = configYaml.getInt("leveling.distance");
 		time = configYaml.getInt("leveling.time");
-		xpPerLevel = configYaml.getInt("leveling.xpPerLevel");
 		cooldown = configYaml.getString("other.cooldown");
 		
 		PluginManager pm = Bukkit.getServer().getPluginManager();
 		pm.registerEvents(new Join(this), this);
 		pm.registerEvents(new InventoryClick(this), this);
+		pm.registerEvents(new InventoryClose(this), this);
+		pm.registerEvents(new Leave(this), this);
 		
-		for (Player ¢ : Bukkit.getOnlinePlayers()) {
-			dataManager.checkIfUnknown(¢);
-			dataManager.checkIfTimeNull(¢);
-			dataManager.checkIfLevelNull(¢);
-			dataManager.checkIfXpNull(¢);
-			setter.setEffects(¢);
-			guiNumber.put(¢.getName(), 1);
-			playerLocation.put(¢.getName(), ¢.getLocation());
+		pm.registerEvents(new Fishing(this), this);
+		pm.registerEvents(new Hunting(this), this);
+		pm.registerEvents(new BlockPlace(this), this);
+		pm.registerEvents(new Harvest(this), this);
+		pm.registerEvents(new BlockBreak(this), this);
+
+		
+		for (Player p : Bukkit.getOnlinePlayers()) {
+			dataManager.checkIfUnknown(p);
+			dataManager.checkIfTimeNull(p);
+			dataManager.checkIfLevelNull(p);
+			dataManager.checkIfXpNull(p);
+			dataManager.checkIfChosenRace(p);
+			setter.setEffects(p);
+			guiNumber.put(p.getName(), 1);
+			playerLocation.put(p.getName(), p.getLocation());
+			forceGUI.put(p.getName(), dataManager.getChosenRace(p));
+			
+			playersRace.put(p.getName(), race.get(dataManager.getRace(p)));
+			
+			
+			if (forceRace) {
+				if (forceGUI.get(p.getName())) {
+					guiNumber.put(p.getName(), 1);
+					gui.selectRaceGUI(p);
+				}
+			}
 		}
 	}
 	

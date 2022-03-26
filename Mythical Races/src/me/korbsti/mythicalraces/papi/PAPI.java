@@ -6,6 +6,7 @@ import org.bukkit.entity.Player;
 
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import me.korbsti.mythicalraces.MythicalRaces;
+import me.korbsti.mythicalraces.race.Race;
 
 public class PAPI extends PlaceholderExpansion {
     public MythicalRaces plugin;
@@ -35,10 +36,12 @@ public class PAPI extends PlaceholderExpansion {
             return String.valueOf(plugin.dataManager.getPlayerLevel(p));   
         }
         if(identifier.equals("get_max_xp")) {
-        	return String.valueOf(plugin.xpPerLevel * plugin.dataManager.getPlayerLevel(p));
+        	Race ras = plugin.playersRace.get(p.getName());
+        	return String.valueOf(ras.xpPerLevel * plugin.dataManager.getPlayerLevel(p));
         }
         if(identifier.equals("get_xp/max_xp")) {
-        	return String.valueOf(plugin.dataManager.getPlayerXP(p) + "/" + plugin.xpPerLevel * plugin.dataManager.getPlayerLevel(p));
+        	Race ras = plugin.playersRace.get(p.getName());
+        	return String.valueOf(plugin.dataManager.getPlayerXP(p) + "/" + ras.xpPerLevel * plugin.dataManager.getPlayerLevel(p));
         }
         
         return null;

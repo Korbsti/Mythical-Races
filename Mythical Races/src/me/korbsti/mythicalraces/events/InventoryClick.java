@@ -84,7 +84,7 @@ public class InventoryClick implements Listener {
 							
 						}
 					}
-				}
+				} else {
 				for (String str : plugin.dataManager.returnUserSubRace(p)) {
 					if (slot == plugin.configYaml.getInt("races." + str + ".treeSlot")) {
 						if (!p.hasPermission("mythicalraces.race." + str)) {
@@ -111,6 +111,7 @@ public class InventoryClick implements Listener {
 						}
 						
 					}
+				}
 				}
 			} else {
 				for (String str : plugin.subRaces.get(plugin.configYaml.getString("races." + plugin.dataManager.getRace(

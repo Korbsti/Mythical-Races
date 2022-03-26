@@ -31,6 +31,13 @@ public class Race {
 	// command executables
 	public  ArrayList<String> raceCommandExecution = new ArrayList<String>();
 	
+	
+	// Types
+	public String lvlType;
+	public int maxLevel;
+	public int xpGain;
+	public int xpPerLevel;
+	
 	public Race(String raceName, ArrayList<PotionEffectType> dayRacePassivePotionEffects,
 	        ArrayList<Attribute> dayRacePassiveAttributes,
 	        ArrayList<Integer> dayRacePassivePotionEffectsBase,
@@ -45,7 +52,11 @@ public class Race {
 	        ArrayList<Double> nightRacePassiveAttributesLevel,
 	        ArrayList<String> nightRaceDataPotion,
 	        ArrayList<String> nightRaceDataAttribute,
-	        ArrayList<String> raceCommandExecution
+	        ArrayList<String> raceCommandExecution,
+	        String lvlType,
+			int maxLevel,
+			int xpGain,
+			int xpPerLevel
 	
 	) {
 		
@@ -65,6 +76,10 @@ public class Race {
 		this.nightRaceDataPotion = nightRaceDataPotion;
 		this.nightRaceDataAttribute = nightRaceDataAttribute;
 		this.raceCommandExecution =raceCommandExecution;
+		this.lvlType = lvlType;
+		this.maxLevel = maxLevel;
+		this.xpGain = xpGain;
+		this.xpPerLevel = xpPerLevel;
 		
 		
 		
