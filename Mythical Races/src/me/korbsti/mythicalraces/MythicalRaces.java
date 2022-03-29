@@ -373,6 +373,7 @@ public class MythicalRaces extends JavaPlugin {
 				i = 0;
 			}
 		}
+		
 		for (String str : subRaceNames) {
 			subRaces.get(configYaml.getString("races." + str + ".subRaceType")).add(str);
 		}
@@ -399,6 +400,8 @@ public class MythicalRaces extends JavaPlugin {
 			dataManager.checkIfLevelNull(p);
 			dataManager.checkIfXpNull(p);
 			dataManager.checkIfChosenRace(p);
+			
+			
 			setter.setEffects(p);
 			guiNumber.put(p.getName(), 1);
 			playerLocation.put(p.getName(), p.getLocation());

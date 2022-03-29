@@ -23,6 +23,13 @@ public class PAPI extends PlaceholderExpansion {
         if (identifier.equals("race")) {
             return plugin.dataManager.getRace(p);
         }
+        
+        if (identifier.equals("display_race_name")) {
+        	Race ras = plugin.playersRace.get(p.getName());
+
+            return plugin.configYaml.getString("races." + ras.raceName + ".displayName");
+        }
+        
         if (identifier.equals("cooldown_time")) {
             return plugin.dataManager.getCooldown(p);
         }
@@ -60,7 +67,7 @@ public class PAPI extends PlaceholderExpansion {
 
 	@Override
 	public String getIdentifier() {
-        return "MythicalRaces";
+        return "mythicalraces";
 	}
 
 	@Override

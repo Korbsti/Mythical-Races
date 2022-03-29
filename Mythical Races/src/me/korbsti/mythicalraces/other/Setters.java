@@ -124,7 +124,7 @@ public class Setters {
 						}
 					}
 					if ("ALL".equals(data[0])) {
-						
+						inBiome = true;
 						if (!"ALL".equals(data[6])) {
 							if ("ABOVE".equals(data[5])) {
 								Material above = p.getLocation().add(0, 2.1, 0).getBlock().getType();
@@ -183,20 +183,17 @@ public class Setters {
 								} else if (inBiome && nearProperBlock && ((lowerThan || greaterThan) || (greaterThanY
 								        || lowerThanY && potionAmp != elseAmp))) {
 									p.removePotionEffect(effe);
-								} else if (!inBiome && !data[0].equals("ALL") || (inBiome && !nearProperBlock)) {
+								} else if (!inBiome && !data[0].equals("ALL") || (inBiome && !nearProperBlock) || (data[0].equals("ALL") && nearProperBlock && potionAmp == elseAmp)) {
 									p.removePotionEffect(effe);
 								}
 								
 							}
 						}
 						if (!p.hasPotionEffect(effe)) {
-							if (data[0].equals("ALL") && nearProperBlock && (lowerThanY && !signR || greaterThanY
-							        && signR)) {
-								p.addPotionEffect(new PotionEffect(effe, 9999999, plugin.race.get(
-								        str).nightRacePassivePotionEffectsBase.get(x)));
+							if (data[0].equals("ALL") && nearProperBlock && (lowerThanY && !signR || greaterThanY && signR)) {
+								p.addPotionEffect(new PotionEffect(effe, 9999999, plugin.race.get(str).nightRacePassivePotionEffectsBase.get(x), false, false));
 							} else if (inBiome && nearProperBlock && (lowerThanY && !signR || greaterThanY && signR)) {
-								p.addPotionEffect(new PotionEffect(effe, 9999999, plugin.race.get(
-								        str).nightRacePassivePotionEffectsBase.get(x)));
+								p.addPotionEffect(new PotionEffect(effe, 9999999, plugin.race.get(str).nightRacePassivePotionEffectsBase.get(x), false, false));
 							} else { 
 								if (!"-1".equals(data[4])) {
 									p.addPotionEffect(new PotionEffect(effe, 9999999, elseAmp));
@@ -265,9 +262,11 @@ public class Setters {
 								Material mid1 = p.getLocation().add(0, 0.1, 0).getBlock().getType();
 								Material mid2 = p.getLocation().add(0, 1.2, 0).getBlock().getType();
 								Material above = p.getLocation().add(0, 2.1, 0).getBlock().getType();
+								Material below2 = p.getLocation().add(0, -1.5, 0).getBlock().getType();
+
 								for (String block : data[6].split(",")) {
 									Material mat = Material.getMaterial(block);
-									if (below == mat || mid1 == mat || mid2 == mat || above == mat) {
+									if (below == mat || mid1 == mat || mid2 == mat || above == mat || below2 == mat) {
 										nearProperBlock = true;
 										break;
 									}
@@ -278,7 +277,6 @@ public class Setters {
 						}
 					}
 					if ("ALL".equals(data[0])) {
-						
 						if (!"ALL".equals(data[6])) {
 							if ("ABOVE".equals(data[5])) {
 								Material above = p.getLocation().add(0, 2.1, 0).getBlock().getType();
@@ -430,7 +428,6 @@ public class Setters {
 					}
 				}
 				if ("ALL".equals(data[0])) {
-					
 					if (!"ALL".equals(data[6])) {
 						if ("ABOVE".equals(data[5])) {
 							Material above = p.getLocation().add(0, 2.1, 0).getBlock().getType();
@@ -492,7 +489,7 @@ public class Setters {
 							        && potionAmp != elseAmp))) {
 								p.removePotionEffect(effe);
 								
-							} else if (!inBiome && !data[0].equals("ALL") || (inBiome && !nearProperBlock)) {
+							} else if (!inBiome && !data[0].equals("ALL") || (inBiome && !nearProperBlock) || (data[0].equals("ALL") && nearProperBlock && potionAmp == elseAmp)) {
 								p.removePotionEffect(effe);
 							}
 							
@@ -500,12 +497,9 @@ public class Setters {
 					}
 					if (!p.hasPotionEffect(effe)) {
 						if (data[0].equals("ALL") && nearProperBlock && (lowerThanY && !signR || greaterThanY && signR)) {
-							p.addPotionEffect(new PotionEffect(effe, 99999, plugin.race.get(
-							        str).dayRacePassivePotionEffectsBase.get(x)));
+							p.addPotionEffect(new PotionEffect(effe, 99999, plugin.race.get(str).dayRacePassivePotionEffectsBase.get(x), false, false));
 						} else if (inBiome && nearProperBlock && (lowerThanY && !signR || greaterThanY && signR)) {
-							p.addPotionEffect(new PotionEffect(effe, 99999, plugin.race.get(
-							        str).dayRacePassivePotionEffectsBase.get(x)));
-							
+							p.addPotionEffect(new PotionEffect(effe, 99999, plugin.race.get(str).dayRacePassivePotionEffectsBase.get(x), false, false));
 						} else {
 							if (!"-1".equals(data[4])) {
 								p.addPotionEffect(new PotionEffect(effe, 99999, elseAmp));
@@ -589,7 +583,6 @@ public class Setters {
 					}
 				}
 				if ("ALL".equals(data[0])) {
-					
 					if (!"ALL".equals(data[6])) {
 						if ("ABOVE".equals(data[5])) {
 							Material above = p.getLocation().add(0, 2.1, 0).getBlock().getType();
@@ -623,7 +616,6 @@ public class Setters {
 							Material mid2 = p.getLocation().add(0, 1.2, 0).getBlock().getType();
 							Material above = p.getLocation().add(0, 2.1, 0).getBlock().getType();
 							Material below2 = p.getLocation().add(0, -1.5, 0).getBlock().getType();
-
 							for (String block : data[6].split(",")) {
 								Material mat = Material.getMaterial(block);
 								if (below == mat || mid1 == mat || mid2 == mat || above == mat || below2 == mat) {

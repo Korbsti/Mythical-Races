@@ -115,7 +115,7 @@ public class Commands implements CommandExecutor {
 				if (noPerm(sender, "mythicalraces.profile")) {
 					return true;
 				}
-				Race ras = plugin.race.get(p.getName());
+				Race ras = plugin.playersRace.get(p.getName());
 				for (Object obj : plugin.configYaml.getList("profile")) {
 					
 					sender.sendMessage(ChatColor.translateAlternateColorCodes('&', String.valueOf(obj).replace("{race}",
