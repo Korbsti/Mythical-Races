@@ -175,13 +175,15 @@ public class Setters {
 					}
 					int elseAmp = Integer.parseInt(data[4]);
 					if (effe != null) {
+						
 						if (p.hasPotionEffect(effe)) {
 							if (p.getPotionEffect(effe).getDuration() > 99999) {
 								int potionAmp = p.getPotionEffect(effe).getAmplifier();
 								if (data[0].equals("ALL") && !nearProperBlock && ((lowerThan || greaterThan) || (greaterThanY || lowerThanY && potionAmp != elseAmp))) {
 									p.removePotionEffect(effe);
-								} else if (inBiome && nearProperBlock && ((lowerThan || greaterThan) || (greaterThanY
-								        || lowerThanY && potionAmp != elseAmp))) {
+								} else if (data[0].equals("ALL") && nearProperBlock && ((lowerThan || greaterThan) || (greaterThanY || lowerThanY && potionAmp != elseAmp))) {
+									p.removePotionEffect(effe);
+								} else if (inBiome && nearProperBlock && ((lowerThan || greaterThan) || (greaterThanY || lowerThanY && potionAmp != elseAmp))) {
 									p.removePotionEffect(effe);
 								} else if (!inBiome && !data[0].equals("ALL") || (inBiome && !nearProperBlock) || (data[0].equals("ALL") && nearProperBlock && potionAmp == elseAmp)) {
 									p.removePotionEffect(effe);
@@ -485,6 +487,8 @@ public class Setters {
 							        && potionAmp != elseAmp))) {
 								p.removePotionEffect(effe);
 								
+							} else if (data[0].equals("ALL") && nearProperBlock && ((lowerThan || greaterThan) || (greaterThanY || lowerThanY && potionAmp != elseAmp))) {
+								p.removePotionEffect(effe);
 							} else if (inBiome && nearProperBlock && ((lowerThan || greaterThan) || (greaterThanY || lowerThanY
 							        && potionAmp != elseAmp))) {
 								p.removePotionEffect(effe);
