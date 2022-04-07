@@ -45,6 +45,7 @@ public class InventoryClick implements Listener {
 				}
 			}
 			if (slot == plugin.configYaml.getInt("other.forwardClick")) {
+				p.closeInventory();
 				plugin.guiNumber.put(p.getName(), plugin.guiNumber.get(p.getName()) + 1);
 				plugin.gui.selectRaceGUI(p);
 			}
