@@ -28,9 +28,9 @@ public class PlayerDataManager {
 		if (dataByUUID && plugin.dataYaml.getString(p.getUniqueId().toString()) == null) {
 			plugin.dataYaml.set(p.getUniqueId().toString() + ".race", plugin.configYaml.getString("other.defaultRace"));
 		}
-		if (dataByUUID || plugin.dataYaml.getString(p.getName()) != null)
-			return;
+		if (!dataByUUID && plugin.dataYaml.getString(p.getName()) == null) {
 		plugin.dataYaml.set(p.getName() + ".race", plugin.configYaml.getString("other.defaultRace"));
+		}
 		try {
 			plugin.dataYaml.save(plugin.dataFile);
 		} catch (Exception e) {
