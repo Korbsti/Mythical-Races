@@ -40,7 +40,6 @@ public class Setters {
 		
 	}
 	
-	
 	public void setEffects(Player p) {
 		long worldTime = p.getWorld().getTime();
 		if (worldTime < plugin.nightEnd && worldTime > plugin.nightStart) {
@@ -68,15 +67,48 @@ public class Setters {
 					boolean lowerThanY = y < Double.parseDouble(data[3]) && "<".equals(data[2]);
 					boolean inBiome = false;
 					boolean nearProperBlock = false;
+					boolean inProperWeather = false;
+					boolean inProperWorld = false;
+					
+					if ("ALL".equals(data[7])) {
+						inProperWeather = true;
+					} else {
+						boolean hasStorm = p.getLocation().getWorld().hasStorm();
+						if ("FALSE".equals(data[7])) {
+							if (!hasStorm) {
+								inProperWeather = true;
+							} else {
+								inProperWeather = false;
+							}
+						} else {
+							if (hasStorm) {
+								inProperWeather = true;
+							} else {
+								inProperWeather = false;
+							}	
+						}	
+					}
+					
+					if (!"ALL".equals(data[8])) {
+						String worldName = p.getLocation().getWorld().getName();
+						for (String world : data[8].split(",")) {
+							if (worldName.equals(world)) {
+								inProperWorld = true;
+								break;
+							}
+						}
+					} else {
+						inProperWorld = true;
+					}
 					String pInsideBiome = p.getLocation().getBlock().getBiome().toString();
 					// ALL Y > -1000 -1 ALL GRASS
 					for (String biome : data[0].split(",")) {
 						if (biome.equals(pInsideBiome)) {
 							inBiome = true;
-							if("ALL".equals(data[6])) {
+							if ("ALL".equals(data[6])) {
 								nearProperBlock = true;
 								break;
-							} 
+							}
 							
 							if ("ABOVE".equals(data[5])) {
 								Material above = p.getLocation().add(0, 2.1, 0).getBlock().getType();
@@ -84,6 +116,7 @@ public class Setters {
 									if (above == Material.getMaterial(block)) {
 										nearProperBlock = true;
 										break;
+										
 									}
 								
 							} else if ("MID".equals(data[5])) {
@@ -98,7 +131,7 @@ public class Setters {
 							} else if ("BELOW".equals(data[5])) {
 								Material below = p.getLocation().add(0, -0.5, 0).getBlock().getType();
 								Material below2 = p.getLocation().add(0, -1.5, 0).getBlock().getType();
-
+								
 								for (String block : data[6].split(","))
 									if (below == Material.getMaterial(block) || below2 == Material.getMaterial(block)) {
 										nearProperBlock = true;
@@ -110,7 +143,7 @@ public class Setters {
 								Material mid2 = p.getLocation().add(0, 1.2, 0).getBlock().getType();
 								Material above = p.getLocation().add(0, 2.1, 0).getBlock().getType();
 								Material below2 = p.getLocation().add(0, -1.5, 0).getBlock().getType();
-
+								
 								for (String block : data[6].split(",")) {
 									Material mat = Material.getMaterial(block);
 									if (below == mat || mid1 == mat || mid2 == mat || above == mat || below2 == mat) {
@@ -146,7 +179,7 @@ public class Setters {
 							} else if ("BELOW".equals(data[5])) {
 								Material below = p.getLocation().add(0, -0.5, 0).getBlock().getType();
 								Material below2 = p.getLocation().add(0, -1.5, 0).getBlock().getType();
-
+								
 								for (String block : data[6].split(","))
 									if (below == Material.getMaterial(block) || below2 == Material.getMaterial(block)) {
 										nearProperBlock = true;
@@ -158,7 +191,7 @@ public class Setters {
 								Material mid2 = p.getLocation().add(0, 1.2, 0).getBlock().getType();
 								Material above = p.getLocation().add(0, 2.1, 0).getBlock().getType();
 								Material below2 = p.getLocation().add(0, -1.5, 0).getBlock().getType();
-
+								
 								for (String block : data[6].split(",")) {
 									Material mat = Material.getMaterial(block);
 									if (below == mat || mid1 == mat || mid2 == mat || above == mat || below2 == mat) {
@@ -173,6 +206,8 @@ public class Setters {
 							
 						}
 					}
+					
+					
 					int elseAmp = Integer.parseInt(data[4]);
 					if (effe != null) {
 						
@@ -185,20 +220,22 @@ public class Setters {
 									p.removePotionEffect(effe);
 								} else if (inBiome && nearProperBlock && ((lowerThan || greaterThan) || (greaterThanY || lowerThanY && potionAmp != elseAmp))) {
 									p.removePotionEffect(effe);
-								} else if (!inBiome && !data[0].equals("ALL") || (inBiome && !nearProperBlock) || (data[0].equals("ALL") && nearProperBlock && potionAmp == elseAmp)) {
+								} else if (!inBiome && !data[0].equals("ALL") || (inBiome && !nearProperBlock) || (data[0].equals("ALL") && nearProperBlock && potionAmp == elseAmp) || !inProperWeather || !inProperWorld) {
 									p.removePotionEffect(effe);
 								}
 								
 							}
 						}
 						if (!p.hasPotionEffect(effe)) {
-							if (data[0].equals("ALL") && nearProperBlock && (lowerThanY && !signR || greaterThanY && signR)) {
+							if (data[0].equals("ALL") && nearProperBlock && inProperWorld && inProperWeather && (lowerThanY && !signR || greaterThanY && signR)) {
 								p.addPotionEffect(new PotionEffect(effe, 9999999, plugin.race.get(str).nightRacePassivePotionEffectsBase.get(x), false, false));
-							} else if (inBiome && nearProperBlock && (lowerThanY && !signR || greaterThanY && signR)) {
+
+							} else if (inBiome && nearProperBlock && inProperWorld && inProperWeather && (lowerThanY && !signR || greaterThanY && signR)) {
 								p.addPotionEffect(new PotionEffect(effe, 9999999, plugin.race.get(str).nightRacePassivePotionEffectsBase.get(x), false, false));
-							} else { 
+
+							} else {
 								if (!"-1".equals(data[4])) {
-									p.addPotionEffect(new PotionEffect(effe, 9999999, elseAmp));
+									p.addPotionEffect(new PotionEffect(effe, 9999999, elseAmp, false, false));
 								}
 							}
 							
@@ -223,15 +260,48 @@ public class Setters {
 					boolean lowerThanY = y < Double.parseDouble(data[3]) && "<".equals(data[2]);
 					boolean inBiome = false;
 					boolean nearProperBlock = false;
+					boolean inProperWeather = false;
+					boolean inProperWorld = false;
+					
+					if ("ALL".equals(data[7])) {
+						inProperWeather = true;
+					} else {
+						boolean hasStorm = p.getLocation().getWorld().hasStorm();
+						if ("FALSE".equals(data[7])) {
+							if (!hasStorm) {
+								inProperWeather = true;
+							} else {
+								inProperWeather = false;
+							}
+						} else {
+							if (hasStorm) {
+								inProperWeather = true;
+							} else {
+								inProperWeather = false;
+							}	
+						}	
+					}
+					
+					if (!"ALL".equals(data[8])) {
+						String worldName = p.getLocation().getWorld().getName();
+						for (String world : data[8].split(",")) {
+							if (worldName.equals(world)) {
+								inProperWorld = true;
+								break;
+							}
+						}
+					} else {
+						inProperWorld = true;
+					}
 					String pInsideBiome = p.getLocation().getBlock().getBiome().toString();
 					// ALL Y > -1000 -1 ALL GRASS
 					for (String biome : data[0].split(",")) {
 						if (biome.equals(pInsideBiome)) {
 							inBiome = true;
-							if("ALL".equals(data[6])) {
+							if ("ALL".equals(data[6])) {
 								nearProperBlock = true;
 								break;
-							} 
+							}
 							
 							if ("ABOVE".equals(data[5])) {
 								Material above = p.getLocation().add(0, 2.1, 0).getBlock().getType();
@@ -253,7 +323,7 @@ public class Setters {
 							} else if ("BELOW".equals(data[5])) {
 								Material below = p.getLocation().add(0, -0.5, 0).getBlock().getType();
 								Material below2 = p.getLocation().add(0, -1.5, 0).getBlock().getType();
-
+								
 								for (String block : data[6].split(","))
 									if (below == Material.getMaterial(block) || below2 == Material.getMaterial(block)) {
 										nearProperBlock = true;
@@ -265,7 +335,7 @@ public class Setters {
 								Material mid2 = p.getLocation().add(0, 1.2, 0).getBlock().getType();
 								Material above = p.getLocation().add(0, 2.1, 0).getBlock().getType();
 								Material below2 = p.getLocation().add(0, -1.5, 0).getBlock().getType();
-
+								
 								for (String block : data[6].split(",")) {
 									Material mat = Material.getMaterial(block);
 									if (below == mat || mid1 == mat || mid2 == mat || above == mat || below2 == mat) {
@@ -300,7 +370,7 @@ public class Setters {
 							} else if ("BELOW".equals(data[5])) {
 								Material below = p.getLocation().add(0, -0.5, 0).getBlock().getType();
 								Material below2 = p.getLocation().add(0, -1.5, 0).getBlock().getType();
-
+								
 								for (String block : data[6].split(","))
 									if (below == Material.getMaterial(block) || below2 == Material.getMaterial(block)) {
 										nearProperBlock = true;
@@ -312,7 +382,7 @@ public class Setters {
 								Material mid2 = p.getLocation().add(0, 1.2, 0).getBlock().getType();
 								Material above = p.getLocation().add(0, 2.1, 0).getBlock().getType();
 								Material below2 = p.getLocation().add(0, -1.5, 0).getBlock().getType();
-
+								
 								for (String block : data[6].split(",")) {
 									Material mat = Material.getMaterial(block);
 									if (below == mat || mid1 == mat || mid2 == mat || above == mat || below2 == mat) {
@@ -327,12 +397,13 @@ public class Setters {
 							
 						}
 					}
+					
 					if (att != null) {
 						addedAmount = plugin.dataManager.getPlayerLevel(p) * plugin.race.get(str).nightRacePassiveAttributesLevel.get(x);
-						if (data[0].equals("ALL") && nearProperBlock && (lowerThanY && !signR || greaterThanY && signR)) {
+						if (data[0].equals("ALL") && nearProperBlock  && inProperWorld && inProperWeather&& (lowerThanY && !signR || greaterThanY && signR)) {
 							p.getAttribute(att).setBaseValue(plugin.race.get(str).nightRacePassiveAttributesAmount.get(x) + addedAmount);
-						} else if (inBiome && nearProperBlock &&(lowerThanY && !signR || greaterThanY && signR)) {
-							p.getAttribute(att).setBaseValue(plugin.race.get(str).nightRacePassiveAttributesAmount.get(x) + addedAmount);
+						} else if (inBiome && nearProperBlock && inProperWorld && inProperWeather && (lowerThanY && !signR || greaterThanY && signR)) {
+							p.getAttribute(att).setBaseValue(plugin.race.get(str).nightRacePassiveAttributesAmount.get( x) + addedAmount);
 						} else {
 							if (!"-1".equals(data[4])) {
 								p.getAttribute(att).setBaseValue(Double.parseDouble(data[4]) + addedAmount);
@@ -375,15 +446,48 @@ public class Setters {
 				boolean lowerThanY = y < Double.parseDouble(data[3]) && "<".equals(data[2]);
 				boolean inBiome = false;
 				boolean nearProperBlock = false;
+				boolean inProperWeather = false;
+				boolean inProperWorld = false;
+				
+				if ("ALL".equals(data[7])) {
+					inProperWeather = true;
+				} else {
+					boolean hasStorm = p.getLocation().getWorld().hasStorm();
+					if ("FALSE".equals(data[7])) {
+						if (!hasStorm) {
+							inProperWeather = true;
+						} else {
+							inProperWeather = false;
+						}
+					} else {
+						if (hasStorm) {
+							inProperWeather = true;
+						} else {
+							inProperWeather = false;
+						}	
+					}	
+				}
+				
+				if (!"ALL".equals(data[8])) {
+					String worldName = p.getLocation().getWorld().getName();
+					for (String world : data[8].split(",")) {
+						if (worldName.equals(world)) {
+							inProperWorld = true;
+							break;
+						}
+					}
+				} else {
+					inProperWorld = true;
+				}
 				String pInsideBiome = p.getLocation().getBlock().getBiome().toString();
 				// ALL Y > -1000 -1 ALL GRASS
 				for (String biome : data[0].split(",")) {
 					if (biome.equals(pInsideBiome)) {
 						inBiome = true;
-						if("ALL".equals(data[6])) {
+						if ("ALL".equals(data[6])) {
 							nearProperBlock = true;
 							break;
-						} 
+						}
 						
 						if ("ABOVE".equals(data[5])) {
 							Material above = p.getLocation().add(0, 2.1, 0).getBlock().getType();
@@ -416,7 +520,7 @@ public class Setters {
 							Material mid2 = p.getLocation().add(0, 1.2, 0).getBlock().getType();
 							Material above = p.getLocation().add(0, 2.1, 0).getBlock().getType();
 							Material below2 = p.getLocation().add(0, -1.5, 0).getBlock().getType();
-
+							
 							for (String block : data[6].split(",")) {
 								Material mat = Material.getMaterial(block);
 								if (below == mat || mid1 == mat || mid2 == mat || above == mat || below2 == mat) {
@@ -451,7 +555,7 @@ public class Setters {
 						} else if ("BELOW".equals(data[5])) {
 							Material below = p.getLocation().add(0, -0.5, 0).getBlock().getType();
 							Material below2 = p.getLocation().add(0, -1.5, 0).getBlock().getType();
-
+							
 							for (String block : data[6].split(","))
 								if (below == Material.getMaterial(block) || below2 == Material.getMaterial(block)) {
 									nearProperBlock = true;
@@ -463,7 +567,7 @@ public class Setters {
 							Material mid2 = p.getLocation().add(0, 1.2, 0).getBlock().getType();
 							Material above = p.getLocation().add(0, 2.1, 0).getBlock().getType();
 							Material below2 = p.getLocation().add(0, -1.5, 0).getBlock().getType();
-
+							
 							for (String block : data[6].split(",")) {
 								Material mat = Material.getMaterial(block);
 								if (below == mat || mid1 == mat || mid2 == mat || above == mat || below2 == mat) {
@@ -483,30 +587,30 @@ public class Setters {
 					if (p.hasPotionEffect(effe)) {
 						if (p.getPotionEffect(effe).getDuration() < 99999) {
 							int potionAmp = p.getPotionEffect(effe).getAmplifier();
-							if (data[0].equals("ALL")&& !nearProperBlock && ((lowerThan || greaterThan) || (greaterThanY || lowerThanY
-							        && potionAmp != elseAmp))) {
+							if (data[0].equals("ALL") && !nearProperBlock && ((lowerThan || greaterThan)
+							        || (greaterThanY || lowerThanY
+							                && potionAmp != elseAmp))) {
 								p.removePotionEffect(effe);
 								
 							} else if (data[0].equals("ALL") && nearProperBlock && ((lowerThan || greaterThan) || (greaterThanY || lowerThanY && potionAmp != elseAmp))) {
 								p.removePotionEffect(effe);
-							} else if (inBiome && nearProperBlock && ((lowerThan || greaterThan) || (greaterThanY || lowerThanY
-							        && potionAmp != elseAmp))) {
+							} else if (inBiome && nearProperBlock && ((lowerThan || greaterThan) || (greaterThanY|| lowerThanY && potionAmp != elseAmp))) {
 								p.removePotionEffect(effe);
 								
-							} else if (!inBiome && !data[0].equals("ALL") || (inBiome && !nearProperBlock) || (data[0].equals("ALL") && nearProperBlock && potionAmp == elseAmp)) {
+							} else if (!inBiome && !data[0].equals("ALL") || (inBiome && !nearProperBlock) || (data[0].equals("ALL") && nearProperBlock && potionAmp == elseAmp) || !inProperWeather || !inProperWorld) {
 								p.removePotionEffect(effe);
 							}
 							
 						}
 					}
 					if (!p.hasPotionEffect(effe)) {
-						if (data[0].equals("ALL") && nearProperBlock && (lowerThanY && !signR || greaterThanY && signR)) {
+						if (data[0].equals("ALL") && nearProperBlock &&  inProperWorld && inProperWeather &&(lowerThanY && !signR || greaterThanY&& signR)) {
 							p.addPotionEffect(new PotionEffect(effe, 99999, plugin.race.get(str).dayRacePassivePotionEffectsBase.get(x), false, false));
-						} else if (inBiome && nearProperBlock && (lowerThanY && !signR || greaterThanY && signR)) {
+						} else if (inBiome && nearProperBlock && inProperWorld && inProperWeather &&(lowerThanY && !signR || greaterThanY && signR)) {
 							p.addPotionEffect(new PotionEffect(effe, 99999, plugin.race.get(str).dayRacePassivePotionEffectsBase.get(x), false, false));
 						} else {
 							if (!"-1".equals(data[4])) {
-								p.addPotionEffect(new PotionEffect(effe, 99999, elseAmp));
+								p.addPotionEffect(new PotionEffect(effe, 99999, elseAmp, false, false));
 								
 							}
 						}
@@ -532,15 +636,48 @@ public class Setters {
 				boolean lowerThanY = y < Double.parseDouble(data[3]) && "<".equals(data[2]);
 				boolean inBiome = false;
 				boolean nearProperBlock = false;
+				boolean inProperWeather = false;
+				boolean inProperWorld = false;
+				
+				if ("ALL".equals(data[7])) {
+					inProperWeather = true;
+				} else {
+					boolean hasStorm = p.getLocation().getWorld().hasStorm();
+					if ("FALSE".equals(data[7])) {
+						if (!hasStorm) {
+							inProperWeather = true;
+						} else {
+							inProperWeather = false;
+						}
+					} else {
+						if (hasStorm) {
+							inProperWeather = true;
+						} else {
+							inProperWeather = false;
+						}	
+					}	
+				}
+				
+				if (!"ALL".equals(data[8])) {
+					String worldName = p.getLocation().getWorld().getName();
+					for (String world : data[8].split(",")) {
+						if (worldName.equals(world)) {
+							inProperWorld = true;
+							break;
+						}
+					}
+				} else {
+					inProperWorld = true;
+				}
 				String pInsideBiome = p.getLocation().getBlock().getBiome().toString();
 				// ALL Y > -1000 -1 ALL GRASS
 				for (String biome : data[0].split(",")) {
 					if (biome.equals(pInsideBiome)) {
 						inBiome = true;
-						if("ALL".equals(data[6])) {
+						if ("ALL".equals(data[6])) {
 							nearProperBlock = true;
 							break;
-						} 
+						}
 						
 						if ("ABOVE".equals(data[5])) {
 							Material above = p.getLocation().add(0, 2.1, 0).getBlock().getType();
@@ -573,7 +710,7 @@ public class Setters {
 							Material mid2 = p.getLocation().add(0, 1.2, 0).getBlock().getType();
 							Material above = p.getLocation().add(0, 2.1, 0).getBlock().getType();
 							Material below2 = p.getLocation().add(0, -1.5, 0).getBlock().getType();
-
+							
 							for (String block : data[6].split(",")) {
 								Material mat = Material.getMaterial(block);
 								if (below == mat || mid1 == mat || mid2 == mat || above == mat || below2 == mat) {
@@ -608,7 +745,7 @@ public class Setters {
 						} else if ("BELOW".equals(data[5])) {
 							Material below = p.getLocation().add(0, -0.5, 0).getBlock().getType();
 							Material below2 = p.getLocation().add(0, -1.5, 0).getBlock().getType();
-
+							
 							for (String block : data[6].split(","))
 								if (below == Material.getMaterial(block) || below2 == Material.getMaterial(block)) {
 									nearProperBlock = true;
@@ -635,14 +772,11 @@ public class Setters {
 					}
 				}
 				if (att != null) {
-					addedAmount = plugin.dataManager.getPlayerLevel(p) * plugin.race.get(
-					        str).dayRacePassiveAttributesLevel.get(x);
-					if (data[0].equals("ALL")&& nearProperBlock && (lowerThanY && !signR || greaterThanY && signR)) {
-						p.getAttribute(att).setBaseValue(plugin.race.get(str).dayRacePassiveAttributesAmount.get(x)
-						        + addedAmount);
-					} else if (inBiome && nearProperBlock && (lowerThanY && !signR || greaterThanY && signR)) {
-						p.getAttribute(att).setBaseValue(plugin.race.get(str).dayRacePassiveAttributesAmount.get(x)
-						        + addedAmount);
+					addedAmount = plugin.dataManager.getPlayerLevel(p) * plugin.race.get(str).dayRacePassiveAttributesLevel.get(x);
+					if (data[0].equals("ALL") && nearProperBlock && inProperWorld && inProperWeather &&(lowerThanY && !signR || greaterThanY && signR)) {
+						p.getAttribute(att).setBaseValue(plugin.race.get(str).dayRacePassiveAttributesAmount.get(x)+ addedAmount);
+					} else if (inBiome && nearProperBlock && inProperWorld && inProperWeather &&(lowerThanY && !signR || greaterThanY && signR)) {
+						p.getAttribute(att).setBaseValue(plugin.race.get(str).dayRacePassiveAttributesAmount.get(x) + addedAmount);
 					} else {
 						p.getAttribute(att).setBaseValue(Double.parseDouble(data[4]) + addedAmount);
 						

@@ -16,13 +16,29 @@ public class BlockBreak implements Listener {
 		this.plugin = plugin;
 	}
 	
-	@EventHandler(ignoreCancelled=true)
+	@EventHandler(ignoreCancelled = true)
 	public void onBlockBreak(BlockBreakEvent e) {
 		Player p = e.getPlayer();
 		Race ras = plugin.playersRace.get(p.getName());
-		if(!"EXCAVATION".equals(ras.lvlType)) return; 
-		plugin.changeXP(p, ras.xpGain);
-		plugin.checkLevelUp(ras, p);
+		if ("EXCAVATION".contains(ras.lvlType)) {
+			plugin.changeXP(p, ras.xpGain);
+			plugin.checkLevelUp(ras, p);
+			return;
+		}
+		
+		String matType = e.getBlock().getType().toString();
+		
+		if ("MINER".contains(ras.lvlType) && (matType.contains("STONE") ||matType.contains("ORE"))) {
+			plugin.changeXP(p, ras.xpGain);
+			plugin.checkLevelUp(ras, p);
+			return;
+			
+		}
+		if ("WOODCUTTER".contains(ras.lvlType) && (matType.contains("WOOD") || matType.contains("LOG"))) {
+			plugin.changeXP(p, ras.xpGain);
+			plugin.checkLevelUp(ras, p);
+			return;
+		}
 		
 	}
 	

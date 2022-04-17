@@ -10,7 +10,10 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import me.korbsti.mythicalraces.MythicalRaces;
+import me.korbsti.mythicalraces.other.UpdateChecker;
 import me.korbsti.mythicalraces.race.Race;
+import net.md_5.bungee.api.ChatColor;
+import me.korbsti.mythicalraces.other.UpdateChecker;
 
 public class Join implements Listener {
 	MythicalRaces plugin;
@@ -41,6 +44,21 @@ public class Join implements Listener {
 		}
 		
 		plugin.playersRace.put(p.getName(), plugin.race.get(plugin.dataManager.getRace(p)));
+		
+		
+		
+		
+		if(p.hasPermission("mythicalraces.update.notify")) {
+			if(!plugin.checkUpdate) return;
+	        new UpdateChecker(plugin, 92564).getVersion(version -> {
+	            if (!plugin.getDescription().getVersion().equals(version)) {
+	                p.sendMessage(ChatColor.translateAlternateColorCodes('&', plugin.configYaml.getString("update")));
+	            }
+	        });
+			
+		}
+		
+		
 		
 		
 	}

@@ -33,8 +33,10 @@ import me.korbsti.mythicalraces.events.lvl.Fishing;
 import me.korbsti.mythicalraces.events.lvl.Harvest;
 import me.korbsti.mythicalraces.events.lvl.Hunting;
 import me.korbsti.mythicalraces.other.GUI;
+import me.korbsti.mythicalraces.other.SetPlayersRace;
 import me.korbsti.mythicalraces.other.Setters;
 import me.korbsti.mythicalraces.other.TreeGUI;
+import me.korbsti.mythicalraces.other.UpdateChecker;
 import me.korbsti.mythicalraces.papi.PAPI;
 import me.korbsti.mythicalraces.race.Race;
 import net.md_5.bungee.api.ChatColor;
@@ -52,8 +54,10 @@ public class MythicalRaces extends JavaPlugin {
 	public int nightStart;
 	public int nightEnd;
 	
-	// force race
+	// boolean stuff
 	public boolean forceRace;
+	public boolean resetBaseLevel;
+	public boolean checkUpdate;
 	
 	// Races
 	public ArrayList<String> races = new ArrayList<>();
@@ -66,6 +70,7 @@ public class MythicalRaces extends JavaPlugin {
 	public Setters setter = new Setters(this);
 	public GUI gui = new GUI(this);
 	public TreeGUI treeGUI = new TreeGUI(this);
+	public SetPlayersRace setPlayersRace = new SetPlayersRace(this);
 	
 	// Enable level system
 	public boolean enableLevelSystem;
@@ -125,18 +130,18 @@ public class MythicalRaces extends JavaPlugin {
 			public void run() {
 				for (Player p : Bukkit.getOnlinePlayers()) {
 					Race userRace = playersRace.get(p.getName());
-					if(userRace.lvlType.equals("RUNNING")) {
-					if (playerLocation.get(p.getName()) != null) {
-						if (p.getLocation().getWorld() == playerLocation.get(p.getName()).getWorld()) {
-							if (p.getLocation().distance(playerLocation.get(p.getName())) > distance) {
-								changeXP(p, userRace.xpGain);
-								
+					if (userRace.lvlType.equals("RUNNING")) {
+						if (playerLocation.get(p.getName()) != null) {
+							if (p.getLocation().getWorld() == playerLocation.get(p.getName()).getWorld()) {
+								if (p.getLocation().distance(playerLocation.get(p.getName())) > distance) {
+									changeXP(p, userRace.xpGain);
+									
+								}
 							}
 						}
-					}
-					playerLocation.put(p.getName(), p.getLocation());
-					
-					checkLevelUp(userRace, p);
+						playerLocation.put(p.getName(), p.getLocation());
+						
+						checkLevelUp(userRace, p);
 					}
 					
 				}
@@ -149,7 +154,7 @@ public class MythicalRaces extends JavaPlugin {
 	public void changeLevel(Player p) {
 		
 		Bukkit.getScheduler().runTask(this, new Runnable() {
-
+			
 			@Override
 			public void run() {
 				dataManager.setPlayerLevel(p, dataManager.getPlayerLevel(p) + 1);
@@ -162,9 +167,9 @@ public class MythicalRaces extends JavaPlugin {
 		});
 	}
 	
-	public void changeXP(Player p, int xpGain ) {
+	public void changeXP(Player p, int xpGain) {
 		Bukkit.getScheduler().runTask(this, new Runnable() {
-
+			
 			@Override
 			public void run() {
 				dataManager.setPlayerXP(p, dataManager.getPlayerXP(p) + xpGain);
@@ -175,23 +180,18 @@ public class MythicalRaces extends JavaPlugin {
 	
 	public void checkLevelUp(Race userRace, Player p) {
 		Bukkit.getScheduler().runTaskAsynchronously(this, new Runnable() {
-
+			
 			@Override
 			public void run() {
-				if (dataManager.getPlayerXP(p) >= userRace.xpPerLevel * dataManager.getPlayerLevel(p) && dataManager.getPlayerLevel(p) != userRace.maxLevel) {
+				if (dataManager.getPlayerXP(p) >= userRace.xpPerLevel * dataManager.getPlayerLevel(p) && dataManager
+				        .getPlayerLevel(p) < userRace.maxLevel) {
 					changeLevel(p);
 				}
 				
 			}
 			
-			
 		});
 	}
-	
-	
-	
-	
-	
 	
 	@Override
 	public void onDisable() {
@@ -204,6 +204,8 @@ public class MythicalRaces extends JavaPlugin {
 		nightStart = configYaml.getInt("other.nightStart");
 		nightEnd = configYaml.getInt("other.nightEnd");
 		forceRace = configYaml.getBoolean("other.forceRace");
+		resetBaseLevel = configYaml.getBoolean("other.resetBaseLevel");
+		checkUpdate = configYaml.getBoolean("other.checkUpdates");
 		
 		getCommand("races").setExecutor(new Commands(this));
 		for (String str : getConfig().getKeys(true)) {
@@ -218,23 +220,22 @@ public class MythicalRaces extends JavaPlugin {
 		for (String str : races) {
 			String raceName = str;
 			ArrayList<PotionEffectType> dayRacePassivePotionEffects = new ArrayList<PotionEffectType>();
-	        ArrayList<Attribute> dayRacePassiveAttributes = new ArrayList<Attribute>();
-	        ArrayList<Integer> dayRacePassivePotionEffectsBase = new  ArrayList<Integer>();
-	        ArrayList<Double> dayRacePassiveAttributesAmount = new  ArrayList<Double>();
-	        ArrayList<Double> dayRacePassiveAttributesLevel = new  ArrayList<Double>();
-	        ArrayList<String> dayRaceDataPotion = new ArrayList<String>();
-	        ArrayList<String> dayRaceDataAttribute = new ArrayList<String>();
-
+			ArrayList<Attribute> dayRacePassiveAttributes = new ArrayList<Attribute>();
+			ArrayList<Integer> dayRacePassivePotionEffectsBase = new ArrayList<Integer>();
+			ArrayList<Double> dayRacePassiveAttributesAmount = new ArrayList<Double>();
+			ArrayList<Double> dayRacePassiveAttributesLevel = new ArrayList<Double>();
+			ArrayList<String> dayRaceDataPotion = new ArrayList<String>();
+			ArrayList<String> dayRaceDataAttribute = new ArrayList<String>();
+			
 			ArrayList<PotionEffectType> nightRacePassivePotionEffects = new ArrayList<PotionEffectType>();
 			ArrayList<Attribute> nightRacePassiveAttributes = new ArrayList<Attribute>();
-	        ArrayList<Integer> nightRacePassivePotionEffectsBase = new ArrayList<Integer>();
-	        ArrayList<Double> nightRacePassiveAttributesAmount = new  ArrayList<Double>();
-	        ArrayList<Double> nightRacePassiveAttributesLevel = new ArrayList<Double>();
-	        ArrayList<String> nightRaceDataPotion = new ArrayList<String>();
-	        ArrayList<String> nightRaceDataAttribute = new ArrayList<String>();
-
-	        ArrayList<String> raceCommandExecution = new  ArrayList<String>();
+			ArrayList<Integer> nightRacePassivePotionEffectsBase = new ArrayList<Integer>();
+			ArrayList<Double> nightRacePassiveAttributesAmount = new ArrayList<Double>();
+			ArrayList<Double> nightRacePassiveAttributesLevel = new ArrayList<Double>();
+			ArrayList<String> nightRaceDataPotion = new ArrayList<String>();
+			ArrayList<String> nightRaceDataAttribute = new ArrayList<String>();
 			
+			ArrayList<String> raceCommandExecution = new ArrayList<String>();
 			
 			for (Object obj : configYaml.getList("races." + str + ".dayPassivePotionEffects")) {
 				String potionEffect = obj.toString();
@@ -270,8 +271,6 @@ public class MythicalRaces extends JavaPlugin {
 					dayRacePassiveAttributesLevel.add(Double.parseDouble(amount));
 				}
 			}
-			
-			
 			
 			for (Object obj : configYaml.getList("races." + str + ".dayRaceDataPotion")) {
 				String data = obj.toString();
@@ -333,27 +332,25 @@ public class MythicalRaces extends JavaPlugin {
 				}
 			}
 			
-			for(Object obj : configYaml.getList("races." + str + ".executeCommandUponSwitching")) {
+			for (Object obj : configYaml.getList("races." + str + ".executeCommandUponSwitching")) {
 				raceCommandExecution.add(obj.toString());
 			}
 			String lvlType = configYaml.getString("races." + str + ".lvlType");
 			int maxLevel = configYaml.getInt("races." + str + ".maxLevel");
 			int gainXP = configYaml.getInt("races." + str + ".gainXP");
 			int xpPerLevel = configYaml.getInt("races." + str + ".xpPerLevel");
-
-			
 			
 			race.put(raceName, new Race(raceName, dayRacePassivePotionEffects,
 			        dayRacePassiveAttributes,
 			        dayRacePassivePotionEffectsBase,
-			         dayRacePassiveAttributesAmount,
+			        dayRacePassiveAttributesAmount,
 			        dayRacePassiveAttributesLevel,
 			        dayRaceDataPotion,
 			        dayRaceDataAttribute,
-			       nightRacePassivePotionEffects,
-			         nightRacePassiveAttributes,
+			        nightRacePassivePotionEffects,
+			        nightRacePassiveAttributes,
 			        nightRacePassivePotionEffectsBase,
-			         nightRacePassiveAttributesAmount,
+			        nightRacePassiveAttributesAmount,
 			        nightRacePassiveAttributesLevel,
 			        nightRaceDataPotion,
 			        nightRaceDataAttribute,
@@ -362,7 +359,6 @@ public class MythicalRaces extends JavaPlugin {
 			        maxLevel,
 			        gainXP,
 			        xpPerLevel));
-			
 			
 		}
 		for (int i = 0; i != races.size(); i++) {
@@ -392,7 +388,6 @@ public class MythicalRaces extends JavaPlugin {
 		pm.registerEvents(new BlockPlace(this), this);
 		pm.registerEvents(new Harvest(this), this);
 		pm.registerEvents(new BlockBreak(this), this);
-
 		
 		for (Player p : Bukkit.getOnlinePlayers()) {
 			dataManager.checkIfUnknown(p);
@@ -401,14 +396,12 @@ public class MythicalRaces extends JavaPlugin {
 			dataManager.checkIfXpNull(p);
 			dataManager.checkIfChosenRace(p);
 			
-			
 			setter.setEffects(p);
 			guiNumber.put(p.getName(), 1);
 			playerLocation.put(p.getName(), p.getLocation());
 			forceGUI.put(p.getName(), dataManager.getChosenRace(p));
 			
 			playersRace.put(p.getName(), race.get(dataManager.getRace(p)));
-			
 			
 			if (forceRace) {
 				if (forceGUI.get(p.getName())) {
@@ -417,7 +410,16 @@ public class MythicalRaces extends JavaPlugin {
 				}
 			}
 		}
+		
+		if (!checkUpdate)
+			return;
+		new UpdateChecker(this, 92564).getVersion(version -> {
+			if (!this.getDescription().getVersion().equals(version)) {
+				getLogger().info("There is a new update available. Remember to read the changelog before updating!");
+			} else {
+			}
+		});
+		
 	}
-	
 	
 }

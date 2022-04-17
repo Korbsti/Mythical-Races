@@ -30,7 +30,7 @@ public class Harvest implements Listener {
 				Player p = e.getPlayer();
 				
 				Race ras = plugin.playersRace.get(p.getName());
-				if (!"HARVESTING".equals(ras.lvlType))
+				if (!"HARVESTING".contains(ras.lvlType))
 					return;
 				plugin.changeXP(p, ras.xpGain);
 				plugin.checkLevelUp(ras, p);

@@ -20,7 +20,7 @@ public class Fishing implements Listener {
 	public void onFish(PlayerFishEvent e) {
 		Player p = e.getPlayer();
 		Race ras = plugin.playersRace.get(p.getName());
-		if(!"FISHING".equals(ras.lvlType)) return; 
+		if(!"FISHING".contains(ras.lvlType)) return; 
 		plugin.changeXP(p, ras.xpGain);
 		plugin.checkLevelUp(ras, p);
 	}

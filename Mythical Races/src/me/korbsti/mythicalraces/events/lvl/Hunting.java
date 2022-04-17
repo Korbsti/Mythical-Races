@@ -25,10 +25,10 @@ public class Hunting implements Listener {
 	public void onDamage(EntityDamageByEntityEvent e) {
 		Entity dmg = e.getEntity();
 		if(!(dmg instanceof LivingEntity) || !(e.getDamager() instanceof Player)) return; 
-		if (e.getFinalDamage() - ((LivingEntity) dmg).getHealth() > 0) return;
+		if (e.getFinalDamage() - ((LivingEntity) dmg).getHealth() < 0) return;
 		Player p = (Player) e.getDamager();
 		Race ras = plugin.playersRace.get(p.getName());
-		if(!"HUNTING".equals(ras.lvlType)) return;
+		if(!"HUNTING".contains(ras.lvlType)) return;
 		plugin.changeXP(p, ras.xpGain);
 		plugin.checkLevelUp(ras, p);
 		

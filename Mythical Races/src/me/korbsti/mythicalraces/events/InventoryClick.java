@@ -31,16 +31,11 @@ public class InventoryClick implements Listener {
 						return;
 					}
 					if (plugin.dataManager.hasCooldown(p) && !p.hasPermission("mythicalraces.cooldown.bypass")) {
-						p.sendMessage(ChatColor.translateAlternateColorCodes('&', plugin.configYaml.getString(
-						        "cooldownMessage").replace("{time}", plugin.dataManager.getCooldown(p))));
+						p.sendMessage(ChatColor.translateAlternateColorCodes('&', plugin.configYaml.getString("cooldownMessage").replace("{time}", plugin.dataManager.getCooldown(p))));
 						return;
 					}
-					plugin.dataManager.setPlayerLevel(p, 1);
-					plugin.dataManager.setPlayerRace((Player) p, str);
-					plugin.setter.switchingRaces((Player) p, str);
-					plugin.dataManager.setCooldown(p, plugin.cooldown);
-					p.sendMessage(ChatColor.translateAlternateColorCodes('&', plugin.configYaml.getString("chosenRace")
-					        .replace("{race}", str)));
+					plugin.setPlayersRace.changePlayersRace(p, str);
+					p.sendMessage(ChatColor.translateAlternateColorCodes('&', plugin.configYaml.getString("chosenRace") .replace("{race}", str)));
 					p.closeInventory();
 				}
 			}

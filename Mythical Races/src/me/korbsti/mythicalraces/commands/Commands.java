@@ -54,22 +54,31 @@ public class Commands implements CommandExecutor {
 				if (noPerm(sender, "mythicalraces.race.setrace")) {
 					return true;
 				}
+				Player p = Bukkit.getServer().getPlayer(args[2]);
+				if (p == null) {
+					sender.sendMessage(ChatColor.translateAlternateColorCodes('&', plugin.configYaml.getString(
+					        "invalidPlayer")));
+					return true;
+				}
 				for (String str : plugin.races) {
 					if (str.equalsIgnoreCase(args[1])) {
-						Player p = Bukkit.getServer().getPlayer(args[2]);
-						if(p == null) {
-							sender.sendMessage(ChatColor.translateAlternateColorCodes('&', plugin.configYaml.getString("invalidPlayer")));
-							return true;
-						}
-						plugin.dataManager.setPlayerLevel(p, 1);
-						plugin.dataManager.setPlayerRace(p, str);
-						plugin.setter.switchingRaces(p, str);
-						plugin.dataManager.setCooldown(p, plugin.cooldown);
-						sender.sendMessage(ChatColor.translateAlternateColorCodes('&', plugin.configYaml.getString("switchUserRace").replace("{race}", str)));
+						plugin.setPlayersRace.changePlayersRace(p, str);
+						sender.sendMessage(ChatColor.translateAlternateColorCodes('&', plugin.configYaml.getString(
+						        "switchUserRace").replace("{race}", str)));
 						return true;
 					}
 				}
-				sender.sendMessage(ChatColor.translateAlternateColorCodes('&', plugin.configYaml.getString("invalidRace")));
+				for (String str : plugin.subRaceNames) {
+					if (str.equalsIgnoreCase(args[1])) {
+						plugin.setPlayersRace.changePlayersRace(p, str);
+						sender.sendMessage(ChatColor.translateAlternateColorCodes('&', plugin.configYaml.getString(
+						        "switchUserRace").replace("{race}", str)));
+						return true;
+					}
+				}
+				
+				sender.sendMessage(ChatColor.translateAlternateColorCodes('&', plugin.configYaml.getString(
+				        "invalidRace")));
 				return true;
 			}
 			if (!(sender instanceof Player)) {
@@ -89,10 +98,7 @@ public class Commands implements CommandExecutor {
 							        "cooldownMessage").replace("{time}", plugin.dataManager.getCooldown(p))));
 							return false;
 						}
-						plugin.dataManager.setPlayerLevel(p, 1);
-						plugin.dataManager.setPlayerRace(p, str);
-						plugin.setter.switchingRaces(p, str);
-						plugin.dataManager.setCooldown(p, plugin.cooldown);
+						plugin.setPlayersRace.changePlayersRace(p, str);
 						sender.sendMessage(ChatColor.translateAlternateColorCodes('&', plugin.configYaml.getString(
 						        "chosenRace").replace("{race}", str)));
 						return true;
@@ -112,15 +118,29 @@ public class Commands implements CommandExecutor {
 			if ("profile".equalsIgnoreCase(args[0])) {
 				Player p = (Player) sender;
 				
-				if (noPerm(sender, "mythicalraces.profile")) {
-					return true;
-				}
-				Race ras = plugin.playersRace.get(p.getName());
-				for (Object obj : plugin.configYaml.getList("profile")) {
+				if (args.length == 1) {
+					if (noPerm(sender, "mythicalraces.profile")) {
+						return true;
+					}
 					
-					sender.sendMessage(ChatColor.translateAlternateColorCodes('&', String.valueOf(obj).replace("{race}",
-					        plugin.dataManager.getRace(p)).replace("{xp}", "" + plugin.dataManager.getPlayerXP(p))
-.replace("{level}", "" + plugin.dataManager.getPlayerLevel(p)).replace("{xp-max}", "" + (ras.xpPerLevel * plugin.dataManager.getPlayerLevel(p)))));
+					Race ras = plugin.playersRace.get(p.getName());
+					for (Object obj : plugin.configYaml.getList("profile")) {
+						sender.sendMessage(ChatColor.translateAlternateColorCodes('&', String.valueOf(obj).replace("{race}", plugin.dataManager.getRace(p)).replace("{xp}", "" + plugin.dataManager.getPlayerXP(p)).replace("{level}", "" + plugin.dataManager.getPlayerLevel(p)).replace("{name}", p.getName()).replace("{xp-max}", "" + (ras.xpPerLevel * plugin.dataManager.getPlayerLevel(p)))));
+					}
+				} else {
+					if (noPerm(sender, "mythicalraces.profile.other")) {
+						return true;
+					}
+					Player pl = Bukkit.getServer().getPlayer(args[1]);
+					if (pl == null) {
+						sender.sendMessage(ChatColor.translateAlternateColorCodes('&', plugin.configYaml.getString(
+						        "invalidPlayer")));
+						return true;
+					}
+					Race ras = plugin.playersRace.get(pl.getName());
+					for (Object obj : plugin.configYaml.getList("profile")) {
+						sender.sendMessage(ChatColor.translateAlternateColorCodes('&', String.valueOf(obj).replace("{race}", plugin.dataManager.getRace(pl)).replace("{xp}", "" + plugin.dataManager.getPlayerXP(pl)).replace("{name}", pl.getName()).replace("{level}", "" + plugin.dataManager.getPlayerLevel(pl)).replace("{xp-max}", "" + (ras.xpPerLevel * plugin.dataManager.getPlayerLevel(pl)))));
+					}
 				}
 				return true;
 			}
@@ -172,15 +192,48 @@ public class Commands implements CommandExecutor {
 				if (noPerm(sender, "mythicalraces.biome")) {
 					return true;
 				}
-				sender.sendMessage(ChatColor.translateAlternateColorCodes('&', plugin.configYaml.getString("currentBiome").replace("{biome}", ((Player) sender).getLocation().getBlock().getBiome().toString())));
+				sender.sendMessage(ChatColor.translateAlternateColorCodes('&', plugin.configYaml.getString(
+				        "currentBiome").replace("{biome}", ((Player) sender).getLocation().getBlock().getBiome()
+				                .toString())));
 				return true;
 			}
+			
+			if ("lvlset".equalsIgnoreCase(args[0])) {
+				if (noPerm(sender, "mythicalraces.lvlset")) {
+					return true;
+				}
+				if (args.length >= 2) {
+					Player pl = Bukkit.getServer().getPlayer(args[1]);
+					if (pl == null) {
+						sender.sendMessage(ChatColor.translateAlternateColorCodes('&', plugin.configYaml.getString("invalidPlayer")));
+						return true;
+					}
+					try {
+						
+						plugin.dataManager.setPlayerLevel(pl, Integer.valueOf(args[2]));
+						
+						sender.sendMessage(ChatColor.translateAlternateColorCodes('&', plugin.configYaml.getString("setPlayersLevel").replace("{lvl}", args[2])));
+
+						
+						
+					} catch (Exception e) {
+						sender.sendMessage(ChatColor.translateAlternateColorCodes('&', plugin.configYaml.getString("notInt")));
+
+					}
+					
+					return true;
+				}
+				
+				// setPlayersLevel
+				
+			}
+			
 			sender.sendMessage(ChatColor.translateAlternateColorCodes('&', plugin.configYaml.getString("invalidArgs")));
 			return false;
 		}
 		
 		return false;
-	
+		
 	}
-
+	
 }

@@ -21,7 +21,7 @@ public class BlockPlace implements Listener {
 	public void onBlockPlace(BlockPlaceEvent e) {
 		Player p = e.getPlayer();
 		Race ras = plugin.playersRace.get(p.getName());
-		if(!"BUILDER".equals(ras.lvlType)) return;
+		if(!"BUILDER".contains(ras.lvlType)) return;
 		plugin.changeXP(p, ras.xpGain);
 		plugin.checkLevelUp(ras, p);
 	}
