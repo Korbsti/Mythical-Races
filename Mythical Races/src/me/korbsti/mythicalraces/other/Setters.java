@@ -1,6 +1,7 @@
 package me.korbsti.mythicalraces.other;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Block;
@@ -85,8 +86,8 @@ public class Setters {
 								inProperWeather = true;
 							} else {
 								inProperWeather = false;
-							}	
-						}	
+							}
+						}
 					}
 					
 					if (!"ALL".equals(data[8])) {
@@ -137,6 +138,40 @@ public class Setters {
 										nearProperBlock = true;
 										break;
 									}
+							} else if ("VAMPIRE".equals(data[5])) {
+								Location playersLocation = p.getLocation();
+								boolean applyEffect = true;
+								for (int i = p.getLocation().getBlockY(); i < 266; i++) {
+									if (playersLocation.add(0, 1, 0).getBlock().getType().isSolid()) {
+										applyEffect = false;
+										break;
+									}
+								}
+								
+								if (applyEffect) {
+									nearProperBlock = true;
+								}
+								
+							} else if ("AROUND".equals(data[5])) {
+								Location playersLocation = p.getLocation();
+								int blockX = playersLocation.getBlockX();
+								int blockY = playersLocation.getBlockY();
+								int blockZ = playersLocation.getBlockZ();
+								outerloop: for (int pX = blockX - 1; pX != blockX + 2; pX++) {
+									for (int pY = blockY - 1; pY != blockY + 4; pY++) {
+										for (int pZ = blockZ - 1; pZ != blockZ + 2; pZ++) {
+											for (String block : data[6].split(",")) {
+												Material mat = Material.getMaterial(block);
+												if (mat == new Location(playersLocation.getWorld(), pX, pY, pZ)
+												        .getBlock().getType()) {
+													nearProperBlock = true;
+													break outerloop;
+												}
+											}
+											
+										}
+									}
+								}
 							} else if ("ALL".equals(data[5])) {
 								Material below = p.getLocation().add(0, -0.5, 0).getBlock().getType();
 								Material mid1 = p.getLocation().add(0, 0.1, 0).getBlock().getType();
@@ -185,6 +220,40 @@ public class Setters {
 										nearProperBlock = true;
 										break;
 									}
+							} else if ("VAMPIRE".equals(data[5])) {
+								Location playersLocation = p.getLocation();
+								boolean applyEffect = true;
+								for (int i = p.getLocation().getBlockY(); i < 266; i++) {
+									if (playersLocation.add(0, 1, 0).getBlock().getType().isSolid()) {
+										applyEffect = false;
+										break;
+									}
+								}
+								
+								if (applyEffect) {
+									nearProperBlock = true;
+								}
+								
+							} else if ("AROUND".equals(data[5])) {
+								Location playersLocation = p.getLocation();
+								int blockX = playersLocation.getBlockX();
+								int blockY = playersLocation.getBlockY();
+								int blockZ = playersLocation.getBlockZ();
+								outerloop: for (int pX = blockX - 1; pX != blockX + 2; pX++) {
+									for (int pY = blockY - 1; pY != blockY + 4; pY++) {
+										for (int pZ = blockZ - 1; pZ != blockZ + 2; pZ++) {
+											for (String block : data[6].split(",")) {
+												Material mat = Material.getMaterial(block);
+												if (mat == new Location(playersLocation.getWorld(), pX, pY, pZ)
+												        .getBlock().getType()) {
+													nearProperBlock = true;
+													break outerloop;
+												}
+											}
+											
+										}
+									}
+								}
 							} else if ("ALL".equals(data[5])) {
 								Material below = p.getLocation().add(0, -0.5, 0).getBlock().getType();
 								Material mid1 = p.getLocation().add(0, 0.1, 0).getBlock().getType();
@@ -207,32 +276,40 @@ public class Setters {
 						}
 					}
 					
-					
 					int elseAmp = Integer.parseInt(data[4]);
 					if (effe != null) {
 						
 						if (p.hasPotionEffect(effe)) {
 							if (p.getPotionEffect(effe).getDuration() > 99999) {
 								int potionAmp = p.getPotionEffect(effe).getAmplifier();
-								if (data[0].equals("ALL") && !nearProperBlock && ((lowerThan || greaterThan) || (greaterThanY || lowerThanY && potionAmp != elseAmp))) {
+								if (data[0].equals("ALL") && !nearProperBlock && ((lowerThan || greaterThan)
+								        || (greaterThanY || lowerThanY && potionAmp != elseAmp))) {
 									p.removePotionEffect(effe);
-								} else if (data[0].equals("ALL") && nearProperBlock && ((lowerThan || greaterThan) || (greaterThanY || lowerThanY && potionAmp != elseAmp))) {
+								} else if (data[0].equals("ALL") && nearProperBlock && ((lowerThan || greaterThan)
+								        || (greaterThanY || lowerThanY && potionAmp != elseAmp))) {
 									p.removePotionEffect(effe);
-								} else if (inBiome && nearProperBlock && ((lowerThan || greaterThan) || (greaterThanY || lowerThanY && potionAmp != elseAmp))) {
+								} else if (inBiome && nearProperBlock && ((lowerThan || greaterThan) || (greaterThanY
+								        || lowerThanY && potionAmp != elseAmp))) {
 									p.removePotionEffect(effe);
-								} else if (!inBiome && !data[0].equals("ALL") || (inBiome && !nearProperBlock) || (data[0].equals("ALL") && nearProperBlock && potionAmp == elseAmp) || !inProperWeather || !inProperWorld) {
+								} else if (!inBiome && !data[0].equals("ALL") || (inBiome && !nearProperBlock)
+								        || (data[0].equals("ALL") && nearProperBlock && potionAmp == elseAmp)
+								        || !inProperWeather || !inProperWorld) {
 									p.removePotionEffect(effe);
 								}
 								
 							}
 						}
 						if (!p.hasPotionEffect(effe)) {
-							if (data[0].equals("ALL") && nearProperBlock && inProperWorld && inProperWeather && (lowerThanY && !signR || greaterThanY && signR)) {
-								p.addPotionEffect(new PotionEffect(effe, 9999999, plugin.race.get(str).nightRacePassivePotionEffectsBase.get(x), false, false));
-
-							} else if (inBiome && nearProperBlock && inProperWorld && inProperWeather && (lowerThanY && !signR || greaterThanY && signR)) {
-								p.addPotionEffect(new PotionEffect(effe, 9999999, plugin.race.get(str).nightRacePassivePotionEffectsBase.get(x), false, false));
-
+							if (data[0].equals("ALL") && nearProperBlock && inProperWorld && inProperWeather
+							        && (lowerThanY && !signR || greaterThanY && signR)) {
+								p.addPotionEffect(new PotionEffect(effe, 9999999, plugin.race.get(
+								        str).nightRacePassivePotionEffectsBase.get(x), false, false));
+								
+							} else if (inBiome && nearProperBlock && inProperWorld && inProperWeather && (lowerThanY
+							        && !signR || greaterThanY && signR)) {
+								p.addPotionEffect(new PotionEffect(effe, 9999999, plugin.race.get(
+								        str).nightRacePassivePotionEffectsBase.get(x), false, false));
+								
 							} else {
 								if (!"-1".equals(data[4])) {
 									p.addPotionEffect(new PotionEffect(effe, 9999999, elseAmp, false, false));
@@ -278,8 +355,8 @@ public class Setters {
 								inProperWeather = true;
 							} else {
 								inProperWeather = false;
-							}	
-						}	
+							}
+						}
 					}
 					
 					if (!"ALL".equals(data[8])) {
@@ -329,6 +406,41 @@ public class Setters {
 										nearProperBlock = true;
 										break;
 									}
+								
+							} else if ("VAMPIRE".equals(data[5])) {
+								Location playersLocation = p.getLocation();
+								boolean applyEffect = true;
+								for (int i = p.getLocation().getBlockY(); i < 266; i++) {
+									if (playersLocation.add(0, 1, 0).getBlock().getType().isSolid()) {
+										applyEffect = false;
+										break;
+									}
+								}
+								
+								if (applyEffect) {
+									nearProperBlock = true;
+								}
+								
+							} else if ("AROUND".equals(data[5])) {
+								Location playersLocation = p.getLocation();
+								int blockX = playersLocation.getBlockX();
+								int blockY = playersLocation.getBlockY();
+								int blockZ = playersLocation.getBlockZ();
+								outerloop: for (int pX = blockX - 1; pX != blockX + 2; pX++) {
+									for (int pY = blockY - 1; pY != blockY + 4; pY++) {
+										for (int pZ = blockZ - 1; pZ != blockZ + 2; pZ++) {
+											for (String block : data[6].split(",")) {
+												Material mat = Material.getMaterial(block);
+												if (mat == new Location(playersLocation.getWorld(), pX, pY, pZ)
+												        .getBlock().getType()) {
+													nearProperBlock = true;
+													break outerloop;
+												}
+											}
+											
+										}
+									}
+								}
 							} else if ("ALL".equals(data[5])) {
 								Material below = p.getLocation().add(0, -0.5, 0).getBlock().getType();
 								Material mid1 = p.getLocation().add(0, 0.1, 0).getBlock().getType();
@@ -376,6 +488,40 @@ public class Setters {
 										nearProperBlock = true;
 										break;
 									}
+							} else if ("VAMPIRE".equals(data[5])) {
+								Location playersLocation = p.getLocation();
+								boolean applyEffect = true;
+								for (int i = p.getLocation().getBlockY(); i < 266; i++) {
+									if (playersLocation.add(0, 1, 0).getBlock().getType().isSolid()) {
+										applyEffect = false;
+										break;
+									}
+								}
+								
+								if (applyEffect) {
+									nearProperBlock = true;
+								}
+								
+							} else if ("AROUND".equals(data[5])) {
+								Location playersLocation = p.getLocation();
+								int blockX = playersLocation.getBlockX();
+								int blockY = playersLocation.getBlockY();
+								int blockZ = playersLocation.getBlockZ();
+								outerloop: for (int pX = blockX - 1; pX != blockX + 2; pX++) {
+									for (int pY = blockY - 1; pY != blockY + 4; pY++) {
+										for (int pZ = blockZ - 1; pZ != blockZ + 2; pZ++) {
+											for (String block : data[6].split(",")) {
+												Material mat = Material.getMaterial(block);
+												if (mat == new Location(playersLocation.getWorld(), pX, pY, pZ)
+												        .getBlock().getType()) {
+													nearProperBlock = true;
+													break outerloop;
+												}
+											}
+											
+										}
+									}
+								}
 							} else if ("ALL".equals(data[5])) {
 								Material below = p.getLocation().add(0, -0.5, 0).getBlock().getType();
 								Material mid1 = p.getLocation().add(0, 0.1, 0).getBlock().getType();
@@ -399,11 +545,16 @@ public class Setters {
 					}
 					
 					if (att != null) {
-						addedAmount = plugin.dataManager.getPlayerLevel(p) * plugin.race.get(str).nightRacePassiveAttributesLevel.get(x);
-						if (data[0].equals("ALL") && nearProperBlock  && inProperWorld && inProperWeather&& (lowerThanY && !signR || greaterThanY && signR)) {
-							p.getAttribute(att).setBaseValue(plugin.race.get(str).nightRacePassiveAttributesAmount.get(x) + addedAmount);
-						} else if (inBiome && nearProperBlock && inProperWorld && inProperWeather && (lowerThanY && !signR || greaterThanY && signR)) {
-							p.getAttribute(att).setBaseValue(plugin.race.get(str).nightRacePassiveAttributesAmount.get( x) + addedAmount);
+						addedAmount = plugin.dataManager.getPlayerLevel(p) * plugin.race.get(
+						        str).nightRacePassiveAttributesLevel.get(x);
+						if (data[0].equals("ALL") && nearProperBlock && inProperWorld && inProperWeather && (lowerThanY
+						        && !signR || greaterThanY && signR)) {
+							p.getAttribute(att).setBaseValue(plugin.race.get(str).nightRacePassiveAttributesAmount.get(
+							        x) + addedAmount);
+						} else if (inBiome && nearProperBlock && inProperWorld && inProperWeather && (lowerThanY
+						        && !signR || greaterThanY && signR)) {
+							p.getAttribute(att).setBaseValue(plugin.race.get(str).nightRacePassiveAttributesAmount.get(
+							        x) + addedAmount);
 						} else {
 							if (!"-1".equals(data[4])) {
 								p.getAttribute(att).setBaseValue(Double.parseDouble(data[4]) + addedAmount);
@@ -464,8 +615,8 @@ public class Setters {
 							inProperWeather = true;
 						} else {
 							inProperWeather = false;
-						}	
-					}	
+						}
+					}
 				}
 				
 				if (!"ALL".equals(data[8])) {
@@ -514,6 +665,40 @@ public class Setters {
 									nearProperBlock = true;
 									break;
 								}
+						} else if ("VAMPIRE".equals(data[5])) {
+							Location playersLocation = p.getLocation();
+							boolean applyEffect = true;
+							for (int i = p.getLocation().getBlockY(); i < 266; i++) {
+								if (playersLocation.add(0, 1, 0).getBlock().getType().isSolid()) {
+									applyEffect = false;
+									break;
+								}
+							}
+							
+							if (applyEffect) {
+								nearProperBlock = true;
+							}
+							
+						} else if ("AROUND".equals(data[5])) {
+							Location playersLocation = p.getLocation();
+							int blockX = playersLocation.getBlockX();
+							int blockY = playersLocation.getBlockY();
+							int blockZ = playersLocation.getBlockZ();
+							outerloop: for (int pX = blockX - 1; pX != blockX + 2; pX++) {
+								for (int pY = blockY - 1; pY != blockY + 4; pY++) {
+									for (int pZ = blockZ - 1; pZ != blockZ + 2; pZ++) {
+										for (String block : data[6].split(",")) {
+											Material mat = Material.getMaterial(block);
+											if (mat == new Location(playersLocation.getWorld(), pX, pY, pZ).getBlock()
+											        .getType()) {
+												nearProperBlock = true;
+												break outerloop;
+											}
+										}
+										
+									}
+								}
+							}
 						} else if ("ALL".equals(data[5])) {
 							Material below = p.getLocation().add(0, -0.5, 0).getBlock().getType();
 							Material mid1 = p.getLocation().add(0, 0.1, 0).getBlock().getType();
@@ -561,6 +746,40 @@ public class Setters {
 									nearProperBlock = true;
 									break;
 								}
+						} else if ("VAMPIRE".equals(data[5])) {
+							Location playersLocation = p.getLocation();
+							boolean applyEffect = true;
+							for (int i = p.getLocation().getBlockY(); i < 266; i++) {
+								if (playersLocation.add(0, 1, 0).getBlock().getType().isSolid()) {
+									applyEffect = false;
+									break;
+								}
+							}
+							
+							if (applyEffect) {
+								nearProperBlock = true;
+							}
+							
+						} else if ("AROUND".equals(data[5])) {
+							Location playersLocation = p.getLocation();
+							int blockX = playersLocation.getBlockX();
+							int blockY = playersLocation.getBlockY();
+							int blockZ = playersLocation.getBlockZ();
+							outerloop: for (int pX = blockX - 1; pX != blockX + 2; pX++) {
+								for (int pY = blockY - 1; pY != blockY + 4; pY++) {
+									for (int pZ = blockZ - 1; pZ != blockZ + 2; pZ++) {
+										for (String block : data[6].split(",")) {
+											Material mat = Material.getMaterial(block);
+											if (mat == new Location(playersLocation.getWorld(), pX, pY, pZ).getBlock()
+											        .getType()) {
+												nearProperBlock = true;
+												break outerloop;
+											}
+										}
+										
+									}
+								}
+							}
 						} else if ("ALL".equals(data[5])) {
 							Material below = p.getLocation().add(0, -0.5, 0).getBlock().getType();
 							Material mid1 = p.getLocation().add(0, 0.1, 0).getBlock().getType();
@@ -592,22 +811,30 @@ public class Setters {
 							                && potionAmp != elseAmp))) {
 								p.removePotionEffect(effe);
 								
-							} else if (data[0].equals("ALL") && nearProperBlock && ((lowerThan || greaterThan) || (greaterThanY || lowerThanY && potionAmp != elseAmp))) {
+							} else if (data[0].equals("ALL") && nearProperBlock && ((lowerThan || greaterThan)
+							        || (greaterThanY || lowerThanY && potionAmp != elseAmp))) {
 								p.removePotionEffect(effe);
-							} else if (inBiome && nearProperBlock && ((lowerThan || greaterThan) || (greaterThanY|| lowerThanY && potionAmp != elseAmp))) {
+							} else if (inBiome && nearProperBlock && ((lowerThan || greaterThan) || (greaterThanY
+							        || lowerThanY && potionAmp != elseAmp))) {
 								p.removePotionEffect(effe);
 								
-							} else if (!inBiome && !data[0].equals("ALL") || (inBiome && !nearProperBlock) || (data[0].equals("ALL") && nearProperBlock && potionAmp == elseAmp) || !inProperWeather || !inProperWorld) {
+							} else if (!inBiome && !data[0].equals("ALL") || (inBiome && !nearProperBlock) || (data[0]
+							        .equals("ALL") && nearProperBlock && potionAmp == elseAmp) || !inProperWeather
+							        || !inProperWorld) {
 								p.removePotionEffect(effe);
 							}
 							
 						}
 					}
 					if (!p.hasPotionEffect(effe)) {
-						if (data[0].equals("ALL") && nearProperBlock &&  inProperWorld && inProperWeather &&(lowerThanY && !signR || greaterThanY&& signR)) {
-							p.addPotionEffect(new PotionEffect(effe, 99999, plugin.race.get(str).dayRacePassivePotionEffectsBase.get(x), false, false));
-						} else if (inBiome && nearProperBlock && inProperWorld && inProperWeather &&(lowerThanY && !signR || greaterThanY && signR)) {
-							p.addPotionEffect(new PotionEffect(effe, 99999, plugin.race.get(str).dayRacePassivePotionEffectsBase.get(x), false, false));
+						if (data[0].equals("ALL") && nearProperBlock && inProperWorld && inProperWeather && (lowerThanY
+						        && !signR || greaterThanY && signR)) {
+							p.addPotionEffect(new PotionEffect(effe, 99999, plugin.race.get(
+							        str).dayRacePassivePotionEffectsBase.get(x), false, false));
+						} else if (inBiome && nearProperBlock && inProperWorld && inProperWeather && (lowerThanY
+						        && !signR || greaterThanY && signR)) {
+							p.addPotionEffect(new PotionEffect(effe, 99999, plugin.race.get(
+							        str).dayRacePassivePotionEffectsBase.get(x), false, false));
 						} else {
 							if (!"-1".equals(data[4])) {
 								p.addPotionEffect(new PotionEffect(effe, 99999, elseAmp, false, false));
@@ -654,8 +881,8 @@ public class Setters {
 							inProperWeather = true;
 						} else {
 							inProperWeather = false;
-						}	
-					}	
+						}
+					}
 				}
 				
 				if (!"ALL".equals(data[8])) {
@@ -704,6 +931,40 @@ public class Setters {
 									nearProperBlock = true;
 									break;
 								}
+						} else if ("VAMPIRE".equals(data[5])) {
+							Location playersLocation = p.getLocation();
+							boolean applyEffect = true;
+							for (int i = p.getLocation().getBlockY(); i < 266; i++) {
+								if (playersLocation.add(0, 1, 0).getBlock().getType().isSolid()) {
+									applyEffect = false;
+									break;
+								}
+							}
+							
+							if (applyEffect) {
+								nearProperBlock = true;
+							}
+							
+						} else if ("AROUND".equals(data[5])) {
+							Location playersLocation = p.getLocation();
+							int blockX = playersLocation.getBlockX();
+							int blockY = playersLocation.getBlockY();
+							int blockZ = playersLocation.getBlockZ();
+							outerloop: for (int pX = blockX - 1; pX != blockX + 2; pX++) {
+								for (int pY = blockY - 1; pY != blockY + 4; pY++) {
+									for (int pZ = blockZ - 1; pZ != blockZ + 2; pZ++) {
+										for (String block : data[6].split(",")) {
+											Material mat = Material.getMaterial(block);
+											if (mat == new Location(playersLocation.getWorld(), pX, pY, pZ).getBlock()
+											        .getType()) {
+												nearProperBlock = true;
+												break outerloop;
+											}
+										}
+										
+									}
+								}
+							}
 						} else if ("ALL".equals(data[5])) {
 							Material below = p.getLocation().add(0, -0.5, 0).getBlock().getType();
 							Material mid1 = p.getLocation().add(0, 0.1, 0).getBlock().getType();
@@ -751,6 +1012,40 @@ public class Setters {
 									nearProperBlock = true;
 									break;
 								}
+						} else if ("VAMPIRE".equals(data[5])) {
+							Location playersLocation = p.getLocation();
+							boolean applyEffect = true;
+							for (int i = p.getLocation().getBlockY(); i < 266; i++) {
+								if (playersLocation.add(0, 1, 0).getBlock().getType().isSolid()) {
+									applyEffect = false;
+									break;
+								}
+							}
+							
+							if (applyEffect) {
+								nearProperBlock = true;
+							}
+							
+						} else if ("AROUND".equals(data[5])) {
+							Location playersLocation = p.getLocation();
+							int blockX = playersLocation.getBlockX();
+							int blockY = playersLocation.getBlockY();
+							int blockZ = playersLocation.getBlockZ();
+							outerloop: for (int pX = blockX - 1; pX != blockX + 2; pX++) {
+								for (int pY = blockY - 1; pY != blockY + 4; pY++) {
+									for (int pZ = blockZ - 1; pZ != blockZ + 2; pZ++) {
+										for (String block : data[6].split(",")) {
+											Material mat = Material.getMaterial(block);
+											if (mat == new Location(playersLocation.getWorld(), pX, pY, pZ).getBlock()
+											        .getType()) {
+												nearProperBlock = true;
+												break outerloop;
+											}
+										}
+										
+									}
+								}
+							}
 						} else if ("ALL".equals(data[5])) {
 							Material below = p.getLocation().add(0, -0.5, 0).getBlock().getType();
 							Material mid1 = p.getLocation().add(0, 0.1, 0).getBlock().getType();
@@ -772,11 +1067,16 @@ public class Setters {
 					}
 				}
 				if (att != null) {
-					addedAmount = plugin.dataManager.getPlayerLevel(p) * plugin.race.get(str).dayRacePassiveAttributesLevel.get(x);
-					if (data[0].equals("ALL") && nearProperBlock && inProperWorld && inProperWeather &&(lowerThanY && !signR || greaterThanY && signR)) {
-						p.getAttribute(att).setBaseValue(plugin.race.get(str).dayRacePassiveAttributesAmount.get(x)+ addedAmount);
-					} else if (inBiome && nearProperBlock && inProperWorld && inProperWeather &&(lowerThanY && !signR || greaterThanY && signR)) {
-						p.getAttribute(att).setBaseValue(plugin.race.get(str).dayRacePassiveAttributesAmount.get(x) + addedAmount);
+					addedAmount = plugin.dataManager.getPlayerLevel(p) * plugin.race.get(
+					        str).dayRacePassiveAttributesLevel.get(x);
+					if (data[0].equals("ALL") && nearProperBlock && inProperWorld && inProperWeather && (lowerThanY
+					        && !signR || greaterThanY && signR)) {
+						p.getAttribute(att).setBaseValue(plugin.race.get(str).dayRacePassiveAttributesAmount.get(x)
+						        + addedAmount);
+					} else if (inBiome && nearProperBlock && inProperWorld && inProperWeather && (lowerThanY && !signR
+					        || greaterThanY && signR)) {
+						p.getAttribute(att).setBaseValue(plugin.race.get(str).dayRacePassiveAttributesAmount.get(x)
+						        + addedAmount);
 					} else {
 						p.getAttribute(att).setBaseValue(Double.parseDouble(data[4]) + addedAmount);
 						
