@@ -203,9 +203,24 @@ public class Setters {
 										}
 									}
 								}
-							}else if (data[5].startsWith("LIGHT")) {
+							}else if (data[5].startsWith("LIGHTB")) {
 								int lightLevel = p.getLocation().getBlock().getLightLevel();
-								int limit = Integer.parseInt(data[5].split("T")[1]);
+								int limit = Integer.parseInt(data[5].split("B")[1]);
+								if(lightLevel < limit) {
+									nearProperBlock = true;
+									break;
+
+								} else {
+									nearProperBlock = false;
+									break;
+
+								}
+								
+								
+								
+							}else if (data[5].startsWith("LIGHTA")) {
+								int lightLevel = p.getLocation().getBlock().getLightLevel();
+								int limit = Integer.parseInt(data[5].split("A")[1]);
 								if(lightLevel > limit) {
 									nearProperBlock = true;
 									break;
@@ -323,9 +338,24 @@ public class Setters {
 										}
 									}
 								}
-							}else if (data[5].startsWith("LIGHT")) {
+							}else if (data[5].startsWith("LIGHTB")) {
 								int lightLevel = p.getLocation().getBlock().getLightLevel();
-								int limit = Integer.parseInt(data[5].split("T")[1]);
+								int limit = Integer.parseInt(data[5].split("B")[1]);
+								if(lightLevel < limit) {
+									nearProperBlock = true;
+									break;
+
+								} else {
+									nearProperBlock = false;
+									break;
+
+								}
+								
+								
+								
+							}else if (data[5].startsWith("LIGHTA")) {
+								int lightLevel = p.getLocation().getBlock().getLightLevel();
+								int limit = Integer.parseInt(data[5].split("A")[1]);
 								if(lightLevel > limit) {
 									nearProperBlock = true;
 									break;
@@ -546,9 +576,24 @@ public class Setters {
 										}
 									}
 								}
-							}else if (data[5].startsWith("LIGHT")) {
+							}else if (data[5].startsWith("LIGHTB")) {
 								int lightLevel = p.getLocation().getBlock().getLightLevel();
-								int limit = Integer.parseInt(data[5].split("T")[1]);
+								int limit = Integer.parseInt(data[5].split("B")[1]);
+								if(lightLevel < limit) {
+									nearProperBlock = true;
+									break;
+
+								} else {
+									nearProperBlock = false;
+									break;
+
+								}
+								
+								
+								
+							}else if (data[5].startsWith("LIGHTA")) {
+								int lightLevel = p.getLocation().getBlock().getLightLevel();
+								int limit = Integer.parseInt(data[5].split("A")[1]);
 								if(lightLevel > limit) {
 									nearProperBlock = true;
 									break;
@@ -663,9 +708,24 @@ public class Setters {
 										}
 									}
 								}
-							}else if (data[5].startsWith("LIGHT")) {
+							}else if (data[5].startsWith("LIGHTB")) {
 								int lightLevel = p.getLocation().getBlock().getLightLevel();
-								int limit = Integer.parseInt(data[5].split("T")[1]);
+								int limit = Integer.parseInt(data[5].split("B")[1]);
+								if(lightLevel < limit) {
+									nearProperBlock = true;
+									break;
+
+								} else {
+									nearProperBlock = false;
+									break;
+
+								}
+								
+								
+								
+							}else if (data[5].startsWith("LIGHTA")) {
+								int lightLevel = p.getLocation().getBlock().getLightLevel();
+								int limit = Integer.parseInt(data[5].split("A")[1]);
 								if(lightLevel > limit) {
 									nearProperBlock = true;
 									break;
@@ -678,7 +738,7 @@ public class Setters {
 								
 								
 								
-							} else if ("ALL".equals(data[5])) {
+							}else if ("ALL".equals(data[5])) {
 								Material below = p.getLocation().add(0, -0.5, 0).getBlock().getType();
 								Material mid1 = p.getLocation().add(0, 0.1, 0).getBlock().getType();
 								Material mid2 = p.getLocation().add(0, 1.2, 0).getBlock().getType();
@@ -876,9 +936,24 @@ public class Setters {
 									}
 								}
 							}
-						}else if (data[5].startsWith("LIGHT")) {
+						}else if (data[5].startsWith("LIGHTB")) {
 							int lightLevel = p.getLocation().getBlock().getLightLevel();
-							int limit = Integer.parseInt(data[5].split("T")[1]);
+							int limit = Integer.parseInt(data[5].split("B")[1]);
+							if(lightLevel < limit) {
+								nearProperBlock = true;
+								break;
+
+							} else {
+								nearProperBlock = false;
+								break;
+
+							}
+							
+							
+							
+						}else if (data[5].startsWith("LIGHTA")) {
+							int lightLevel = p.getLocation().getBlock().getLightLevel();
+							int limit = Integer.parseInt(data[5].split("A")[1]);
 							if(lightLevel > limit) {
 								nearProperBlock = true;
 								break;
@@ -993,20 +1068,37 @@ public class Setters {
 									}
 								}
 							}
-						}else if (data[5].startsWith("LIGHT")) {
+						}else if (data[5].startsWith("LIGHTB")) {
 							int lightLevel = p.getLocation().getBlock().getLightLevel();
-							int limit = Integer.parseInt(data[5].split("T")[1]);
-							if(lightLevel > limit) {
+							int limit = Integer.parseInt(data[5].split("B")[1]);
+							if(lightLevel < limit) {
 								nearProperBlock = true;
 								break;
+
 							} else {
 								nearProperBlock = false;
 								break;
+
 							}
 							
 							
 							
-						} else if ("ALL".equals(data[5])) {
+						}else if (data[5].startsWith("LIGHTA")) {
+							int lightLevel = p.getLocation().getBlock().getLightLevel();
+							int limit = Integer.parseInt(data[5].split("A")[1]);
+							if(lightLevel > limit) {
+								nearProperBlock = true;
+								break;
+
+							} else {
+								nearProperBlock = false;
+								break;
+
+							}
+							
+							
+							
+						}else if ("ALL".equals(data[5])) {
 							Material below = p.getLocation().add(0, -0.5, 0).getBlock().getType();
 							Material mid1 = p.getLocation().add(0, 0.1, 0).getBlock().getType();
 							Material mid2 = p.getLocation().add(0, 1.2, 0).getBlock().getType();
@@ -1191,15 +1283,32 @@ public class Setters {
 									}
 								}
 							}
-						}else if (data[5].startsWith("LIGHT")) {
+						}else if (data[5].startsWith("LIGHTB")) {
 							int lightLevel = p.getLocation().getBlock().getLightLevel();
-							int limit = Integer.parseInt(data[5].split("T")[1]);
-							if(lightLevel > limit) {
+							int limit = Integer.parseInt(data[5].split("B")[1]);
+							if(lightLevel < limit) {
 								nearProperBlock = true;
 								break;
+
 							} else {
 								nearProperBlock = false;
 								break;
+
+							}
+							
+							
+							
+						}else if (data[5].startsWith("LIGHTA")) {
+							int lightLevel = p.getLocation().getBlock().getLightLevel();
+							int limit = Integer.parseInt(data[5].split("A")[1]);
+							if(lightLevel > limit) {
+								nearProperBlock = true;
+								break;
+
+							} else {
+								nearProperBlock = false;
+								break;
+
 							}
 							
 							
@@ -1327,15 +1436,32 @@ public class Setters {
 									}
 								}
 							}
-						}else if (data[5].startsWith("LIGHT")) {
+						}else if (data[5].startsWith("LIGHTB")) {
 							int lightLevel = p.getLocation().getBlock().getLightLevel();
-							int limit = Integer.parseInt(data[5].split("T")[1]);
-							if(lightLevel > limit) {
+							int limit = Integer.parseInt(data[5].split("B")[1]);
+							if(lightLevel < limit) {
 								nearProperBlock = true;
 								break;
+
 							} else {
 								nearProperBlock = false;
 								break;
+
+							}
+							
+							
+							
+						}else if (data[5].startsWith("LIGHTA")) {
+							int lightLevel = p.getLocation().getBlock().getLightLevel();
+							int limit = Integer.parseInt(data[5].split("A")[1]);
+							if(lightLevel > limit) {
+								nearProperBlock = true;
+								break;
+
+							} else {
+								nearProperBlock = false;
+								break;
+
 							}
 							
 							
