@@ -1,7 +1,7 @@
 # ********************************************** #
 #                                                #
 #     -- Mythical Races Configuration File --    #
-#           -- Version 1.1.0 --                  #
+#           -- Version 1.2.6 --                  #
 #                                                #
 # ********************************************** #
 # Attributes are as follows
@@ -85,7 +85,7 @@
 #     dayRacePassiveAttributesLevel: what this means is gain X amount of ATTRIBUTE PER LEVEL added onto the BASE Base, if 0.0 then ignore any sort of increasing X per level, max level is at the bottom of the config
 #         - 0.0
 #     dayRaceDataAttribute: # explained below
-#         - 'ALL Y > -1000 -1 ALL ALL'
+#         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
 #     nightPassivePotionEffects:
 #         - 'null'
 #     nightPassivePotionEffectsBase:
@@ -99,22 +99,26 @@
 #     nightRacePassiveAttributesLevel:
 #         - 0.0
 #     nightRaceDataAttribute: # explained below
-#         - 'ALL Y > -1000 -1 ALL ALL'
+#         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
 #     executeCommandUponSwitching: # execute a CONSOLE command upon switching to another race, to use a playername it is {player} 
 #         - 'null'
 
 
 # the DATA lists work as such
-# 'ALL Y > -1000 -1 ALL ALL'
+# 'ALL Y > -1000 -1 ALL ALL ALL ALL'
 # First argument is BIOMES, ALL meaning ALL biomes, a biome name can be used within that first argument
 # Second argument is Y, this always has to be Y - this indicates players Y axis
 # Third argument is if players Y axis is greater than or equal to NUMBER
 # fourth argument is the number that is related to the third argument
 # fifth argument is what the amplifier should now be if the player isn't in the designated area -1 to remove POTION effects, attribute has to be set to another number for it as you cannot "remove" a attribute
-# sixth argument is when to apply the effects if a certain block is nearby - types are [ALL, ABOVE, MID, BELOW] you cannot use multiple for this argument, only one of these
+# sixth argument is when to apply the effects if a certain block is nearby - types are [ALL, ABOVE, MID, BELOW, AROUND] you cannot use multiple for this argument, only one of these
 # seventh argument is what blocks are nearby to apply the desired effect
+# eigth argument is if a storm is occuring in the world then apply effect, types are [TRUE, FALSE, ALL]
+# ninth argument is the 'world' the player is in, types are, [ALL, your worlds] can be seperated using a space'
 
-# An example of what it "could" look like is as follows 'SAVANNA Y > -100 -1 ALL STONE' - this means if you are walking on the STONE block in savanna, then apply the effect
+# An example of what it "could" look like is as follows 'SAVANNA,ANOTHERBIOME Y > -100 -1 ALL STONE,ANOTHERBLOCK ALL world,ANOTHERWORLD' - this means if you are walking on the STONE block in savanna and in all types of weather and in world 'world', then apply the effect
+
+# commas seperate different blocks
 
 # Remember that amplifiers are -1 than what you want, for example if you want LUCK 1, then you would have to put 0 and not 1 under the amplifier
 # So to add a attribute, just add one of the attributes to "day" or "night" that has attributes in it
@@ -125,20 +129,29 @@
 
 # https://youtu.be/Kb7Jn-EHj00 <--- tutorial - this is a tutorial on how to use the plugin, it is a long video that explains it in-depth (sort of)
 # Second tutorial -> https://www.youtube.com/watch?v=blx4iUlyqMI
+# well theres also a third tutorial but thats down in the comments of the second tutorial (gotta love how long these tutorials, but trust its worth it!)
 # Well best of luck user!
-# If you are having trouble adding a race/editing/removing a race, join the support discord server
+# If you are having trouble adding a race/editing/removing a race, join the support discord server, and ping a guy called Korbsti (which is me), or add his username directly: Korbsti#0001
 # https://discord.gg/GK3rmrze2Q <--- Support discord server if you require help
 
 # use UUIDs to store player data
 # if false then store by player names
 
 # Types of 'lvlType' are as follows
-# HUNTING, RUNNING, HARVESTING, BUILDING, FISHING, EXCAVATION
-# NOTE it is very important that you note that for the races building, hunting and harvesting that xp GAIN can be very fast, so make sure to put xpPerLevel to a high number to make it more fair
+# HUNTING, RUNNING, HARVESTING, BUILDING, FISHING, EXCAVATION, MINER, WOODCUTTER, 
+# NOTE it is very important that you note that for the races , excavation, building, hunting and harvesting that xp GAIN can be very fast, so make sure to put xpPerLevel to a high number to make it more fair
 
 # Some useful links when creating complicated races
 # > https://hub.spigotmc.org/javadocs/spigot/org/bukkit/block/Biome.html
 # > https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Material.html
+
+
+# NOW for some special data types, below will be some examples
+# 'ALL Y > -1000 -1 VAMPIRE VAMPIRE ALL ALL' - this means apply effect if all blocks above the player to sky limit isnt a solid block
+# 'ALL Y > -1000 -1 CUSTOM[num] ALL ALL ALL' - CUSTOM means, in X radius of blocks next to it, it can be CUSTOM10 or CUSTOM1 or even CUSTOM100 if you hate your server, replace [num] to search for a radius
+# 'ALL Y > -1000 -1 LIGHT[num] ALL ALL ALL' - this means apply effect if the light level is greater than the [num] next to it, example would be LIGHT6, now the limits are [0 - 14] in terms of levels
+
+
 
 other:
 
@@ -154,6 +167,9 @@ other:
    
    # Force the player to choose a race inside the GUI when the first join the server
    forceRace: false
+   
+   # If the player switches a BASE race then their level gets turned back to 0
+   resetBaseLevel: true
    
    # When night time starts in ticks
    nightStart: 12610
@@ -196,6 +212,10 @@ other:
    
    treeName: 'Your race tree'
    
+   # Check if there is an update for the plugin
+   checkUpdates: true
+   
+   
 races:
    Elf:
      displayName: '&2Elf'
@@ -232,8 +252,8 @@ races:
          - 1
          - 2
      dayRaceDataPotion:
-         - 'ALL Y > -1000 -1 ALL ALL'
-         - 'ALL Y > -1000 -1 ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
      dayPassiveGenericAttributes:
          - 'GENERIC_MOVEMENT_SPEED'
          - 'GENERIC_MAX_HEALTH'
@@ -244,8 +264,8 @@ races:
          - 0.0
          - 0.0
      dayRaceDataAttribute:
-         - 'ALL Y > -1000 -1 ALL ALL'
-         - 'ALL Y > -1000 -1 ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
      nightPassivePotionEffects:
          - 'SPEED'
          - 'JUMP'
@@ -253,8 +273,8 @@ races:
          - 1
          - 2
      nightRaceDataPotion:
-         - 'ALL Y > -1000 -1 ALL ALL'
-         - 'ALL Y > -1000 -1 ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
      nightPassiveGenericAttributes:
          - 'GENERIC_MOVEMENT_SPEED'
          - 'GENERIC_MAX_HEALTH'
@@ -265,8 +285,8 @@ races:
          - 0.0
          - 0.0
      nightRaceDataAttribute:
-         - 'ALL Y > -1000 -1 ALL ALL'
-         - 'ALL Y > -1000 -1 ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
      executeCommandUponSwitching:
          - 'null'
    SuperiorElf:
@@ -308,9 +328,9 @@ races:
          - 2
          - 0
      dayRaceDataPotion:
-         - 'ALL Y > -1000 -1 ALL ALL'
-         - 'ALL Y > -1000 -1 ALL ALL'
-         - 'ALL Y > -1000 -1 ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
      dayPassiveGenericAttributes:
          - 'GENERIC_MOVEMENT_SPEED'
          - 'GENERIC_MAX_HEALTH'
@@ -321,8 +341,8 @@ races:
          - 0.0
          - 0.0
      dayRaceDataAttribute:
-         - 'ALL Y > -1000 -1 ALL ALL'
-         - 'ALL Y > -1000 -1 ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
      nightPassivePotionEffects:
          - 'SPEED'
          - 'JUMP'
@@ -332,9 +352,9 @@ races:
          - 2
          - 0
      nightRaceDataPotion:
-         - 'ALL Y > -1000 -1 ALL ALL'
-         - 'ALL Y > -1000 -1 ALL ALL'
-         - 'ALL Y > -1000 -1 ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
      nightPassiveGenericAttributes:
          - 'GENERIC_MOVEMENT_SPEED'
          - 'GENERIC_MAX_HEALTH'
@@ -345,8 +365,8 @@ races:
          - 0.0
          - 0.0
      nightRaceDataAttribute:
-         - 'ALL Y > -1000 -1 ALL ALL'
-         - 'ALL Y > -1000 -1 ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
      executeCommandUponSwitching:
          - 'null'
    GrandmasterElf:
@@ -391,9 +411,9 @@ races:
          - 2
          - 0
      dayRaceDataPotion:
-         - 'ALL Y > -1000 -1 ALL ALL'
-         - 'ALL Y > -1000 -1 ALL ALL'
-         - 'ALL Y > -1000 -1 ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
      dayPassiveGenericAttributes:
          - 'GENERIC_MOVEMENT_SPEED'
          - 'GENERIC_MAX_HEALTH'
@@ -407,9 +427,9 @@ races:
          - 0.0
          - 0.1
      dayRaceDataAttribute:
-         - 'ALL Y > -1000 -1 ALL ALL'
-         - 'ALL Y > -1000 -1 ALL ALL'
-         - 'ALL Y > -1000 -1 ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
      nightPassivePotionEffects:
          - 'SPEED'
          - 'JUMP'
@@ -419,9 +439,9 @@ races:
          - 2
          - 0
      nightRaceDataPotion:
-         - 'ALL Y > -1000 -1 ALL ALL'
-         - 'ALL Y > -1000 -1 ALL ALL'
-         - 'ALL Y > -1000 -1 ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
      nightPassiveGenericAttributes:
          - 'GENERIC_MOVEMENT_SPEED'
          - 'GENERIC_MAX_HEALTH'
@@ -435,9 +455,9 @@ races:
          - 0.0
          - 0.0
      nightRaceDataAttribute:
-         - 'ALL Y > -1000 -1 ALL ALL'
-         - 'ALL Y > -1000 -1 ALL ALL'
-         - 'ALL Y > -1000 -1 ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
      executeCommandUponSwitching:
          - 'null'
    Human:
@@ -474,7 +494,7 @@ races:
      dayRacePassiveAttributesLevel:
          - 0.0
      dayRaceDataAttribute:
-         - 'ALL Y > -1000 -1 ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
      nightPassivePotionEffects:
          - 'null'
      nightPassivePotionEffectsBase:
@@ -488,7 +508,7 @@ races:
      nightRacePassiveAttributesLevel:
          - 0.0
      nightRaceDataAttribute:
-         - 'ALL Y > -1000 -1 ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
      executeCommandUponSwitching:
          - 'null'
    HighHuman:
@@ -540,10 +560,10 @@ races:
          - 0.1
          - 0.1
      dayRaceDataAttribute:
-         - 'ALL Y > -1000 -1 ALL ALL'
-         - 'ALL Y > -1000 -1 ALL ALL'
-         - 'ALL Y > -1000 -1 ALL ALL'
-         - 'ALL Y > -1000 -1 ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
      nightPassivePotionEffects:
          - 'null'
      nightPassivePotionEffectsBase:
@@ -566,10 +586,10 @@ races:
          - 0.1
          - 0.1
      nightRaceDataAttribute:
-         - 'ALL Y > -1000 -1 ALL ALL'
-         - 'ALL Y > -1000 -1 ALL ALL'
-         - 'ALL Y > -1000 -1 ALL ALL'
-         - 'ALL Y > -1000 -1 ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
      executeCommandUponSwitching:
          - 'null'
    Dwarf:
@@ -606,8 +626,8 @@ races:
          - 2
          - 0
      dayRaceDataPotion:
-         - 'ALL Y > -1000 -1 ALL ALL'
-         - 'ALL Y > -1000 -1 ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
      dayPassiveGenericAttributes:
          - 'GENERIC_MOVEMENT_SPEED'
          - 'GENERIC_MAX_HEALTH'
@@ -618,8 +638,8 @@ races:
          - 0.0
          - 0.0
      dayRaceDataAttribute:
-         - 'ALL Y > -1000 -1 ALL ALL'
-         - 'ALL Y > -1000 -1 ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
      nightPassivePotionEffects:
          - 'FAST_DIGGING'
          - 'SLOW'
@@ -627,8 +647,8 @@ races:
          - 1
          - 0
      nightRaceDataPotion:
-         - 'ALL Y > -1000 -1 ALL ALL'
-         - 'ALL Y > -1000 -1 ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
      nightPassiveGenericAttributes:
          - 'GENERIC_MOVEMENT_SPEED'
          - 'GENERIC_MAX_HEALTH'
@@ -639,8 +659,8 @@ races:
          - 0.0
          - 0.0
      nightRaceDataAttribute:
-         - 'ALL Y > -1000 -1 ALL ALL'
-         - 'ALL Y > -1000 -1 ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
      executeCommandUponSwitching:
          - 'null'
    MasterDwarf:
@@ -674,7 +694,7 @@ races:
      dayPassivePotionEffectsBase:
          - 3
      dayRaceDataPotion:
-         - 'ALL Y > -1000 -1 ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
      dayPassiveGenericAttributes:
          - 'GENERIC_MOVEMENT_SPEED'
          - 'GENERIC_MAX_HEALTH'
@@ -685,14 +705,14 @@ races:
          - 0.0
          - 0.0
      dayRaceDataAttribute:
-         - 'ALL Y > -1000 -1 ALL ALL'
-         - 'ALL Y > -1000 -1 ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
      nightPassivePotionEffects:
          - 'FAST_DIGGING'
      nightPassivePotionEffectsBase:
          - 3
      nightRaceDataPotion:
-         - 'ALL Y > -1000 -1 ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
      nightPassiveGenericAttributes:
          - 'GENERIC_MOVEMENT_SPEED'
          - 'GENERIC_MAX_HEALTH'
@@ -703,8 +723,8 @@ races:
          - 0.0
          - 0.0
      nightRaceDataAttribute:
-         - 'ALL Y > -1000 -1 ALL ALL'
-         - 'ALL Y > -1000 -1 ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
      executeCommandUponSwitching:
          - 'null'
    Whelp:
@@ -737,7 +757,7 @@ races:
      dayPassivePotionEffectsBase:
          - 0
      dayRaceDataPotion:
-         - 'ALL Y > -1000 -1 ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
      dayPassiveGenericAttributes:
          - 'GENERIC_MOVEMENT_SPEED'
      dayPassiveGenericAttributesBase:
@@ -745,7 +765,7 @@ races:
      dayRacePassiveAttributesLevel:
          - 0.0
      dayRaceDataAttribute:
-         - 'ALL Y > -1000 -1 ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
      nightPassivePotionEffects:
          - 'SPEED'
          - 'INCREASE_DAMAGE'
@@ -755,9 +775,9 @@ races:
          - 0
          - 0
      nightRaceDataPotion:
-         - 'ALL Y > -1000 -1 ALL ALL'
-         - 'ALL Y > -1000 -1 ALL ALL'
-         - 'ALL Y > -1000 -1 ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
      nightPassiveGenericAttributes:
          - 'GENERIC_MOVEMENT_SPEED'
          - 'GENERIC_MAX_HEALTH'
@@ -768,8 +788,8 @@ races:
          - 0.0
          - 0.0
      nightRaceDataAttribute:
-         - 'ALL Y > -1000 -1 ALL ALL'
-         - 'ALL Y > -1000 -1 ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
      executeCommandUponSwitching:
          - 'null'
    Werewolf:
@@ -803,7 +823,7 @@ races:
      dayPassivePotionEffectsBase:
          - 1
      dayRaceDataPotion:
-         - 'ALL Y > -1000 -1 ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
      dayPassiveGenericAttributes:
          - 'GENERIC_MOVEMENT_SPEED'
          - 'GENERIC_MAX_HEALTH'
@@ -814,8 +834,8 @@ races:
          - 0.0
          - 0.0
      dayRaceDataAttribute:
-         - 'ALL Y > -1000 -1 ALL ALL'
-         - 'ALL Y > -1000 -1 ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
      nightPassivePotionEffects:
          - 'SPEED'
          - 'INCREASE_DAMAGE'
@@ -825,9 +845,9 @@ races:
          - 0
          - 0
      nightRaceDataPotion:
-         - 'ALL Y > -1000 -1 ALL ALL'
-         - 'ALL Y > -1000 -1 ALL ALL'
-         - 'ALL Y > -1000 -1 ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
      nightPassiveGenericAttributes:
          - 'GENERIC_MOVEMENT_SPEED'
          - 'GENERIC_MAX_HEALTH'
@@ -838,8 +858,8 @@ races:
          - 0.0
          - 0.0
      nightRaceDataAttribute:
-         - 'ALL Y > -1000 -1 ALL ALL'
-         - 'ALL Y > -1000 -1 ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
      executeCommandUponSwitching:
          - 'null'
    AlphaWerewolf:
@@ -875,7 +895,7 @@ races:
      dayPassivePotionEffectsBase:
          - 1
      dayRaceDataPotion:
-         - 'ALL Y > -1000 -1 ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
      dayPassiveGenericAttributes:
          - 'GENERIC_MOVEMENT_SPEED'
          - 'GENERIC_MAX_HEALTH'
@@ -886,8 +906,8 @@ races:
          - 0.0
          - 0.0
      dayRaceDataAttribute:
-         - 'ALL Y > -1000 -1 ALL ALL'
-         - 'ALL Y > -1000 -1 ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
      nightPassivePotionEffects:
          - 'SPEED'
          - 'INCREASE_DAMAGE'
@@ -899,10 +919,10 @@ races:
          - 0
          - 1
      nightRaceDataPotion:
-         - 'ALL Y > -1000 -1 ALL ALL'
-         - 'ALL Y > -1000 -1 ALL ALL'
-         - 'ALL Y > -1000 -1 ALL ALL'
-         - 'ALL Y > -1000 -1 ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
      nightPassiveGenericAttributes:
          - 'GENERIC_MOVEMENT_SPEED'
          - 'GENERIC_MAX_HEALTH'
@@ -913,8 +933,8 @@ races:
          - 0.0
          - 0.0
      nightRaceDataAttribute:
-         - 'ALL Y > -1000 -1 ALL ALL'
-         - 'ALL Y > -1000 -1 ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
      executeCommandUponSwitching:
          - 'null'
    Dhampir:
@@ -952,8 +972,8 @@ races:
          - 0
          - 0
      dayRaceDataPotion:
-         - 'ALL Y > -1000 -1 ALL ALL'
-         - 'ALL Y > -1000 -1 ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
      dayPassiveGenericAttributes:
          - 'GENERIC_MOVEMENT_SPEED'
          - "GENERIC_MAX_HEALTH"
@@ -964,8 +984,8 @@ races:
          - 0.0
          - 0.0
      dayRaceDataAttribute:
-         - 'ALL Y > -1000 -1 ALL ALL'
-         - 'ALL Y > -1000 -1 ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
      nightPassivePotionEffects:
          - 'SPEED'
          - 'JUMP'
@@ -977,10 +997,10 @@ races:
          - 0
          - 0
      nightRaceDataPotion:
-         - 'ALL Y > -1000 -1 ALL ALL'
-         - 'ALL Y > -1000 -1 ALL ALL'
-         - 'ALL Y > -1000 -1 ALL ALL'
-         - 'ALL Y > -1000 -1 ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
      nightPassiveGenericAttributes:
          - 'GENERIC_MOVEMENT_SPEED'
          - 'GENERIC_MAX_HEALTH'
@@ -991,8 +1011,8 @@ races:
          - 0.0
          - 0.0
      nightRaceDataAttribute:
-         - 'ALL Y > -1000 -1 ALL ALL'
-         - 'ALL Y > -1000 -1 ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
      executeCommandUponSwitching:
          - 'null'
    VampireFledgling:
@@ -1032,8 +1052,8 @@ races:
          - 0
          - 0
      dayRaceDataPotion:
-         - 'ALL Y > -1000 -1 ALL ALL'
-         - 'ALL Y > -1000 -1 ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
      dayPassiveGenericAttributes:
          - 'GENERIC_MOVEMENT_SPEED'
          - "GENERIC_MAX_HEALTH"
@@ -1044,8 +1064,8 @@ races:
          - 0.0
          - 0.0
      dayRaceDataAttribute:
-         - 'ALL Y > -1000 -1 ALL ALL'
-         - 'ALL Y > -1000 -1 ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
      nightPassivePotionEffects:
          - 'SPEED'
          - 'JUMP'
@@ -1057,10 +1077,10 @@ races:
          - 1
          - 0
      nightRaceDataPotion:
-         - 'ALL Y > -1000 -1 ALL ALL'
-         - 'ALL Y > -1000 -1 ALL ALL'
-         - 'ALL Y > -1000 -1 ALL ALL'
-         - 'ALL Y > -1000 -1 ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
      nightPassiveGenericAttributes:
          - 'GENERIC_MOVEMENT_SPEED'
          - 'GENERIC_MAX_HEALTH'
@@ -1071,8 +1091,8 @@ races:
          - 0.0
          - 0.0
      nightRaceDataAttribute:
-         - 'ALL Y > -1000 -1 ALL ALL'
-         - 'ALL Y > -1000 -1 ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
      executeCommandUponSwitching:
          - 'null'
    Dracula:
@@ -1112,8 +1132,8 @@ races:
          - 0
          - 0
      dayRaceDataPotion:
-         - 'ALL Y > -1000 -1 ALL ALL'
-         - 'ALL Y > -1000 -1 ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
      dayPassiveGenericAttributes:
          - 'GENERIC_MOVEMENT_SPEED'
          - "GENERIC_MAX_HEALTH"
@@ -1124,8 +1144,8 @@ races:
          - 0.0
          - 0.0
      dayRaceDataAttribute:
-         - 'ALL Y > -1000 -1 ALL ALL'
-         - 'ALL Y > -1000 -1 ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
      nightPassivePotionEffects:
          - 'SPEED'
          - 'JUMP'
@@ -1137,10 +1157,10 @@ races:
          - 2
          - 0
      nightRaceDataPotion:
-         - 'ALL Y > -1000 -1 ALL ALL'
-         - 'ALL Y > -1000 -1 ALL ALL'
-         - 'ALL Y > -1000 -1 ALL ALL'
-         - 'ALL Y > -1000 -1 ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
      nightPassiveGenericAttributes:
          - 'GENERIC_MOVEMENT_SPEED'
          - 'GENERIC_MAX_HEALTH'
@@ -1151,8 +1171,8 @@ races:
          - 0.0
          - 0.0
      nightRaceDataAttribute:
-         - 'ALL Y > -1000 -1 ALL ALL'
-         - 'ALL Y > -1000 -1 ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
      executeCommandUponSwitching:
          - 'null'
    Demon:
@@ -1180,7 +1200,6 @@ races:
          - '&5----- Night Time Passive Effects -----'
          - '&5Fire resistance I'
          - '&5Knockback resistance II'
-         - '&5Strength III'
          - '&5Armour II'
      dayPassivePotionEffects:
          - 'WEAKNESS'
@@ -1189,8 +1208,8 @@ races:
          - 0
          - 0
      dayRaceDataPotion:
-         - 'ALL Y > -1000 -1 ALL ALL'
-         - 'ALL Y > -1000 -1 ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
      dayPassiveGenericAttributes:
          - 'GENERIC_ARMOR'
          - 'GENERIC_MOVEMENT_SPEED'
@@ -1201,8 +1220,8 @@ races:
          - 0.0
          - 0.0
      dayRaceDataAttribute:
-         - 'ALL Y > -1000 -1 ALL ALL'
-         - 'ALL Y > -1000 -1 ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
      nightPassivePotionEffects:
          - 'FIRE_RESISTANCE'
          - 'NIGHT_VISION'
@@ -1210,8 +1229,8 @@ races:
          - 0
          - 0
      nightRaceDataPotion:
-         - 'ALL Y > -1000 -1 ALL ALL'
-         - 'ALL Y > -1000 -1 ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
      nightPassiveGenericAttributes:
          - 'GENERIC_MAX_HEALTH'
          - 'GENERIC_MOVEMENT_SPEED'
@@ -1222,8 +1241,8 @@ races:
          - 0.0
          - 0.0
      nightRaceDataAttribute:
-         - 'ALL Y > -1000 -1 ALL ALL'
-         - 'ALL Y > -1000 -1 ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
      executeCommandUponSwitching:
          - 'null'
    Angel:
@@ -1251,7 +1270,6 @@ races:
          - '&5Speed II'
          - '&5----- Night Time Passive Effects -----'
          - '&5Unluck I'
-         - '&5Strength I'
          - '&5Speed I'
      dayPassivePotionEffects:
          - 'HERO_OF_THE_VILLAGE'
@@ -1262,9 +1280,9 @@ races:
          - 0
          - 1
      dayRaceDataPotion:
-         - 'ALL Y > -1000 -1 ALL ALL'
-         - 'ALL Y > -1000 -1 ALL ALL'
-         - 'ALL Y > -1000 -1 ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
      dayPassiveGenericAttributes:
          - 'GENERIC_MOVEMENT_SPEED'
      dayPassiveGenericAttributesBase:
@@ -1272,7 +1290,7 @@ races:
      dayRacePassiveAttributesLevel:
          - 0
      dayRaceDataAttribute:
-         - 'ALL Y > -1000 -1 ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
      nightPassivePotionEffects:
          - 'SPEED'
          - 'SATURATION'
@@ -1282,9 +1300,9 @@ races:
          - 0
          - 0
      nightRaceDataPotion:
-         - 'ALL Y > -1000 -1 ALL ALL'
-         - 'ALL Y > -1000 -1 ALL ALL'
-         - 'ALL Y > -1000 -1 ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
      nightPassiveGenericAttributes:
          - 'GENERIC_MOVEMENT_SPEED'
      nightPassiveGenericAttributesBase:
@@ -1292,7 +1310,7 @@ races:
      nightRacePassiveAttributesLevel:
          - 0
      nightRaceDataAttribute:
-         - 'ALL Y > -1000 -1 ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
      executeCommandUponSwitching:
          - 'null'
    Slime:
@@ -1325,8 +1343,8 @@ races:
          - 0
          - 1
      dayRaceDataPotion:
-         - 'ALL Y > -1000 -1 ALL ALL'
-         - 'ALL Y > -1000 -1 ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
      dayPassiveGenericAttributes:
          - 'GENERIC_MAX_HEALTH'
          - 'GENERIC_MOVEMENT_SPEED'
@@ -1337,8 +1355,8 @@ races:
          - 0.0
          - 0.0
      dayRaceDataAttribute:
-         - 'ALL Y > -1000 -1 ALL ALL'
-         - 'ALL Y > -1000 -1 ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
      nightPassivePotionEffects:
          - 'REGENERATION'
          - 'JUMP'
@@ -1346,8 +1364,8 @@ races:
          - 0
          - 1
      nightRaceDataPotion:
-         - 'ALL Y > -1000 -1 ALL ALL'
-         - 'ALL Y > -1000 -1 ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
      nightPassiveGenericAttributes:
          - 'GENERIC_MAX_HEALTH'
          - 'GENERIC_MOVEMENT_SPEED'
@@ -1358,8 +1376,8 @@ races:
          - 0.0
          - 0.0
      nightRaceDataAttribute:
-         - 'ALL Y > -1000 -1 ALL ALL'
-         - 'ALL Y > -1000 -1 ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
      executeCommandUponSwitching:
          - 'null'
    MagmaCube:
@@ -1396,9 +1414,9 @@ races:
          - 2
          - 0
      dayRaceDataPotion:
-         - 'ALL Y > -1000 -1 ALL ALL'
-         - 'ALL Y > -1000 -1 ALL ALL'
-         - 'ALL Y > -1000 -1 ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
      dayPassiveGenericAttributes:
          - 'GENERIC_MAX_HEALTH'
          - 'GENERIC_MOVEMENT_SPEED'
@@ -1409,8 +1427,8 @@ races:
          - 0.0
          - 0.0
      dayRaceDataAttribute:
-         - 'ALL Y > -1000 -1 ALL ALL'
-         - 'ALL Y > -1000 -1 ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
      nightPassivePotionEffects:
          - 'REGENERATION'
          - 'JUMP'
@@ -1420,9 +1438,9 @@ races:
          - 2
          - 0
      nightRaceDataPotion:
-         - 'ALL Y > -1000 -1 ALL ALL'
-         - 'ALL Y > -1000 -1 ALL ALL'
-         - 'ALL Y > -1000 -1 ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
      nightPassiveGenericAttributes:
          - 'GENERIC_MAX_HEALTH'
          - 'GENERIC_MOVEMENT_SPEED'
@@ -1433,8 +1451,8 @@ races:
          - 0.0
          - 0.0
      nightRaceDataAttribute:
-         - 'ALL Y > -1000 -1 ALL ALL'
-         - 'ALL Y > -1000 -1 ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
      executeCommandUponSwitching:
          - 'null'
    Merfolk:
@@ -1473,9 +1491,9 @@ races:
          - 0
          - 2
      dayRaceDataPotion:
-         - 'ALL Y > -1000 -1 ALL ALL'
-         - 'ALL Y > -1000 -1 ALL ALL'
-         - 'ALL Y > -1000 -1 ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
      dayPassiveGenericAttributes:
          - 'GENERIC_MOVEMENT_SPEED'
      dayPassiveGenericAttributesBase:
@@ -1483,7 +1501,7 @@ races:
      dayRacePassiveAttributesLevel:
          - 0
      dayRaceDataAttribute:
-         - 'ALL Y > -1000 -1 ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
      nightPassivePotionEffects:
          - 'DOLPHINS_GRACE'
          - 'CONDUIT_POWER'
@@ -1493,9 +1511,9 @@ races:
          - 0
          - 2
      nightRaceDataPotion:
-         - 'ALL Y > -1000 -1 ALL ALL'
-         - 'ALL Y > -1000 -1 ALL ALL'
-         - 'ALL Y > -1000 -1 ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
      nightPassiveGenericAttributes:
          - 'GENERIC_MOVEMENT_SPEED'
      nightPassiveGenericAttributesBase:
@@ -1503,7 +1521,7 @@ races:
      nightRacePassiveAttributesLevel:
          - 0
      nightRaceDataAttribute:
-         - 'ALL Y > -1000 -1 ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
      executeCommandUponSwitching:
          - 'null'
    Naga:
@@ -1547,10 +1565,10 @@ races:
          - 2
          - 1
      dayRaceDataPotion:
-         - 'ALL Y > -1000 -1 ALL ALL'
-         - 'ALL Y > -1000 -1 ALL ALL'
-         - 'ALL Y > -1000 -1 ALL ALL'
-         - 'ALL Y > -1000 -1 ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
      dayPassiveGenericAttributes:
          - 'GENERIC_MOVEMENT_SPEED'
      dayPassiveGenericAttributesBase:
@@ -1558,7 +1576,7 @@ races:
      dayRacePassiveAttributesLevel:
          - 0
      dayRaceDataAttribute:
-         - 'ALL Y > -1000 -1 ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
      nightPassivePotionEffects:
          - 'DOLPHINS_GRACE'
          - 'CONDUIT_POWER'
@@ -1570,10 +1588,10 @@ races:
          - 2
          - 1
      nightRaceDataPotion:
-         - 'ALL Y > -1000 -1 ALL ALL'
-         - 'ALL Y > -1000 -1 ALL ALL'
-         - 'ALL Y > -1000 -1 ALL ALL'
-         - 'ALL Y > -1000 -1 ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
      nightPassiveGenericAttributes:
          - 'GENERIC_MOVEMENT_SPEED'
      nightPassiveGenericAttributesBase:
@@ -1581,7 +1599,7 @@ races:
      nightRacePassiveAttributesLevel:
          - 0
      nightRaceDataAttribute:
-         - 'ALL Y > -1000 -1 ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
      executeCommandUponSwitching:
          - 'null'
    Waspling:
@@ -1620,8 +1638,8 @@ races:
          - 0
          - 0
      dayRaceDataPotion:
-         - 'ALL Y > -1000 -1 ALL ALL'
-         - 'ALL Y > -1000 -1 ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
      dayPassiveGenericAttributes:
          - 'GENERIC_MOVEMENT_SPEED'
          - 'GENERIC_MAX_HEALTH'
@@ -1632,8 +1650,8 @@ races:
          - 0
          - 0
      dayRaceDataAttribute:
-         - 'ALL Y > -1000 -1 ALL ALL'
-         - 'ALL Y > -1000 -1 ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
      nightPassivePotionEffects:
          - 'SLOW_FALLING'
          - 'SPEED'
@@ -1641,8 +1659,8 @@ races:
          - 0
          - 0
      nightRaceDataPotion:
-         - 'ALL Y > -1000 -1 ALL ALL'
-         - 'ALL Y > -1000 -1 ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
      nightPassiveGenericAttributes:
          - 'GENERIC_MOVEMENT_SPEED'
          - 'GENERIC_MAX_HEALTH'
@@ -1653,8 +1671,8 @@ races:
          - 0
          - 0
      nightRaceDataAttribute:
-         - 'ALL Y > -1000 -1 ALL ALL'
-         - 'ALL Y > -1000 -1 ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
      executeCommandUponSwitching:
          - 'null'
    Dragonborn:
@@ -1697,9 +1715,9 @@ races:
          - 0
          - 0
      dayRaceDataPotion:
-         - 'ALL Y > -1000 -1 ALL ALL'
-         - 'ALL Y > -1000 -1 ALL ALL'
-         - 'ALL Y > -1000 -1 ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
      dayPassiveGenericAttributes:
          - 'GENERIC_MOVEMENT_SPEED'
          - 'GENERIC_MAX_HEALTH'
@@ -1710,8 +1728,8 @@ races:
          - 0
          - 0
      dayRaceDataAttribute:
-         - 'ALL Y > -1000 -1 ALL ALL'
-         - 'ALL Y > -1000 -1 ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
      nightPassivePotionEffects:
          - 'WEAKNESS'
          - 'SLOW'
@@ -1719,8 +1737,8 @@ races:
          - 0
          - 0
      nightRaceDataPotion:
-         - 'ALL Y > -1000 -1 ALL ALL'
-         - 'ALL Y > -1000 -1 ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
      nightPassiveGenericAttributes:
          - 'GENERIC_MOVEMENT_SPEED'
          - 'GENERIC_MAX_HEALTH'
@@ -1731,8 +1749,8 @@ races:
          - 0
          - 0
      nightRaceDataAttribute:
-         - 'ALL Y > -1000 -1 ALL ALL'
-         - 'ALL Y > -1000 -1 ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
      executeCommandUponSwitching:
          - 'null'
    Gremlin:
@@ -1767,8 +1785,8 @@ races:
          - 1
          - 0
      dayRaceDataPotion:
-         - 'ALL Y > -1000 -1 ALL ALL'
-         - 'ALL Y > -1000 -1 ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
      dayPassiveGenericAttributes:
          - 'GENERIC_MOVEMENT_SPEED'
      dayPassiveGenericAttributesBase:
@@ -1776,7 +1794,7 @@ races:
      dayRacePassiveAttributesLevel:
          - 0
      dayRaceDataAttribute:
-         - 'ALL Y > -1000 -1 ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
      nightPassivePotionEffects:
          - 'LUCK'
          - 'SPEED'
@@ -1784,8 +1802,8 @@ races:
          - 1
          - 0
      nightRaceDataPotion:
-         - 'ALL Y > -1000 -1 ALL ALL'
-         - 'ALL Y > -1000 -1 ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
      nightPassiveGenericAttributes:
          - 'GENERIC_MOVEMENT_SPEED'
      nightPassiveGenericAttributesBase:
@@ -1793,7 +1811,7 @@ races:
      nightRacePassiveAttributesLevel:
          - 0
      nightRaceDataAttribute:
-         - 'ALL Y > -1000 -1 ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
      executeCommandUponSwitching:
          - 'null'
    Goblin:
@@ -1830,7 +1848,7 @@ races:
      dayPassivePotionEffectsBase:
          - 1
      dayRaceDataPotion:
-         - 'ALL Y > -1000 -1 ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
      dayPassiveGenericAttributes:
          - 'GENERIC_MOVEMENT_SPEED'
          - 'GENERIC_MAX_HEALTH'
@@ -1844,15 +1862,15 @@ races:
          - 0
          - 0
      dayRaceDataAttribute:
-         - 'ALL Y > -1000 -1 ALL ALL'
-         - 'ALL Y > -1000 -1 ALL ALL'
-         - 'ALL Y > -1000 -1 ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
      nightPassivePotionEffects:
          - 'SPEED'
      nightPassivePotionEffectsBase:
          - 1
      nightRaceDataPotion:
-         - 'ALL Y > -1000 -1 ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
      nightPassiveGenericAttributes:
          - 'GENERIC_MOVEMENT_SPEED'
          - 'GENERIC_MAX_HEALTH'
@@ -1866,9 +1884,9 @@ races:
          - 0
          - 0
      nightRaceDataAttribute:
-         - 'ALL Y > -1000 -1 ALL ALL'
-         - 'ALL Y > -1000 -1 ALL ALL'
-         - 'ALL Y > -1000 -1 ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
      executeCommandUponSwitching:
          - 'null'
    Golem:
@@ -1910,9 +1928,9 @@ races:
          - 0
          - 0
      dayRaceDataPotion:
-         - 'ALL Y > -1000 -1 ALL ALL'
-         - 'ALL Y > -1000 -1 ALL ALL'
-         - 'ALL Y > -1000 -1 ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
      dayPassiveGenericAttributes:
          - 'GENERIC_MOVEMENT_SPEED'
          - 'GENERIC_MAX_HEALTH'
@@ -1923,8 +1941,8 @@ races:
          - 0
          - 0
      dayRaceDataAttribute:
-         - 'ALL Y > -1000 -1 ALL ALL'
-         - 'ALL Y > -1000 -1 ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
      nightPassivePotionEffects:
          - 'SLOW'
          - 'INCREASE_DAMAGE'
@@ -1934,9 +1952,9 @@ races:
          - 0
          - 0
      nightRaceDataPotion:
-         - 'ALL Y > -1000 -1 ALL ALL'
-         - 'ALL Y > -1000 -1 ALL ALL'
-         - 'ALL Y > -1000 -1 ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
      nightPassiveGenericAttributes:
          - 'GENERIC_MOVEMENT_SPEED'
          - 'GENERIC_MAX_HEALTH'
@@ -1947,8 +1965,8 @@ races:
          - 0
          - 0
      nightRaceDataAttribute:
-         - 'ALL Y > -1000 -1 ALL ALL'
-         - 'ALL Y > -1000 -1 ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
      executeCommandUponSwitching:
          - 'null'
    Sentinel:
@@ -1996,10 +2014,10 @@ races:
          - 0
          - 0
      dayRaceDataPotion:
-         - 'ALL Y > -1000 -1 ALL ALL'
-         - 'ALL Y > -1000 -1 ALL ALL'
-         - 'ALL Y > -1000 -1 ALL ALL'
-         - 'ALL Y > -1000 -1 ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
      dayPassiveGenericAttributes:
          - 'GENERIC_MOVEMENT_SPEED'
          - 'GENERIC_MAX_HEALTH'
@@ -2013,9 +2031,9 @@ races:
          - 0
          - 0
      dayRaceDataAttribute:
-         - 'ALL Y > -1000 -1 ALL ALL'
-         - 'ALL Y > -1000 -1 ALL ALL'
-         - 'ALL Y > -1000 -1 ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
      nightPassivePotionEffects:
          - 'SLOW'
          - 'INCREASE_DAMAGE'
@@ -2027,9 +2045,9 @@ races:
          - 0
          - 0
      nightRaceDataPotion:
-         - 'ALL Y > -1000 -1 ALL ALL'
-         - 'ALL Y > -1000 -1 ALL ALL'
-         - 'ALL Y > -1000 -1 ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
      nightPassiveGenericAttributes:
          - 'GENERIC_MOVEMENT_SPEED'
          - 'GENERIC_MAX_HEALTH'
@@ -2043,9 +2061,9 @@ races:
          - 0
          - 0
      nightRaceDataAttribute:
-         - 'ALL Y > -1000 -1 ALL ALL'
-         - 'ALL Y > -1000 -1 ALL ALL'
-         - 'ALL Y > -1000 -1 ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
      executeCommandUponSwitching:
          - 'null'
    Kobold:
@@ -2092,11 +2110,11 @@ races:
          - 0
          - 0
      dayRaceDataPotion:
-         - 'ALL Y > -1000 -1 ALL ALL'
-         - 'ALL Y > -1000 -1 ALL ALL'
-         - 'ALL Y > -1000 -1 ALL ALL'
-         - 'ALL Y < 63 -1 ALL ALL'
-         - 'ALL Y > -1000 -1 ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
+         - 'ALL Y < 63 -1 ALL ALL ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
      dayPassiveGenericAttributes: 
          - 'GENERIC_MOVEMENT_SPEED'
          - 'GENERIC_MAX_HEALTH'
@@ -2107,8 +2125,8 @@ races:
          - 0.0
          - 0.0
      dayRaceDataAttribute: 
-         - 'ALL Y > -1000 -1 ALL ALL'
-         - 'ALL Y > -1000 -1 ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
      nightPassivePotionEffects:
          - 'LUCK'
          - 'SPEED'
@@ -2120,10 +2138,10 @@ races:
          - 0
          - 0
      nightRaceDataPotion: 
-         - 'ALL Y > -1000 -1 ALL ALL'
-         - 'ALL Y > -1000 -1 ALL ALL'
-         - 'ALL Y < 63 -1 ALL ALL'
-         - 'ALL Y > -1000 -1 ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
+         - 'ALL Y < 63 -1 ALL ALL ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
      nightPassiveGenericAttributes:
          - 'GENERIC_MOVEMENT_SPEED'
          - 'GENERIC_MAX_HEALTH'
@@ -2134,8 +2152,8 @@ races:
          - 0.0
          - 0.0
      nightRaceDataAttribute: 
-         - 'ALL Y > -1000 -1 ALL ALL'
-         - 'ALL Y > -1000 -1 ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
+         - 'ALL Y > -1000 -1 ALL ALL ALL ALL'
      executeCommandUponSwitching:
          - 'null'
 
@@ -2161,8 +2179,11 @@ invalidPlayer: '&aInvalid player'
 invalidArgs: '&4Invalid arguments, type /races help'
 levelup: '&aYou leveled up! Your new level is {level}'
 notRequiredLevel: '&4Your level is not high enough to select this race!'
+setPlayersLevel: '&aSet players race level to {lvl}'
+notInt: '&aMust be an integer'
+update: '&aThere is an update for MythicalRaces! Remember to read the changelog before updating! Get the plugin from the spigot site!'
 profile:
-   - '&a - - - &2Your user profile&a - - -'
+   - '&a - - - &2{name}s user profile&a - - -'
    - '&aRace: {race}'
    - '&aLevel: {level}'
    - '&aXP: {xp}/{xp-max}'
@@ -2173,6 +2194,8 @@ help:
    - '&a/races info [race] - display info about race'
    - '&a/races gui - display list of races'
    - '&a/races tree - display race evolution tree'
-   - '&a/races profile - display players profile'
+   - '&a/races profile - display your race profile'
+   - '&a/races profile [player] view someone elses races profile'
+   - '&a/races lvlset [player] [integer]'
    - '&a/races set [race] [player] - forcibly set a players race'
    - '&a/races biome - for config purposes'
