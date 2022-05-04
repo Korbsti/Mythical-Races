@@ -10,6 +10,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import me.korbsti.mythicalraces.MythicalRaces;
+import me.korbsti.mythicalraces.api.RaceChangeEvent;
 
 public class Setters {
 	MythicalRaces plugin;
@@ -20,6 +21,14 @@ public class Setters {
 	}
 	
 	public void switchingRaces(Player p, String race) {
+		
+		Bukkit.getScheduler().runTask(plugin, new Runnable() {
+			@Override
+			public void run() {
+				Bukkit.getPluginManager().callEvent(new RaceChangeEvent(plugin, race, p));
+			}
+		});
+		
 		for (Attribute att : Attribute.values()) {
 			if (p.getAttribute(att) != null) {
 				p.getAttribute(att).setBaseValue(p.getAttribute(att).getDefaultValue());
@@ -172,7 +181,44 @@ public class Setters {
 										}
 									}
 								}
-							} else if ("ALL".equals(data[5])) {
+							}else if (data[5].startsWith("CUSTOM")) {
+								Location playersLocation = p.getLocation();
+								int blockX = playersLocation.getBlockX();
+								int blockY = playersLocation.getBlockY();
+								int blockZ = playersLocation.getBlockZ();
+								
+								int searchAmount = Integer.parseInt(data[5].split("M")[1]);
+								
+								outerloop: for (int pX = blockX - searchAmount; pX != blockX + searchAmount; pX++) {
+									for (int pY = blockY - searchAmount; pY != blockY + searchAmount; pY++) {
+										for (int pZ = blockZ - searchAmount; pZ != blockZ + searchAmount; pZ++) {
+											for (String block : data[6].split(",")) {
+												Material mat = Material.getMaterial(block);
+												if (mat == new Location(playersLocation.getWorld(), pX, pY, pZ).getBlock().getType()) {
+													nearProperBlock = true;
+													break outerloop;
+												}
+											}
+											
+										}
+									}
+								}
+							}else if (data[5].startsWith("LIGHT")) {
+								int lightLevel = p.getLocation().getBlock().getLightLevel();
+								int limit = Integer.parseInt(data[5].split("T")[1]);
+								if(lightLevel > limit) {
+									nearProperBlock = true;
+									break;
+
+								} else {
+									nearProperBlock = false;
+									break;
+
+								}
+								
+								
+								
+							}  else if ("ALL".equals(data[5])) {
 								Material below = p.getLocation().add(0, -0.5, 0).getBlock().getType();
 								Material mid1 = p.getLocation().add(0, 0.1, 0).getBlock().getType();
 								Material mid2 = p.getLocation().add(0, 1.2, 0).getBlock().getType();
@@ -221,8 +267,10 @@ public class Setters {
 										break;
 									}
 							} else if ("VAMPIRE".equals(data[5])) {
-								Location playersLocation = p.getLocation();
-								boolean applyEffect = true;
+								Location playersLocation;
+								playersLocation = p.getLocation();
+								boolean applyEffect;
+								applyEffect = true;
 								for (int i = p.getLocation().getBlockY(); i < 266; i++) {
 									if (playersLocation.add(0, 1, 0).getBlock().getType().isSolid()) {
 										applyEffect = false;
@@ -254,7 +302,43 @@ public class Setters {
 										}
 									}
 								}
-							} else if ("ALL".equals(data[5])) {
+							} else if (data[5].startsWith("CUSTOM")) {
+								Location playersLocation = p.getLocation();
+								int blockX = playersLocation.getBlockX();
+								int blockY = playersLocation.getBlockY();
+								int blockZ = playersLocation.getBlockZ();
+								
+								int searchAmount = Integer.parseInt(data[5].split("M")[1]);
+								outerloop: for (int pX = blockX - searchAmount; pX != blockX + searchAmount; pX++) {
+									for (int pY = blockY - searchAmount; pY != blockY + searchAmount; pY++) {
+										for (int pZ = blockZ - searchAmount; pZ != blockZ + searchAmount; pZ++) {
+											for (String block : data[6].split(",")) {
+												Material mat = Material.getMaterial(block);
+												if (mat == new Location(playersLocation.getWorld(), pX, pY, pZ).getBlock().getType()) {
+													nearProperBlock = true;
+													break outerloop;
+												}
+											}
+											
+										}
+									}
+								}
+							}else if (data[5].startsWith("LIGHT")) {
+								int lightLevel = p.getLocation().getBlock().getLightLevel();
+								int limit = Integer.parseInt(data[5].split("T")[1]);
+								if(lightLevel > limit) {
+									nearProperBlock = true;
+									break;
+
+								} else {
+									nearProperBlock = false;
+									break;
+
+								}
+								
+								
+								
+							}    else if ("ALL".equals(data[5])) {
 								Material below = p.getLocation().add(0, -0.5, 0).getBlock().getType();
 								Material mid1 = p.getLocation().add(0, 0.1, 0).getBlock().getType();
 								Material mid2 = p.getLocation().add(0, 1.2, 0).getBlock().getType();
@@ -441,6 +525,42 @@ public class Setters {
 										}
 									}
 								}
+							} else if (data[5].startsWith("CUSTOM")) {
+								Location playersLocation = p.getLocation();
+								int blockX = playersLocation.getBlockX();
+								int blockY = playersLocation.getBlockY();
+								int blockZ = playersLocation.getBlockZ();
+								
+								int searchAmount = Integer.parseInt(data[5].split("M")[1]);
+								outerloop: for (int pX = blockX - searchAmount; pX != blockX + searchAmount; pX++) {
+									for (int pY = blockY - searchAmount; pY != blockY + searchAmount; pY++) {
+										for (int pZ = blockZ - searchAmount; pZ != blockZ + searchAmount; pZ++) {
+											for (String block : data[6].split(",")) {
+												Material mat = Material.getMaterial(block);
+												if (mat == new Location(playersLocation.getWorld(), pX, pY, pZ).getBlock().getType()) {
+													nearProperBlock = true;
+													break outerloop;
+												}
+											}
+											
+										}
+									}
+								}
+							}else if (data[5].startsWith("LIGHT")) {
+								int lightLevel = p.getLocation().getBlock().getLightLevel();
+								int limit = Integer.parseInt(data[5].split("T")[1]);
+								if(lightLevel > limit) {
+									nearProperBlock = true;
+									break;
+
+								} else {
+									nearProperBlock = false;
+									break;
+
+								}
+								
+								
+								
 							} else if ("ALL".equals(data[5])) {
 								Material below = p.getLocation().add(0, -0.5, 0).getBlock().getType();
 								Material mid1 = p.getLocation().add(0, 0.1, 0).getBlock().getType();
@@ -522,6 +642,42 @@ public class Setters {
 										}
 									}
 								}
+							} else if (data[5].startsWith("CUSTOM")) {
+								Location playersLocation = p.getLocation();
+								int blockX = playersLocation.getBlockX();
+								int blockY = playersLocation.getBlockY();
+								int blockZ = playersLocation.getBlockZ();
+								
+								int searchAmount = Integer.parseInt(data[5].split("M")[1]);
+								outerloop: for (int pX = blockX - searchAmount; pX != blockX + searchAmount; pX++) {
+									for (int pY = blockY - searchAmount; pY != blockY + searchAmount; pY++) {
+										for (int pZ = blockZ - searchAmount; pZ != blockZ + searchAmount; pZ++) {
+											for (String block : data[6].split(",")) {
+												Material mat = Material.getMaterial(block);
+												if (mat == new Location(playersLocation.getWorld(), pX, pY, pZ).getBlock().getType()) {
+													nearProperBlock = true;
+													break outerloop;
+												}
+											}
+											
+										}
+									}
+								}
+							}else if (data[5].startsWith("LIGHT")) {
+								int lightLevel = p.getLocation().getBlock().getLightLevel();
+								int limit = Integer.parseInt(data[5].split("T")[1]);
+								if(lightLevel > limit) {
+									nearProperBlock = true;
+									break;
+
+								} else {
+									nearProperBlock = false;
+									break;
+
+								}
+								
+								
+								
 							} else if ("ALL".equals(data[5])) {
 								Material below = p.getLocation().add(0, -0.5, 0).getBlock().getType();
 								Material mid1 = p.getLocation().add(0, 0.1, 0).getBlock().getType();
@@ -699,6 +855,42 @@ public class Setters {
 									}
 								}
 							}
+						} else if (data[5].startsWith("CUSTOM")) {
+							Location playersLocation = p.getLocation();
+							int blockX = playersLocation.getBlockX();
+							int blockY = playersLocation.getBlockY();
+							int blockZ = playersLocation.getBlockZ();
+							
+							int searchAmount = Integer.parseInt(data[5].split("M")[1]);
+							outerloop: for (int pX = blockX - searchAmount; pX != blockX + searchAmount; pX++) {
+								for (int pY = blockY - searchAmount; pY != blockY + searchAmount; pY++) {
+									for (int pZ = blockZ - searchAmount; pZ != blockZ + searchAmount; pZ++) {
+										for (String block : data[6].split(",")) {
+											Material mat = Material.getMaterial(block);
+											if (mat == new Location(playersLocation.getWorld(), pX, pY, pZ).getBlock().getType()) {
+												nearProperBlock = true;
+												break outerloop;
+											}
+										}
+										
+									}
+								}
+							}
+						}else if (data[5].startsWith("LIGHT")) {
+							int lightLevel = p.getLocation().getBlock().getLightLevel();
+							int limit = Integer.parseInt(data[5].split("T")[1]);
+							if(lightLevel > limit) {
+								nearProperBlock = true;
+								break;
+
+							} else {
+								nearProperBlock = false;
+								break;
+
+							}
+							
+							
+							
 						} else if ("ALL".equals(data[5])) {
 							Material below = p.getLocation().add(0, -0.5, 0).getBlock().getType();
 							Material mid1 = p.getLocation().add(0, 0.1, 0).getBlock().getType();
@@ -780,6 +972,40 @@ public class Setters {
 									}
 								}
 							}
+						} else if (data[5].startsWith("CUSTOM")) {
+							Location playersLocation = p.getLocation();
+							int blockX = playersLocation.getBlockX();
+							int blockY = playersLocation.getBlockY();
+							int blockZ = playersLocation.getBlockZ();
+							
+							int searchAmount = Integer.parseInt(data[5].split("M")[1]);
+							outerloop: for (int pX = blockX - searchAmount; pX != blockX + searchAmount; pX++) {
+								for (int pY = blockY - searchAmount; pY != blockY + searchAmount; pY++) {
+									for (int pZ = blockZ - searchAmount; pZ != blockZ + searchAmount; pZ++) {
+										for (String block : data[6].split(",")) {
+											Material mat = Material.getMaterial(block);
+											if (mat == new Location(playersLocation.getWorld(), pX, pY, pZ).getBlock().getType()) {
+												nearProperBlock = true;
+												break outerloop;
+											}
+										}
+										
+									}
+								}
+							}
+						}else if (data[5].startsWith("LIGHT")) {
+							int lightLevel = p.getLocation().getBlock().getLightLevel();
+							int limit = Integer.parseInt(data[5].split("T")[1]);
+							if(lightLevel > limit) {
+								nearProperBlock = true;
+								break;
+							} else {
+								nearProperBlock = false;
+								break;
+							}
+							
+							
+							
 						} else if ("ALL".equals(data[5])) {
 							Material below = p.getLocation().add(0, -0.5, 0).getBlock().getType();
 							Material mid1 = p.getLocation().add(0, 0.1, 0).getBlock().getType();
@@ -965,6 +1191,40 @@ public class Setters {
 									}
 								}
 							}
+						}else if (data[5].startsWith("LIGHT")) {
+							int lightLevel = p.getLocation().getBlock().getLightLevel();
+							int limit = Integer.parseInt(data[5].split("T")[1]);
+							if(lightLevel > limit) {
+								nearProperBlock = true;
+								break;
+							} else {
+								nearProperBlock = false;
+								break;
+							}
+							
+							
+							
+						} else if (data[5].startsWith("CUSTOM")) {
+							Location playersLocation = p.getLocation();
+							int blockX = playersLocation.getBlockX();
+							int blockY = playersLocation.getBlockY();
+							int blockZ = playersLocation.getBlockZ();
+							
+							int searchAmount = Integer.parseInt(data[5].split("M")[1]);
+							outerloop: for (int pX = blockX - searchAmount; pX != blockX + searchAmount; pX++) {
+								for (int pY = blockY - searchAmount; pY != blockY + searchAmount; pY++) {
+									for (int pZ = blockZ - searchAmount; pZ != blockZ + searchAmount; pZ++) {
+										for (String block : data[6].split(",")) {
+											Material mat = Material.getMaterial(block);
+											if (mat == new Location(playersLocation.getWorld(), pX, pY, pZ).getBlock().getType()) {
+												nearProperBlock = true;
+												break outerloop;
+											}
+										}
+										
+									}
+								}
+							}
 						} else if ("ALL".equals(data[5])) {
 							Material below = p.getLocation().add(0, -0.5, 0).getBlock().getType();
 							Material mid1 = p.getLocation().add(0, 0.1, 0).getBlock().getType();
@@ -1046,6 +1306,40 @@ public class Setters {
 									}
 								}
 							}
+						} else if (data[5].startsWith("CUSTOM")) {
+							Location playersLocation = p.getLocation();
+							int blockX = playersLocation.getBlockX();
+							int blockY = playersLocation.getBlockY();
+							int blockZ = playersLocation.getBlockZ();
+							
+							int searchAmount = Integer.parseInt(data[5].split("M")[1]);
+							outerloop: for (int pX = blockX - searchAmount; pX != blockX + searchAmount; pX++) {
+								for (int pY = blockY - searchAmount; pY != blockY + searchAmount; pY++) {
+									for (int pZ = blockZ - searchAmount; pZ != blockZ + searchAmount; pZ++) {
+										for (String block : data[6].split(",")) {
+											Material mat = Material.getMaterial(block);
+											if (mat == new Location(playersLocation.getWorld(), pX, pY, pZ).getBlock().getType()) {
+												nearProperBlock = true;
+												break outerloop;
+											}
+										}
+										
+									}
+								}
+							}
+						}else if (data[5].startsWith("LIGHT")) {
+							int lightLevel = p.getLocation().getBlock().getLightLevel();
+							int limit = Integer.parseInt(data[5].split("T")[1]);
+							if(lightLevel > limit) {
+								nearProperBlock = true;
+								break;
+							} else {
+								nearProperBlock = false;
+								break;
+							}
+							
+							
+							
 						} else if ("ALL".equals(data[5])) {
 							Material below = p.getLocation().add(0, -0.5, 0).getBlock().getType();
 							Material mid1 = p.getLocation().add(0, 0.1, 0).getBlock().getType();
