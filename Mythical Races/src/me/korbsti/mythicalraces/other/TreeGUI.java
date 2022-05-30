@@ -29,8 +29,7 @@ public class TreeGUI {
 			isSubRace = true;
 		}
 		for (int i = 0; i != 54; i++) {
-			inventory.setItem(i, (new ItemStack(Material.getMaterial(plugin.configYaml.getString(
-			        "other.treeNonSlots")))));
+			inventory.setItem(i, (new ItemStack(Material.getMaterial(plugin.configYaml.getString("other.treeNonSlots")))));
 		}
 		String race = plugin.dataManager.getRace(p);
 		if (isSubRace) {

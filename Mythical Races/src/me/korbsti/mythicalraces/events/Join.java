@@ -10,6 +10,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import me.korbsti.mythicalraces.MythicalRaces;
+import me.korbsti.mythicalraces.api.RaceChangeEvent;
 import me.korbsti.mythicalraces.other.UpdateChecker;
 import me.korbsti.mythicalraces.race.Race;
 import net.md_5.bungee.api.ChatColor;
@@ -45,21 +46,32 @@ public class Join implements Listener {
 		
 		plugin.playersRace.put(p.getName(), plugin.race.get(plugin.dataManager.getRace(p)));
 		
+		Bukkit.getScheduler().runTask(plugin, new Runnable() {
+			@Override
+			public void run() {
+				Bukkit.getPluginManager().callEvent(new RaceChangeEvent(plugin, plugin.race.get(plugin.dataManager
+				        .getRace(p)).raceName, p));
+			}
+		});
 		
-		
-		
-		if(p.hasPermission("mythicalraces.update.notify")) {
-			if(!plugin.checkUpdate) return;
-	        new UpdateChecker(plugin, 92564).getVersion(version -> {
-	            if (!plugin.getDescription().getVersion().equals(version)) {
-	                p.sendMessage(ChatColor.translateAlternateColorCodes('&', plugin.configYaml.getString("update")));
-	            }
-	        });
+		if (p.hasPermission("mythicalraces.update.notify")) {
+			if (!plugin.checkUpdate)
+				return;
+			new UpdateChecker(plugin, 92564).getVersion(version -> {
+				if (!plugin.getDescription().getVersion().equals(version)) {
+					p.sendMessage(ChatColor.translateAlternateColorCodes('&', plugin.configYaml.getString("update")));
+				}
+			});
+			
+			if (Bukkit.getPluginManager().getPlugin("MRPremiumAddons") != null) {
+				new UpdateChecker(plugin, 102328).getVersion(version -> {
+					if (!plugin.getDescription().getVersion().equals(version)) {
+						p.sendMessage(ChatColor.translateAlternateColorCodes('&', plugin.configYaml.getString("update").replace("MythicalRaces", "MRPremiumAddons")));
+					}
+				});
+			}
 			
 		}
-		
-		
-		
 		
 	}
 }

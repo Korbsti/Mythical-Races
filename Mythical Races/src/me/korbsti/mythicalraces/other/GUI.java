@@ -11,6 +11,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 
+import me.clip.placeholderapi.PlaceholderAPI;
 import me.korbsti.mythicalraces.MythicalRaces;
 import net.md_5.bungee.api.ChatColor;
 
@@ -30,8 +31,11 @@ public class GUI {
 		playerHeadMeta.setOwningPlayer(p);
 		ArrayList<String> lore1 = new ArrayList<>();
 		for (Object obj : plugin.configYaml.getList("other.guiPlayerLore")) {
-			lore1.add(ChatColor.translateAlternateColorCodes('&', obj.toString().replace("{race}", plugin.dataManager
-			        .getRace(p))));
+			if(plugin.hasPlaceholders) {
+				lore1.add(ChatColor.translateAlternateColorCodes('&', PlaceholderAPI.setPlaceholders(p, obj.toString().replace("{race}", plugin.dataManager.getRace(p)))));
+				continue;
+			}
+			lore1.add(ChatColor.translateAlternateColorCodes('&', obj.toString().replace("{race}", plugin.dataManager.getRace(p))));
 		}
 		playerHeadMeta.setLore(lore1);
 		playerHeadMeta.setDisplayName(ChatColor.translateAlternateColorCodes('&', plugin.configYaml.getString(
@@ -51,8 +55,7 @@ public class GUI {
 					lore.add(ChatColor.translateAlternateColorCodes('&', obj.toString()));
 				}
 				meta.setLore(lore);
-				meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', plugin.configYaml.getString("races."
-				        + str + ".displayName")));
+				meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', plugin.configYaml.getString("races."+ str + ".displayName")));
 				stack.setItemMeta(meta);
 				listStack.add(stack);
 				numberStack.add(plugin.configYaml.getInt("races." + str + ".slot"));

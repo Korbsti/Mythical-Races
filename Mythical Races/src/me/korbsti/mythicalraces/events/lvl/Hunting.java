@@ -28,7 +28,7 @@ public class Hunting implements Listener {
 		if (e.getFinalDamage() - ((LivingEntity) dmg).getHealth() < 0) return;
 		Player p = (Player) e.getDamager();
 		Race ras = plugin.playersRace.get(p.getName());
-		if(!"HUNTING".contains(ras.lvlType)) return;
+		if(!ras.lvlType.contains("HUNTING")) return;
 		plugin.changeXP(p, ras.xpGain);
 		plugin.checkLevelUp(ras, p);
 		

@@ -203,16 +203,16 @@ public class Setters {
 										}
 									}
 								}
-							}else if (data[5].startsWith("LIGHTB")) {
+							} else if (data[5].startsWith("LIGHTB")) {
 								int lightLevel = p.getLocation().getBlock().getLightLevel();
 								int limit = Integer.parseInt(data[5].split("B")[1]);
+								
+								
 								if(lightLevel < limit) {
 									nearProperBlock = true;
-									break;
 
 								} else {
 									nearProperBlock = false;
-									break;
 
 								}
 								
@@ -223,11 +223,9 @@ public class Setters {
 								int limit = Integer.parseInt(data[5].split("A")[1]);
 								if(lightLevel > limit) {
 									nearProperBlock = true;
-									break;
-
+								
 								} else {
 									nearProperBlock = false;
-									break;
 
 								}
 								
@@ -341,13 +339,14 @@ public class Setters {
 							}else if (data[5].startsWith("LIGHTB")) {
 								int lightLevel = p.getLocation().getBlock().getLightLevel();
 								int limit = Integer.parseInt(data[5].split("B")[1]);
+								
+
+								
 								if(lightLevel < limit) {
 									nearProperBlock = true;
-									break;
 
 								} else {
 									nearProperBlock = false;
-									break;
 
 								}
 								
@@ -356,18 +355,12 @@ public class Setters {
 							}else if (data[5].startsWith("LIGHTA")) {
 								int lightLevel = p.getLocation().getBlock().getLightLevel();
 								int limit = Integer.parseInt(data[5].split("A")[1]);
+								
 								if(lightLevel > limit) {
 									nearProperBlock = true;
-									break;
-
 								} else {
 									nearProperBlock = false;
-									break;
-
 								}
-								
-								
-								
 							}    else if ("ALL".equals(data[5])) {
 								Material below = p.getLocation().add(0, -0.5, 0).getBlock().getType();
 								Material mid1 = p.getLocation().add(0, 0.1, 0).getBlock().getType();
@@ -389,7 +382,7 @@ public class Setters {
 							
 						}
 					}
-					
+
 					int elseAmp = Integer.parseInt(data[4]);
 					if (effe != null) {
 						
@@ -581,11 +574,9 @@ public class Setters {
 								int limit = Integer.parseInt(data[5].split("B")[1]);
 								if(lightLevel < limit) {
 									nearProperBlock = true;
-									break;
 
 								} else {
 									nearProperBlock = false;
-									break;
 
 								}
 								
@@ -596,11 +587,9 @@ public class Setters {
 								int limit = Integer.parseInt(data[5].split("A")[1]);
 								if(lightLevel > limit) {
 									nearProperBlock = true;
-									break;
 
 								} else {
 									nearProperBlock = false;
-									break;
 
 								}
 								
@@ -713,11 +702,8 @@ public class Setters {
 								int limit = Integer.parseInt(data[5].split("B")[1]);
 								if(lightLevel < limit) {
 									nearProperBlock = true;
-									break;
-
 								} else {
 									nearProperBlock = false;
-									break;
 
 								}
 								
@@ -728,11 +714,9 @@ public class Setters {
 								int limit = Integer.parseInt(data[5].split("A")[1]);
 								if(lightLevel > limit) {
 									nearProperBlock = true;
-									break;
 
 								} else {
 									nearProperBlock = false;
-									break;
 
 								}
 								
@@ -941,11 +925,9 @@ public class Setters {
 							int limit = Integer.parseInt(data[5].split("B")[1]);
 							if(lightLevel < limit) {
 								nearProperBlock = true;
-								break;
 
 							} else {
 								nearProperBlock = false;
-								break;
 
 							}
 							
@@ -956,11 +938,9 @@ public class Setters {
 							int limit = Integer.parseInt(data[5].split("A")[1]);
 							if(lightLevel > limit) {
 								nearProperBlock = true;
-								break;
 
 							} else {
 								nearProperBlock = false;
-								break;
 
 							}
 							
@@ -1073,11 +1053,9 @@ public class Setters {
 							int limit = Integer.parseInt(data[5].split("B")[1]);
 							if(lightLevel < limit) {
 								nearProperBlock = true;
-								break;
 
 							} else {
 								nearProperBlock = false;
-								break;
 
 							}
 							
@@ -1088,11 +1066,9 @@ public class Setters {
 							int limit = Integer.parseInt(data[5].split("A")[1]);
 							if(lightLevel > limit) {
 								nearProperBlock = true;
-								break;
 
 							} else {
 								nearProperBlock = false;
-								break;
 
 							}
 							
@@ -1215,7 +1191,6 @@ public class Setters {
 					inProperWorld = true;
 				}
 				String pInsideBiome = p.getLocation().getBlock().getBiome().toString();
-				// ALL Y > -1000 -1 ALL GRASS
 				for (String biome : data[0].split(",")) {
 					if (biome.equals(pInsideBiome)) {
 						inBiome = true;
@@ -1288,11 +1263,8 @@ public class Setters {
 							int limit = Integer.parseInt(data[5].split("B")[1]);
 							if(lightLevel < limit) {
 								nearProperBlock = true;
-								break;
-
 							} else {
 								nearProperBlock = false;
-								break;
 
 							}
 							
@@ -1303,11 +1275,9 @@ public class Setters {
 							int limit = Integer.parseInt(data[5].split("A")[1]);
 							if(lightLevel > limit) {
 								nearProperBlock = true;
-								break;
 
 							} else {
 								nearProperBlock = false;
-								break;
 
 							}
 							
@@ -1441,11 +1411,9 @@ public class Setters {
 							int limit = Integer.parseInt(data[5].split("B")[1]);
 							if(lightLevel < limit) {
 								nearProperBlock = true;
-								break;
 
 							} else {
 								nearProperBlock = false;
-								break;
 
 							}
 							
@@ -1456,11 +1424,8 @@ public class Setters {
 							int limit = Integer.parseInt(data[5].split("A")[1]);
 							if(lightLevel > limit) {
 								nearProperBlock = true;
-								break;
-
 							} else {
 								nearProperBlock = false;
-								break;
 
 							}
 							
@@ -1493,8 +1458,7 @@ public class Setters {
 					        && !signR || greaterThanY && signR)) {
 						p.getAttribute(att).setBaseValue(plugin.race.get(str).dayRacePassiveAttributesAmount.get(x)
 						        + addedAmount);
-					} else if (inBiome && nearProperBlock && inProperWorld && inProperWeather && (lowerThanY && !signR
-					        || greaterThanY && signR)) {
+					} else if (inBiome && nearProperBlock && inProperWorld && inProperWeather && (lowerThanY && !signR|| greaterThanY && signR)) {
 						p.getAttribute(att).setBaseValue(plugin.race.get(str).dayRacePassiveAttributesAmount.get(x)
 						        + addedAmount);
 					} else {

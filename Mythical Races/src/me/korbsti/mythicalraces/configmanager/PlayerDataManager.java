@@ -3,9 +3,11 @@ package me.korbsti.mythicalraces.configmanager;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import me.korbsti.mythicalraces.MythicalRaces;
+import me.korbsti.mythicalraces.api.RaceChangeEvent;
 
 public class PlayerDataManager {
 	MythicalRaces plugin;
@@ -26,10 +28,31 @@ public class PlayerDataManager {
 	
 	public void checkIfUnknown(Player p) {
 		if (dataByUUID && plugin.dataYaml.getString(p.getUniqueId().toString()) == null) {
-			plugin.dataYaml.set(p.getUniqueId().toString() + ".race", plugin.configYaml.getString("other.defaultRace"));
+			String defaultRace = plugin.configYaml.getString("other.defaultRace");
+			plugin.dataYaml.set(p.getUniqueId().toString() + ".race", defaultRace);
+			
+			Bukkit.getScheduler().runTask(plugin, new Runnable() {
+				@Override
+				public void run() {
+					Bukkit.getPluginManager().callEvent(new RaceChangeEvent(plugin, defaultRace, p));
+				}
+			});
+			
 		}
 		if (!dataByUUID && plugin.dataYaml.getString(p.getName()) == null) {
-		plugin.dataYaml.set(p.getName() + ".race", plugin.configYaml.getString("other.defaultRace"));
+			String defaultRace = plugin.configYaml.getString("other.defaultRace");
+
+			
+		plugin.dataYaml.set(p.getName() + ".race", defaultRace);
+		
+		Bukkit.getScheduler().runTask(plugin, new Runnable() {
+			@Override
+			public void run() {
+				Bukkit.getPluginManager().callEvent(new RaceChangeEvent(plugin, defaultRace, p));
+			}
+		});
+		
+		
 		}
 		try {
 			plugin.dataYaml.save(plugin.dataFile);
@@ -89,6 +112,16 @@ public class PlayerDataManager {
 			plugin.dataYaml.set(p.getName() + ".race", race);
 		plugin.playersRace.put(p.getName(), plugin.race.get(race));
 		plugin.dataManager.setChosenRace(p, false);
+		
+		
+		Bukkit.getScheduler().runTask(plugin, new Runnable() {
+			@Override
+			public void run() {
+				Bukkit.getPluginManager().callEvent(new RaceChangeEvent(plugin, race, p));
+			}
+		});
+		
+		
 		try {
 			plugin.dataYaml.save(plugin.dataFile);
 		} catch (Exception e) {

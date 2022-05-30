@@ -4,6 +4,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerFishEvent;
+import org.bukkit.event.player.PlayerFishEvent.State;
 
 import me.korbsti.mythicalraces.MythicalRaces;
 import me.korbsti.mythicalraces.race.Race;
@@ -16,14 +17,16 @@ public class Fishing implements Listener {
 		this.plugin = plugin;
 	}
 	
-	@EventHandler(ignoreCancelled=true)
+	@EventHandler(ignoreCancelled = true)
 	public void onFish(PlayerFishEvent e) {
 		Player p = e.getPlayer();
 		Race ras = plugin.playersRace.get(p.getName());
-		if(!"FISHING".contains(ras.lvlType)) return; 
-		plugin.changeXP(p, ras.xpGain);
-		plugin.checkLevelUp(ras, p);
+		if (!ras.lvlType.contains("FISHING")) return;
+		State state = e.getState();
+		if (state == State.CAUGHT_ENTITY || state == State.CAUGHT_FISH) {
+			plugin.changeXP(p, ras.xpGain);
+			plugin.checkLevelUp(ras, p);
+		}
 	}
-	
 	
 }

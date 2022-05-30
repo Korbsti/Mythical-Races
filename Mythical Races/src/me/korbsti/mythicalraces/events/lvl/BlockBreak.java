@@ -1,5 +1,6 @@
 package me.korbsti.mythicalraces.events.lvl;
 
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -20,7 +21,7 @@ public class BlockBreak implements Listener {
 	public void onBlockBreak(BlockBreakEvent e) {
 		Player p = e.getPlayer();
 		Race ras = plugin.playersRace.get(p.getName());
-		if ("EXCAVATION".contains(ras.lvlType)) {
+		if (ras.lvlType.contains("EXCAVATION")) {
 			plugin.changeXP(p, ras.xpGain);
 			plugin.checkLevelUp(ras, p);
 			return;
@@ -28,13 +29,14 @@ public class BlockBreak implements Listener {
 		
 		String matType = e.getBlock().getType().toString();
 		
-		if ("MINER".contains(ras.lvlType) && (matType.contains("STONE") ||matType.contains("ORE"))) {
+		if (ras.lvlType.contains("MINER") && (matType.contains("STONE") || matType.contains("ORE") || matType.contains("DEEPSLATE"))) {
 			plugin.changeXP(p, ras.xpGain);
 			plugin.checkLevelUp(ras, p);
 			return;
 			
 		}
-		if ("WOODCUTTER".contains(ras.lvlType) && (matType.contains("WOOD") || matType.contains("LOG"))) {
+		
+		if (ras.lvlType.contains("WOODCUTTER") && (matType.contains("WOOD") || matType.contains("LOG"))) {
 			plugin.changeXP(p, ras.xpGain);
 			plugin.checkLevelUp(ras, p);
 			return;

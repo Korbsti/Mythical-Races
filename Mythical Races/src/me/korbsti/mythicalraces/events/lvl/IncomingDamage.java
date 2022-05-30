@@ -3,28 +3,35 @@ package me.korbsti.mythicalraces.events.lvl;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 
 import me.korbsti.mythicalraces.MythicalRaces;
 import me.korbsti.mythicalraces.race.Race;
 
-public class BlockPlace implements Listener {
+public class IncomingDamage implements Listener {
 	
 	MythicalRaces plugin;
 	
-	public BlockPlace(MythicalRaces plugin) {
+	
+	public IncomingDamage(MythicalRaces plugin) {
 		this.plugin = plugin;
 	}
 	
 	
-	@EventHandler(ignoreCancelled=true)
-	public void onBlockPlace(BlockPlaceEvent e) {
-		Player p = e.getPlayer();
+	@EventHandler
+	public void onIncomingDamage(EntityDamageEvent e) {
+		
+		if (!(e.getEntity() instanceof Player))
+			return;
+		Player p = (Player) e.getEntity();
 		Race ras = plugin.playersRace.get(p.getName());
-		if(!ras.lvlType.contains("BUILDER")) return;
+		if (!"TANKER".contains(ras.lvlType))
+			return;
 		plugin.changeXP(p, ras.xpGain);
 		plugin.checkLevelUp(ras, p);
+		
 	}
+	
 	
 	
 	

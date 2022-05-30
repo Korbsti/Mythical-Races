@@ -19,6 +19,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
+import me.korbsti.mythicalraces.api.RaceChangeEvent;
 import me.korbsti.mythicalraces.bstats.Metrics;
 import me.korbsti.mythicalraces.commands.Commands;
 import me.korbsti.mythicalraces.configmanager.ConfigCreator;
@@ -32,6 +33,7 @@ import me.korbsti.mythicalraces.events.lvl.BlockPlace;
 import me.korbsti.mythicalraces.events.lvl.Fishing;
 import me.korbsti.mythicalraces.events.lvl.Harvest;
 import me.korbsti.mythicalraces.events.lvl.Hunting;
+import me.korbsti.mythicalraces.events.lvl.IncomingDamage;
 import me.korbsti.mythicalraces.other.GUI;
 import me.korbsti.mythicalraces.other.SetPlayersRace;
 import me.korbsti.mythicalraces.other.Setters;
@@ -95,12 +97,18 @@ public class MythicalRaces extends JavaPlugin {
 	
 	public String cooldown;
 	
+	public boolean hasPlaceholders = false;
+	
 	@Override
 	public void onEnable() {
 		onStartup();
+		
 		if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
 			new PAPI(this).register();
+			hasPlaceholders = true;
+			
 		}
+		
 		Metrics metrics = new Metrics(this, 12954);
 		
 		int timerCheckingPotionEffects = configYaml.getInt("other.timerCheckingPotionEffects");
@@ -130,7 +138,22 @@ public class MythicalRaces extends JavaPlugin {
 			public void run() {
 				for (Player p : Bukkit.getOnlinePlayers()) {
 					Race userRace = playersRace.get(p.getName());
-					if (userRace.lvlType.equals("RUNNING")) {
+					
+					if (userRace.lvlType.contains("FLYING")) {
+						if (p.isGliding()) {
+							changeXP(p, userRace.xpGain);
+							checkLevelUp(userRace, p);
+						}
+					}
+					
+					if (userRace.lvlType.contains("SWIMMING")) {
+						if (p.isSwimming()) {
+							changeXP(p, userRace.xpGain);
+							checkLevelUp(userRace, p);
+						}
+					}
+					
+					if (userRace.lvlType.contains("RUNNING")) {
 						if (playerLocation.get(p.getName()) != null) {
 							if (p.getLocation().getWorld() == playerLocation.get(p.getName()).getWorld()) {
 								if (p.getLocation().distance(playerLocation.get(p.getName())) > distance) {
@@ -159,8 +182,8 @@ public class MythicalRaces extends JavaPlugin {
 			public void run() {
 				dataManager.setPlayerLevel(p, dataManager.getPlayerLevel(p) + 1);
 				dataManager.setPlayerXP(p, 0);
-				p.sendMessage(ChatColor.translateAlternateColorCodes('&', configYaml.getString("levelup")
-				        .replace("{level}", "" + dataManager.getPlayerLevel(p))));
+				p.sendMessage(ChatColor.translateAlternateColorCodes('&', configYaml.getString("levelup").replace(
+				        "{level}", "" + dataManager.getPlayerLevel(p))));
 				
 			}
 			
@@ -388,6 +411,7 @@ public class MythicalRaces extends JavaPlugin {
 		pm.registerEvents(new BlockPlace(this), this);
 		pm.registerEvents(new Harvest(this), this);
 		pm.registerEvents(new BlockBreak(this), this);
+		pm.registerEvents(new IncomingDamage(this), this);
 		
 		for (Player p : Bukkit.getOnlinePlayers()) {
 			dataManager.checkIfUnknown(p);
@@ -409,6 +433,15 @@ public class MythicalRaces extends JavaPlugin {
 					gui.selectRaceGUI(p);
 				}
 			}
+			
+			MythicalRaces plugin = this;
+			Bukkit.getScheduler().runTask(this, new Runnable() {
+				@Override
+				public void run() {
+					Bukkit.getPluginManager().callEvent(new RaceChangeEvent(plugin, race.get(dataManager.getRace(
+					        p)).raceName, p));
+				}
+			});
 		}
 		
 		if (!checkUpdate)
@@ -419,6 +452,15 @@ public class MythicalRaces extends JavaPlugin {
 			} else {
 			}
 		});
+		if (Bukkit.getPluginManager().getPlugin("MRPremiumAddons") != null) {
+			new UpdateChecker(this, 102328).getVersion(version -> {
+				if (!this.getDescription().getVersion().equals(version)) {
+					getLogger().info(
+					        "There is a new update available for MRPremiumAddons. Remember to read the changelog before updating!");
+				} else {
+				}
+			});
+		}
 		
 	}
 	
