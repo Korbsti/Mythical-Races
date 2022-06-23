@@ -207,6 +207,15 @@ public class Commands implements CommandExecutor {
 						return true;
 					}
 				}
+				for (String str : plugin.subRaceNames) {
+					if (str.equalsIgnoreCase(args[1])) {
+						for (Object obj : plugin.configYaml.getList("races." + str + ".lore")) {
+							sender.sendMessage(ChatColor.translateAlternateColorCodes('&', obj.toString()));
+						}
+						return true;
+					}
+				}
+				
 				
 				sender.sendMessage(ChatColor.translateAlternateColorCodes('&', plugin.configYaml.getString(
 				        "invalidRace")));

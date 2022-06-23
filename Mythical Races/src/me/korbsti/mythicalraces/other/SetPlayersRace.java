@@ -13,12 +13,11 @@ public class SetPlayersRace {
 	}
 	
 	public void changePlayersRace(Player p, String s) {
-		if (plugin.resetBaseLevel) {
-			plugin.dataManager.setPlayerLevel(p, 1);
-		}
 		plugin.dataManager.setPlayerRace(p, s);
 		plugin.setter.switchingRaces(p, s);
 		plugin.dataManager.setCooldown(p, plugin.cooldown);
+		plugin.dataManager.checkIfLevelNull(p);
+		plugin.dataManager.checkIfXpNull(p);
 	}
 	
 }

@@ -5,6 +5,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Mob;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -24,13 +25,46 @@ public class Hunting implements Listener {
 	@EventHandler(ignoreCancelled=true)
 	public void onDamage(EntityDamageByEntityEvent e) {
 		Entity dmg = e.getEntity();
-		if(!(dmg instanceof LivingEntity) || !(e.getDamager() instanceof Player)) return; 
-		if (e.getFinalDamage() - ((LivingEntity) dmg).getHealth() < 0) return;
-		Player p = (Player) e.getDamager();
-		Race ras = plugin.playersRace.get(p.getName());
-		if(!ras.lvlType.contains("HUNTING")) return;
-		plugin.changeXP(p, ras.xpGain);
-		plugin.checkLevelUp(ras, p);
+		if(!(dmg instanceof LivingEntity)) return; 
+		Entity dmger = e.getDamager();
+		if(!(dmger instanceof Player || dmger instanceof Projectile)) return; 
+		
+		Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
+
+			@Override
+			public void run() {
+				if(dmger instanceof Projectile) {
+					Projectile proj = (Projectile) dmger;
+					if(proj.getShooter() instanceof Player) {
+						if(dmg.isDead()) {
+							Player p = (Player) proj.getShooter();
+							Race ras = plugin.playersRace.get(p.getName());
+							if(!ras.lvlType.contains("ARCHER")) return;
+							plugin.changeXP(p, ras.xpGain);
+							plugin.checkLevelUp(ras, p);
+						}
+					}
+					
+					return;
+				} 
+				
+				
+				if(dmg.isDead()) {
+					Player p = (Player) e.getDamager();
+					Race ras = plugin.playersRace.get(p.getName());
+					if(!ras.lvlType.contains("HUNTING")) return;
+					plugin.changeXP(p, ras.xpGain);
+					plugin.checkLevelUp(ras, p);
+				}
+				
+				
+			}
+			
+			
+		}, 1);
+		
+		
+
 		
 	}
 	

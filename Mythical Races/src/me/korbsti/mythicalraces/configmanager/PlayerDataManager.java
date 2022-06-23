@@ -133,8 +133,7 @@ public class PlayerDataManager {
 		for (String key : plugin.dataYaml.getKeys(false)) {
 			if (plugin.dataYaml.getString(key + ".time") != null) {
 				if (!"0".equals(plugin.dataYaml.getString(key + ".time")))
-					plugin.dataYaml.set(key + ".time", String.valueOf(Integer.valueOf(plugin.dataYaml
-					        .getString(key + ".time")) - 1));
+					plugin.dataYaml.set(key + ".time", String.valueOf(Integer.valueOf(plugin.dataYaml.getString(key + ".time")) - 1));
 			}
 		}
 		try {
@@ -144,10 +143,11 @@ public class PlayerDataManager {
 	}
 	
 	public void checkIfLevelNull(Player p) {
-		if (dataByUUID && plugin.dataYaml.getString(p.getUniqueId().toString() + ".level") == null)
-			plugin.dataYaml.set(p.getUniqueId().toString() + ".level", 1);
-		if (!dataByUUID && plugin.dataYaml.getString(p.getName() + ".level") == null)
-			plugin.dataYaml.set(p.getName() + ".level", 1);
+		String raceName = this.getRace(p);
+		if (dataByUUID && plugin.dataYaml.getString(p.getUniqueId().toString()+ "." + raceName + ".level") == null)
+			plugin.dataYaml.set(p.getUniqueId().toString() + "." + raceName+ ".level", 1);
+		if (!dataByUUID && plugin.dataYaml.getString(p.getName() + "." + raceName+ ".level") == null)
+			plugin.dataYaml.set(p.getName() + "." + raceName+ ".level", 1);
 		try {
 			plugin.dataYaml.save(plugin.dataFile);
 		} catch (IOException e) {
@@ -156,10 +156,11 @@ public class PlayerDataManager {
 	}
 	
 	public void checkIfXpNull(Player p) {
-		if (dataByUUID && plugin.dataYaml.getString(p.getUniqueId().toString() + ".xp") == null)
-			plugin.dataYaml.set(p.getUniqueId().toString() + ".xp", 0);
-		if (!dataByUUID && plugin.dataYaml.getString(p.getName() + ".xp") == null)
-			plugin.dataYaml.set(p.getName() + ".xp", 0);
+		String raceName = this.getRace(p);
+		if (dataByUUID && plugin.dataYaml.getString(p.getUniqueId().toString() + "." + raceName+ ".xp") == null)
+			plugin.dataYaml.set(p.getUniqueId().toString() + "." + raceName+ ".xp", 0);
+		if (!dataByUUID && plugin.dataYaml.getString(p.getName() + "." + raceName+ ".xp") == null)
+			plugin.dataYaml.set(p.getName() + "." + raceName+ ".xp", 0);
 		try {
 			plugin.dataYaml.save(plugin.dataFile);
 		} catch (IOException e) {
@@ -187,11 +188,11 @@ public class PlayerDataManager {
 	}
 	
 	public void setPlayerXP(Player p, int x) {
-		
+		String raceName = this.getRace(p);
 		if (dataByUUID)
-			plugin.dataYaml.set(p.getUniqueId().toString() + ".xp", x);
+			plugin.dataYaml.set(p.getUniqueId().toString() + "." + raceName+ ".xp", x);
 		if (!dataByUUID)
-			plugin.dataYaml.set(p.getName() + ".xp", x);
+			plugin.dataYaml.set(p.getName() + "." + raceName+ ".xp", x);
 		try {
 			plugin.dataYaml.save(plugin.dataFile);
 		} catch (IOException e) {
@@ -200,10 +201,12 @@ public class PlayerDataManager {
 	}
 	
 	public int getPlayerXP(Player p) {
+		String raceName = this.getRace(p);
+		
 		if (dataByUUID)
-			return plugin.dataYaml.getInt(p.getUniqueId().toString() + ".xp");
+			return plugin.dataYaml.getInt(p.getUniqueId().toString() + "." + raceName+ ".xp");
 		if (!dataByUUID)
-			return plugin.dataYaml.getInt(p.getName() + ".xp");
+			return plugin.dataYaml.getInt(p.getName() + "." + raceName+ ".xp");
 		return 0;
 	}
 	
@@ -222,10 +225,11 @@ public class PlayerDataManager {
 	}
 	
 	public void setPlayerLevel(Player p, int x) {
+		String raceName = this.getRace(p);
 		if (dataByUUID)
-			plugin.dataYaml.set(p.getUniqueId().toString() + ".level", x);
+			plugin.dataYaml.set(p.getUniqueId().toString() + "." + raceName+ ".level", x);
 		if (!dataByUUID)
-			plugin.dataYaml.set(p.getName() + ".level", x);
+			plugin.dataYaml.set(p.getName() + "." + raceName+ ".level", x);
 		try {
 			plugin.dataYaml.save(plugin.dataFile);
 		} catch (IOException e) {
@@ -251,10 +255,11 @@ public class PlayerDataManager {
 	}
 	
 	public int getPlayerLevel(Player p) {
+		String raceName = this.getRace(p);
 		if (dataByUUID)
-			return plugin.dataYaml.getInt(p.getUniqueId().toString() + ".level");
+			return plugin.dataYaml.getInt(p.getUniqueId().toString() + "." + raceName+ ".level");
 		if (!dataByUUID)
-			return plugin.dataYaml.getInt(p.getName() + ".level");
+			return plugin.dataYaml.getInt(p.getName() + "." + raceName+ ".level");
 		return 0;
 	}
 }

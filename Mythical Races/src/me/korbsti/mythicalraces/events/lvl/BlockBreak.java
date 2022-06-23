@@ -42,6 +42,13 @@ public class BlockBreak implements Listener {
 			return;
 		}
 		
+		if (ras.lvlType.contains("DIGGER") && (matType.equals("GRASS_BLOCK") || matType.contains("DIRT") || matType.equals("GRAVEL"))) {
+			plugin.changeXP(p, ras.xpGain);
+			plugin.checkLevelUp(ras, p);
+			return;
+		}
+		
+		
 	}
 	
 }

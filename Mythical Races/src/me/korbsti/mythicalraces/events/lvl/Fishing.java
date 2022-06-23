@@ -23,7 +23,7 @@ public class Fishing implements Listener {
 		Race ras = plugin.playersRace.get(p.getName());
 		if (!ras.lvlType.contains("FISHING")) return;
 		State state = e.getState();
-		if (state == State.CAUGHT_ENTITY || state == State.CAUGHT_FISH) {
+		if (state == State.CAUGHT_FISH) {
 			plugin.changeXP(p, ras.xpGain);
 			plugin.checkLevelUp(ras, p);
 		}

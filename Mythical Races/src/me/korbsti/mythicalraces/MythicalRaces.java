@@ -58,7 +58,6 @@ public class MythicalRaces extends JavaPlugin {
 	
 	// boolean stuff
 	public boolean forceRace;
-	public boolean resetBaseLevel;
 	public boolean checkUpdate;
 	
 	// Races
@@ -182,8 +181,7 @@ public class MythicalRaces extends JavaPlugin {
 			public void run() {
 				dataManager.setPlayerLevel(p, dataManager.getPlayerLevel(p) + 1);
 				dataManager.setPlayerXP(p, 0);
-				p.sendMessage(ChatColor.translateAlternateColorCodes('&', configYaml.getString("levelup").replace(
-				        "{level}", "" + dataManager.getPlayerLevel(p))));
+				p.sendMessage(ChatColor.translateAlternateColorCodes('&', configYaml.getString("levelup").replace("{level}", "" + dataManager.getPlayerLevel(p))));
 				
 			}
 			
@@ -206,8 +204,7 @@ public class MythicalRaces extends JavaPlugin {
 			
 			@Override
 			public void run() {
-				if (dataManager.getPlayerXP(p) >= userRace.xpPerLevel * dataManager.getPlayerLevel(p) && dataManager
-				        .getPlayerLevel(p) < userRace.maxLevel) {
+				if (dataManager.getPlayerXP(p) >= userRace.xpPerLevel * dataManager.getPlayerLevel(p) && dataManager.getPlayerLevel(p) < userRace.maxLevel) {
 					changeLevel(p);
 				}
 				
@@ -227,7 +224,6 @@ public class MythicalRaces extends JavaPlugin {
 		nightStart = configYaml.getInt("other.nightStart");
 		nightEnd = configYaml.getInt("other.nightEnd");
 		forceRace = configYaml.getBoolean("other.forceRace");
-		resetBaseLevel = configYaml.getBoolean("other.resetBaseLevel");
 		checkUpdate = configYaml.getBoolean("other.checkUpdates");
 		
 		getCommand("races").setExecutor(new Commands(this));
