@@ -23,6 +23,7 @@ import me.korbsti.mythicalraces.api.RaceChangeEvent;
 import me.korbsti.mythicalraces.bstats.Metrics;
 import me.korbsti.mythicalraces.commands.Commands;
 import me.korbsti.mythicalraces.configmanager.ConfigCreator;
+import me.korbsti.mythicalraces.configmanager.PlayerConfigData;
 import me.korbsti.mythicalraces.configmanager.PlayerDataManager;
 import me.korbsti.mythicalraces.events.InventoryClick;
 import me.korbsti.mythicalraces.events.InventoryClose;
@@ -48,9 +49,7 @@ public class MythicalRaces extends JavaPlugin {
 	// Configuration File Stuff
 	public YamlConfiguration configYaml;
 	public File configFile;
-	
-	public YamlConfiguration dataYaml;
-	public File dataFile;
+
 	
 	// day or night
 	public int nightStart;
@@ -98,6 +97,8 @@ public class MythicalRaces extends JavaPlugin {
 	
 	public boolean hasPlaceholders = false;
 	
+	public HashMap<String, PlayerConfigData> playerData = new HashMap<>();
+
 	@Override
 	public void onEnable() {
 		onStartup();
@@ -215,11 +216,14 @@ public class MythicalRaces extends JavaPlugin {
 	
 	@Override
 	public void onDisable() {
-		
+		for(Player p : Bukkit.getOnlinePlayers()) {			
+			p.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(20.0);
+			p.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0.1);
+		}
 	}
 	
 	public void onStartup() {
-		configCreator.configCreator("config.yml", "data.yml");
+		configCreator.configCreator("config.yml");
 		dataManager.dataByUUID = configYaml.getBoolean("other.dataByUUID");
 		nightStart = configYaml.getInt("other.nightStart");
 		nightEnd = configYaml.getInt("other.nightEnd");
@@ -410,11 +414,14 @@ public class MythicalRaces extends JavaPlugin {
 		pm.registerEvents(new IncomingDamage(this), this);
 		
 		for (Player p : Bukkit.getOnlinePlayers()) {
-			dataManager.checkIfUnknown(p);
+			playerData.put(p.getName(), new PlayerConfigData(this, p));
+
+			dataManager.checkIfUnknown(p, false);
 			dataManager.checkIfTimeNull(p);
 			dataManager.checkIfLevelNull(p);
 			dataManager.checkIfXpNull(p);
 			dataManager.checkIfChosenRace(p);
+			dataManager.checkIfPlayerName(p);
 			
 			setter.setEffects(p);
 			guiNumber.put(p.getName(), 1);
@@ -434,8 +441,7 @@ public class MythicalRaces extends JavaPlugin {
 			Bukkit.getScheduler().runTask(this, new Runnable() {
 				@Override
 				public void run() {
-					Bukkit.getPluginManager().callEvent(new RaceChangeEvent(plugin, race.get(dataManager.getRace(
-					        p)).raceName, p));
+					Bukkit.getPluginManager().callEvent(new RaceChangeEvent(plugin, race.get(dataManager.getRace(p)).raceName, p, false));
 				}
 			});
 		}

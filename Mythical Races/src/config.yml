@@ -1,7 +1,7 @@
 # ********************************************** #
 #                                                #
 #     -- Mythical Races Configuration File --    #
-#           -- Version 1.2.6 --                  #
+#           -- Version 1.4.0 --                  #
 #                                                #
 # ********************************************** #
 # Attributes are as follows
@@ -138,7 +138,7 @@
 # if false then store by player names
 
 # Types of 'lvlType' are as follows
-# HUNTING, RUNNING, HARVESTING, BUILDING, FISHING, EXCAVATION, MINER, WOODCUTTER, 
+# HUNTING, RUNNING, HARVESTING, BUILDER, FISHING, EXCAVATION, MINER, WOODCUTTER, TANKER, SWIMMING, FLYING, DIGGER, ARCHER
 # NOTE it is very important that you note that for the races , excavation, building, hunting and harvesting that xp GAIN can be very fast, so make sure to put xpPerLevel to a high number to make it more fair
 
 # Some useful links when creating complicated races
@@ -148,8 +148,9 @@
 
 # NOW for some special data types, below will be some examples
 # 'ALL Y > -1000 -1 VAMPIRE VAMPIRE ALL ALL' - this means apply effect if all blocks above the player to sky limit isnt a solid block
-# 'ALL Y > -1000 -1 CUSTOM[num] ALL ALL ALL' - CUSTOM means, in X radius of blocks next to it, it can be CUSTOM10 or CUSTOM1 or even CUSTOM100 if you hate your server, replace [num] to search for a radius
-# 'ALL Y > -1000 -1 LIGHT[num] ALL ALL ALL' - this means apply effect if the light level is greater than the [num] next to it, example would be LIGHT6, now the limits are [0 - 14] in terms of levels
+# 'ALL Y > -1000 -1 CUSTOM[num] [INSERT BLOCKS HERE] ALL ALL' - CUSTOM means, in X radius of blocks next to it, it can be CUSTOM10 or CUSTOM1 or even CUSTOM100 if you hate your server, replace [num] to search for a radius
+# 'ALL Y > -1000 -1 LIGHTA[num] LIGHT ALL ALL' - this means apply effect if the light level is greater than the [num] next to it, example would be LIGHT6, now the limits are [0 - 14] in terms of levels
+# 'ALL Y > -1000 -1 LIGHTB[num] LIGHT ALL ALL' - this means apply effect if the light level is lower than the [num] next to it, example would be LIGHT6, now the limits are [0 - 14] in terms of levels
 
 
 
@@ -167,9 +168,6 @@ other:
    
    # Force the player to choose a race inside the GUI when the first join the server
    forceRace: false
-   
-   # If the player switches a BASE race then their level gets turned back to 0
-   resetBaseLevel: true
    
    # When night time starts in ticks
    nightStart: 12610
@@ -2199,3 +2197,4 @@ help:
    - '&a/races lvlset [player] [integer]'
    - '&a/races set [race] [player] - forcibly set a players race'
    - '&a/races biome - for config purposes'
+

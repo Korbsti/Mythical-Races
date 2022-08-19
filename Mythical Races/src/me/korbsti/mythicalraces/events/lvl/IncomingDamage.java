@@ -24,6 +24,9 @@ public class IncomingDamage implements Listener {
 		if (!(e.getEntity() instanceof Player))
 			return;
 		Player p = (Player) e.getEntity();
+		if(plugin.playersRace.get(p.getName()) == null)  return;
+		
+		
 		Race ras = plugin.playersRace.get(p.getName());
 		if (!"TANKER".contains(ras.lvlType))
 			return;

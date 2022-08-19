@@ -1,5 +1,8 @@
 package me.korbsti.mythicalraces.commands;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
@@ -47,7 +50,6 @@ public class Commands implements CommandExecutor {
 				plugin.subRaces.clear();
 				plugin.subRaceNames.clear();
 				plugin.configYaml = YamlConfiguration.loadConfiguration(plugin.configFile);
-				plugin.dataYaml = YamlConfiguration.loadConfiguration(plugin.dataFile);
 				plugin.onStartup();
 				sender.sendMessage(ChatColor.translateAlternateColorCodes('&', plugin.configYaml.getString("reload")));
 				
@@ -72,7 +74,7 @@ public class Commands implements CommandExecutor {
 				}
 				for (String str : plugin.races) {
 					if (str.equalsIgnoreCase(args[1])) {
-						plugin.setPlayersRace.changePlayersRace(p, str);
+						plugin.setPlayersRace.changePlayersRace(p, str, false);
 						sender.sendMessage(ChatColor.translateAlternateColorCodes('&', plugin.configYaml.getString(
 						        "switchUserRace").replace("{race}", str)));
 						return true;
@@ -80,7 +82,7 @@ public class Commands implements CommandExecutor {
 				}
 				for (String str : plugin.subRaceNames) {
 					if (str.equalsIgnoreCase(args[1])) {
-						plugin.setPlayersRace.changePlayersRace(p, str);
+						plugin.setPlayersRace.changePlayersRace(p, str, false);
 						sender.sendMessage(ChatColor.translateAlternateColorCodes('&', plugin.configYaml.getString(
 						        "switchUserRace").replace("{race}", str)));
 						return true;
@@ -140,7 +142,7 @@ public class Commands implements CommandExecutor {
 							        "cooldownMessage").replace("{time}", plugin.dataManager.getCooldown(p))));
 							return false;
 						}
-						plugin.setPlayersRace.changePlayersRace(p, str);
+						plugin.setPlayersRace.changePlayersRace(p, str, false);
 						sender.sendMessage(ChatColor.translateAlternateColorCodes('&', plugin.configYaml.getString(
 						        "chosenRace").replace("{race}", str)));
 						return true;
@@ -248,6 +250,7 @@ public class Commands implements CommandExecutor {
 				                .toString())));
 				return true;
 			}
+
 			
 			sender.sendMessage(ChatColor.translateAlternateColorCodes('&', plugin.configYaml.getString("invalidArgs")));
 			return false;

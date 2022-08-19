@@ -21,9 +21,12 @@ public class InventoryClick implements Listener {
 		int slot = e.getSlot();
 		if (plugin.configYaml.getString("other.guiName").equalsIgnoreCase(p.getOpenInventory().getTitle())) {
 			e.setCancelled(true);
+			String name = p.getName();
+			
+			
 			for (String str : plugin.races) {
 				if (plugin.configYaml.getInt("races." + str + ".slot") == slot && plugin.configYaml.getInt("races."
-				        + str + ".guiPage") == plugin.guiNumber.get(p.getName())) {
+				        + str + ".guiPage") == plugin.guiNumber.get(name)) {
 					if (!p.hasPermission("mythicalraces.race." + str)) {
 						p.sendMessage(ChatColor.translateAlternateColorCodes('&', plugin.configYaml.getString(
 						        "noPerm")));
@@ -34,14 +37,24 @@ public class InventoryClick implements Listener {
 						p.sendMessage(ChatColor.translateAlternateColorCodes('&', plugin.configYaml.getString("cooldownMessage").replace("{time}", plugin.dataManager.getCooldown(p))));
 						return;
 					}
-					plugin.setPlayersRace.changePlayersRace(p, str);
+					plugin.setPlayersRace.changePlayersRace(p, str, false);
 					p.sendMessage(ChatColor.translateAlternateColorCodes('&', plugin.configYaml.getString("chosenRace") .replace("{race}", str)));
 					p.closeInventory();
 				}
 			}
 			if (slot == plugin.configYaml.getInt("other.forwardClick")) {
 				p.closeInventory();
-				plugin.guiNumber.put(p.getName(), plugin.guiNumber.get(p.getName()) + 1);
+				plugin.guiNumber.put(name, plugin.guiNumber.get(name) + 1);
+				plugin.gui.selectRaceGUI(p);
+			}
+			
+			
+			if (slot == plugin.configYaml.getInt("other.backwardClick")) {
+				if(plugin.guiNumber.get(name) - 1 <= 0) {
+					return;
+				}
+				p.closeInventory();
+				plugin.guiNumber.put(name, plugin.guiNumber.get(name) - 1);
 				plugin.gui.selectRaceGUI(p);
 			}
 			return;
@@ -71,8 +84,8 @@ public class InventoryClick implements Listener {
 							
 							return;
 						} else {
-							plugin.dataManager.setPlayerRace((Player) p, str);
-							plugin.setter.switchingRaces((Player) p, str);
+							plugin.dataManager.setPlayerRace((Player) p, str, false);
+							plugin.setter.switchingRaces((Player) p, str, false);
 							p.sendMessage(ChatColor.translateAlternateColorCodes('&', plugin.configYaml.getString(
 							        "chosenRace").replace("{race}", str)));
 							p.closeInventory();
@@ -97,8 +110,8 @@ public class InventoryClick implements Listener {
 							
 							return;
 						} else {
-							plugin.dataManager.setPlayerRace((Player) p, str);
-							plugin.setter.switchingRaces((Player) p, str);
+							plugin.dataManager.setPlayerRace((Player) p, str, false);
+							plugin.setter.switchingRaces((Player) p, str, false);
 							p.sendMessage(ChatColor.translateAlternateColorCodes('&', plugin.configYaml.getString(
 							        "chosenRace").replace("{race}", str)));
 							p.closeInventory();
@@ -129,8 +142,8 @@ public class InventoryClick implements Listener {
 							
 							return;
 						} else {
-							plugin.dataManager.setPlayerRace((Player) p, raceType);
-							plugin.setter.switchingRaces((Player) p, raceType);
+							plugin.dataManager.setPlayerRace((Player) p, raceType, false);
+							plugin.setter.switchingRaces((Player) p, raceType, false);
 							p.sendMessage(ChatColor.translateAlternateColorCodes('&', plugin.configYaml.getString(
 							        "chosenRace").replace("{race}", raceType)));
 							p.closeInventory();
@@ -154,8 +167,8 @@ public class InventoryClick implements Listener {
 							
 							return;
 						} else {
-							plugin.dataManager.setPlayerRace((Player) p, str);
-							plugin.setter.switchingRaces((Player) p, str);
+							plugin.dataManager.setPlayerRace((Player) p, str, false);
+							plugin.setter.switchingRaces((Player) p, str, false);
 							p.sendMessage(ChatColor.translateAlternateColorCodes('&', plugin.configYaml.getString(
 							        "chosenRace").replace("{race}", str)));
 							p.closeInventory();

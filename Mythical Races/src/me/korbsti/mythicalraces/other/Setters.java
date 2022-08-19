@@ -20,12 +20,12 @@ public class Setters {
 		
 	}
 	
-	public void switchingRaces(Player p, String race) {
+	public void switchingRaces(Player p, String race, boolean fromJoinEvent) {
 		
 		Bukkit.getScheduler().runTask(plugin, new Runnable() {
 			@Override
 			public void run() {
-				Bukkit.getPluginManager().callEvent(new RaceChangeEvent(plugin, race, p));
+				Bukkit.getPluginManager().callEvent(new RaceChangeEvent(plugin, race, p, fromJoinEvent));
 			}
 		});
 		
@@ -229,7 +229,7 @@ public class Setters {
 
 								}
 								
-								
+							
 								
 							}  else if ("ALL".equals(data[5])) {
 								Material below = p.getLocation().add(0, -0.5, 0).getBlock().getType();
@@ -595,7 +595,7 @@ public class Setters {
 								
 								
 								
-							} else if ("ALL".equals(data[5])) {
+							}else if ("ALL".equals(data[5])) {
 								Material below = p.getLocation().add(0, -0.5, 0).getBlock().getType();
 								Material mid1 = p.getLocation().add(0, 0.1, 0).getBlock().getType();
 								Material mid2 = p.getLocation().add(0, 1.2, 0).getBlock().getType();

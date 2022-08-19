@@ -38,6 +38,8 @@ public class Hunting implements Listener {
 					if(proj.getShooter() instanceof Player) {
 						if(dmg.isDead()) {
 							Player p = (Player) proj.getShooter();
+							if(plugin.playersRace.get(p.getName()) == null)  return;
+
 							Race ras = plugin.playersRace.get(p.getName());
 							if(!ras.lvlType.contains("ARCHER")) return;
 							plugin.changeXP(p, ras.xpGain);
@@ -51,6 +53,8 @@ public class Hunting implements Listener {
 				
 				if(dmg.isDead()) {
 					Player p = (Player) e.getDamager();
+					if(plugin.playersRace.get(p.getName()) == null)  return;
+
 					Race ras = plugin.playersRace.get(p.getName());
 					if(!ras.lvlType.contains("HUNTING")) return;
 					plugin.changeXP(p, ras.xpGain);
