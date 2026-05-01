@@ -46,8 +46,13 @@ public class GUI {
 					lore1.add(ChatColor.translateAlternateColorCodes('&', obj.toString().replace("{race}", plugin.dataManager.getRace(p))));
 				}
 				playerHeadMeta.setLore(lore1);
-				playerHeadMeta.setDisplayName(ChatColor.translateAlternateColorCodes('&', plugin.configYaml.getString(
-				        "other.guiPlayerDisplay")));
+				if(plugin.hasPlaceholders) {
+					playerHeadMeta.setDisplayName(ChatColor.translateAlternateColorCodes('&', PlaceholderAPI.setPlaceholders(p, plugin.configYaml.getString(
+					        "other.guiPlayerDisplay"))));
+				} else {
+					playerHeadMeta.setDisplayName(ChatColor.translateAlternateColorCodes('&', plugin.configYaml.getString(
+					        "other.guiPlayerDisplay")));
+				}
 				playerHead.setItemMeta(playerHeadMeta);
 				/////////////////////////////////////////
 				ArrayList<ItemStack> listStack = new ArrayList<ItemStack>();
